@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="grow-frontend" default="build" basedir=".">
+
+    <property name="main.class" value="com.p4square.grow.frontend.TODO" />
+    
+    <property file="${user.home}/.jesterpm-build-tools.properties" />
+    <property name="jesterpm.buildtools.root" value="../jesterpm-build-tools" />
+    <import file="${jesterpm.buildtools.root}/ant/tomcat-common.xml" />
+
+    <!-- Targets to get this project ready -->
+    <target name="bootstrap" depends="setup-tomcat" />
+
+</project>
