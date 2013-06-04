@@ -7,7 +7,7 @@
 </#macro>
 
 <header>
-    <h1><img src="../images/logo.png"> Grow Process</h1>
+    <h1><img src="${contentroot}/images/logo.png"> Grow Process</h1>
 
     <nav class="primary">
         <ul>
