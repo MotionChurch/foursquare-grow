@@ -24,6 +24,19 @@ import net.jesterpm.fmfacade.FreeMarkerPageResource;
 public class GrowFrontend extends FMFacade {
     private static Logger cLog = Logger.getLogger(GrowFrontend.class);
 
+    @Override
+    protected Router createRouter() {
+        Router router = new Router(getContext());
+
+        final LoginAuthenticator defaultGuard = 
+            new LoginAuthenticator(getContext(), true, "login.html");
+        defaultGuard.setNext(FreeMarkerPageResource.class);
+        router.attachDefault(defaultGuard);
+        router.attach("/login.html", LoginPageResource.class);
+
+        return router;
+    }
+
     /**
      * Stand-alone main for testing.
      */

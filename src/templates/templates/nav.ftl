@@ -11,10 +11,14 @@
 
     <nav class="primary">
         <ul>
-            <@navLink href="index.html">Home</@navLink>
-            <@navLink href="about.html">About</@navLink>
-            <@navLink href="contact.html">Contact</@navLink>
-            <@navLink href="login.html">Login / Sign Up</@navLink>
+            <@navLink href="/index.html">Home</@navLink>
+            <@navLink href="/about.html">About</@navLink>
+            <@navLink href="/contact.html">Contact</@navLink>
+            <#if user??>
+                <@navLink href="/account/assessment">Take Assessment</@navLink>
+            <#else>
+                <@navLink href="/login.html">Login / Sign Up</@navLink>
+            </#if>
         </ul>
     </nav>
 </header>
