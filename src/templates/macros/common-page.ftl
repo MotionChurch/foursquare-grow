@@ -12,8 +12,6 @@
     <div id="notfooter">
         <#include "/templates/nav.ftl">
 
-        <#include "/templates/index-hero.ftl">
-
         <#nested>
 
         <div id="push"></div>
