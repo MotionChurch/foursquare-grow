@@ -28,11 +28,20 @@ public class GrowFrontend extends FMFacade {
     protected Router createRouter() {
         Router router = new Router(getContext());
 
-        final LoginAuthenticator defaultGuard = 
+        final LoginAuthenticator defaultGuard =
             new LoginAuthenticator(getContext(), true, "login.html");
         defaultGuard.setNext(FreeMarkerPageResource.class);
         router.attachDefault(defaultGuard);
         router.attach("/login.html", LoginPageResource.class);
+
+        final Router accountRouter = new Router(getContext());
+        accountRouter.attach("/assessment/question/{questionId}", SurveyPageResource.class);
+        accountRouter.attach("/assessment", SurveyPageResource.class);
+
+        final LoginAuthenticator accountGuard =
+            new LoginAuthenticator(getContext(), false, "login.html");
+        accountGuard.setNext(accountRouter);
+        router.attach("/account", accountGuard);
 
         return router;
     }

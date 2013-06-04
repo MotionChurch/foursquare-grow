@@ -1,6 +1,5 @@
 <#include "/macros/common.ftl">
 <#include "/macros/common-page.ftl">
-<#include "/macros/surveycontent.ftl">
 
 <@commonpage>
     <@noticebox>
