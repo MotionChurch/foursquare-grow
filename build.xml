@@ -12,7 +12,10 @@
 
     <target name="frontend" depends="compile">
         <java classname="com.p4square.grow.frontend.GrowFrontend"
-            classpathref="classpath.run" fork="true" />
+            classpathref="classpath.run" fork="true">
+
+            <arg file="devfiles/dev-config-override.properties" />
+        </java>
     </target>
 
 </project>

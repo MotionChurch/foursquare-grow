@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
 import net.jesterpm.fmfacade.FMFacade;
 import net.jesterpm.fmfacade.FreeMarkerPageResource;
 
+import com.p4square.grow.config.Config;
+
 /**
  * This is the Restlet Application implementing the Grow project front-end.
  * It's implemented as an extension of FMFacade that connects interactive pages
@@ -23,6 +25,34 @@ import net.jesterpm.fmfacade.FreeMarkerPageResource;
  */
 public class GrowFrontend extends FMFacade {
     private static Logger cLog = Logger.getLogger(GrowFrontend.class);
+
+    private Config mConfig;
+
+    public GrowFrontend() {
+        mConfig = new Config();
+    }
+
+    public Config getConfig() {
+        return mConfig;
+    }
+
+    @Override
+    public void start() throws Exception {
+        super.start();
+
+        final String configDomain =
+            getContext().getParameters().getFirstValue("config-domain");
+        if (configDomain != null) {
+            mConfig.setDomain(configDomain);
+        }
+
+        final String configFilename =
+            getContext().getParameters().getFirstValue("config-file");
+
+        if (configFilename != null) {
+            mConfig.updateConfig(configFilename);
+        }
+    }
 
     @Override
     protected Router createRouter() {
@@ -54,7 +84,17 @@ public class GrowFrontend extends FMFacade {
         final Component component = new Component();
         component.getServers().add(Protocol.HTTP, 8085);
         component.getClients().add(Protocol.HTTP);
-        component.getDefaultHost().attach(new GrowFrontend());
+
+        // Setup App
+        GrowFrontend app = new GrowFrontend();
+
+        // Load an optional config file from the first argument.
+        app.getConfig().setDomain("dev");
+        if (args.length == 1) {
+            app.getConfig().updateConfig(args[0]);
+        }
+
+        component.getDefaultHost().attach(app);
 
         // Setup shutdown hook
         Runtime.getRuntime().addShutdownHook(new Thread() {

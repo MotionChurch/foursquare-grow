@@ -23,6 +23,8 @@ import net.jesterpm.fmfacade.json.JsonResponse;
 
 import net.jesterpm.fmfacade.FreeMarkerPageResource;
 
+import com.p4square.grow.config.Config;
+
 /**
  * SurveyPageResource handles rendering the survey and processing user's answers.
  *
@@ -36,6 +38,7 @@ import net.jesterpm.fmfacade.FreeMarkerPageResource;
 public class SurveyPageResource extends FreeMarkerPageResource {
     private static Logger cLog = Logger.getLogger(SurveyPageResource.class);
 
+    private Config mConfig;
     private Template mSurveyTemplate;
     private JsonRequestClient mJsonClient;
 
@@ -48,6 +51,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         super.doInit();
 
         GrowFrontend growFrontend = (GrowFrontend) getApplication();
+        mConfig = growFrontend.getConfig();
         mSurveyTemplate = growFrontend.getTemplate("templates/survey.ftl");
         if (mSurveyTemplate == null) {
             cLog.fatal("Could not find survey template.");
@@ -172,8 +176,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
      * @return The backend endpoint URI
      */
     private String getBackendEndpoint() {
-        // TODO: Config
-        return "http://localhost:9095";
+        return mConfig.getString("backendUri", "http://localhost:9095");
     }
 
     /**
