@@ -11,7 +11,7 @@
     </@noticebox>
 
     <@content>
-        <img src="images/buckets.png" />
+        <img src="${staticRoot}/images/buckets.png" />
 
         <h1>Grow "Buckets"</h1>
         <p>

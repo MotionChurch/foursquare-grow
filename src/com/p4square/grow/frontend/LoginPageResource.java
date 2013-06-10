@@ -91,7 +91,7 @@ public class LoginPageResource extends FreeMarkerPageResource {
 
         if (authenticated) {
             // TODO: Better return url.
-            getResponse().redirectSeeOther("/index.html");
+            getResponse().redirectSeeOther(mGrowFrontend.getConfig().getString("dynamicRoot", "") + "/index.html");
             return null;
 
         } else {

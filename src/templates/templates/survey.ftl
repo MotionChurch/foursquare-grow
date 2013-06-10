@@ -13,16 +13,16 @@
     </div>
 
     <div id="content">
-        <form id="questionForm" action="/account/assessment/question/${question.id}" method="post">
+        <form id="questionForm" action="${dynamicRoot}/account/assessment/question/${question.id}" method="post">
         <input id="answerField" type="hidden" name="answer" value="${selectedAnswerId!}" />
         <div id="previous">
             <a href="#" onclick="previousQuestion();return false;">
-                <img src="${contentroot}/images/previous.png" alt="Previous Question" />
+                <img src="${staticRoot}/images/previous.png" alt="Previous Question" />
             </a>
         </div>
         <div id="next">
             <a href="#" onclick="nextQuestion();return false;">
-                <img src="${contentroot}/images/next.png" alt="Next Question" />
+                <img src="${staticRoot}/images/next.png" alt="Next Question" />
             </a>
         </div>
         <article>

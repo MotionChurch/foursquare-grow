@@ -7,13 +7,6 @@
 
 
     <display-name>grow-frontend</display-name>
-    <!-- Application class name -->
-    <context-param>
-        <param-name>org.restlet.application</param-name>
-        <param-value>
-            net.jesterpm.fmfacade.FMFacade
-        </param-value>
-    </context-param>
 
     <!-- Restlet adapter -->
     <servlet>
@@ -25,7 +18,19 @@
 
     <!-- Catch all requests -->
     <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/style.css</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/images/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/scripts/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>RestletServlet</servlet-name>
-        <url-pattern>/p/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 </web-app>

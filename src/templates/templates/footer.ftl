@@ -1,9 +1,9 @@
 <footer>
     <div class="left">
         &copy;2012 Grow Process
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="contact.html">Contact</a>
+        <a href="${dynamicRoot}/index.html">Home</a>
+        <a href="${dynamicRoot}/about.html">About</a>
+        <a href="${dynamicRoot}/contact.html">Contact</a>
     </div>
 
     <div class="right">

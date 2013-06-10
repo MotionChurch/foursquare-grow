@@ -41,13 +41,15 @@ public class GrowFrontend extends FMFacade {
         super.start();
 
         final String configDomain =
-            getContext().getParameters().getFirstValue("config-domain");
+            getContext().getParameters().getFirstValue("configDomain");
         if (configDomain != null) {
             mConfig.setDomain(configDomain);
         }
 
+        mConfig.updateConfig(this.getClass().getResourceAsStream("/grow.properties"));
+
         final String configFilename =
-            getContext().getParameters().getFirstValue("config-file");
+            getContext().getParameters().getFirstValue("configFile");
 
         if (configFilename != null) {
             mConfig.updateConfig(configFilename);
@@ -58,8 +60,10 @@ public class GrowFrontend extends FMFacade {
     protected Router createRouter() {
         Router router = new Router(getContext());
 
+        final String loginPage = getConfig().getString("dynamicRoot", "") + "/login.html";
+
         final LoginAuthenticator defaultGuard =
-            new LoginAuthenticator(getContext(), true, "login.html");
+            new LoginAuthenticator(getContext(), true, loginPage);
         defaultGuard.setNext(FreeMarkerPageResource.class);
         router.attachDefault(defaultGuard);
         router.attach("/login.html", LoginPageResource.class);
@@ -69,7 +73,7 @@ public class GrowFrontend extends FMFacade {
         accountRouter.attach("/assessment", SurveyPageResource.class);
 
         final LoginAuthenticator accountGuard =
-            new LoginAuthenticator(getContext(), false, "login.html");
+            new LoginAuthenticator(getContext(), false, loginPage);
         accountGuard.setNext(accountRouter);
         router.attach("/account", accountGuard);
 

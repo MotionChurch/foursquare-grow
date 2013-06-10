@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<component xmlns="http://www.restlet.org/schemas/2.0/Component">
+    <client protocol="FILE" />
+    <client protocols="HTTP HTTPS" />
+    <server protocols="HTTP HTTPS" />
+ 
+    <defaultHost>
+        <attach uripattern="/images" targetDescriptor="war:///images" />
+        <attach uripattern="/scripts" targetDescriptor="war:///scripts" />
+        <attach uripattern="/style.css" targetDescriptor="war:///style.css" />
+        <attach uriPattern="" targetClass="com.p4square.grow.frontend.GrowFrontend" />
+    </defaultHost>
+
+    <internalRouter>
+        <attach uriPattern="/backend"
+                targetClass="com.p4square.grow.backend.GrowBackend" />
+    </internalRouter>
+</component>

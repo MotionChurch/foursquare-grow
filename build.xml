@@ -14,7 +14,7 @@
         <java classname="com.p4square.grow.frontend.GrowFrontend"
             classpathref="classpath.run" fork="true">
 
-            <arg file="devfiles/dev-config-override.properties" />
+            <arg file="build/WEB-INF/classes/grow.properties" />
         </java>
     </target>
 

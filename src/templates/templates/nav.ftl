@@ -7,17 +7,17 @@
 </#macro>
 
 <header>
-    <h1><img src="${contentroot}/images/logo.png"> Grow Process</h1>
+    <h1><img src="${staticRoot}/images/logo.png"> Grow Process</h1>
 
     <nav class="primary">
         <ul>
-            <@navLink href="/index.html">Home</@navLink>
-            <@navLink href="/about.html">About</@navLink>
-            <@navLink href="/contact.html">Contact</@navLink>
+            <@navLink href="${dynamicRoot}/index.html">Home</@navLink>
+            <@navLink href="${dynamicRoot}/about.html">About</@navLink>
+            <@navLink href="${dynamicRoot}/contact.html">Contact</@navLink>
             <#if user??>
-                <@navLink href="/account/assessment">Take Assessment</@navLink>
+                <@navLink href="${dynamicRoot}/account/assessment">Take Assessment</@navLink>
             <#else>
-                <@navLink href="/login.html">Login / Sign Up</@navLink>
+                <@navLink href="${dynamicRoot}/login.html">Login / Sign Up</@navLink>
             </#if>
         </ul>
     </nav>

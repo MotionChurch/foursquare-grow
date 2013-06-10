@@ -49,6 +49,7 @@ public class Config {
      * @param domain The new domain.
      */
     public void setDomain(String domain) {
+        cLog.info("Setting Config domain to " + domain);
         mDomain = domain;
     }
 
@@ -99,17 +100,20 @@ public class Config {
         String result;
 
         final String domainKey = mDomain + "." + key;
-        result = mProperties.getProperty(domainKey, defaultValue);
+        result = mProperties.getProperty(domainKey);
         if (result != null) {
+            cLog.debug("Reading config for key = { " + key + " }. Got result = { " + result + " }");
             return result;
         }
 
         final String globalKey = "*." + key;
-        result = mProperties.getProperty(globalKey, defaultValue);
+        result = mProperties.getProperty(globalKey);
         if (result != null) {
+            cLog.debug("Reading config for key = { " + key + " }. Got result = { " + result + " }");
             return result;
         }
 
+        cLog.debug("Reading config for key = { " + key + " }. Got default value = { " + defaultValue + " }");
         return defaultValue;
     }
 

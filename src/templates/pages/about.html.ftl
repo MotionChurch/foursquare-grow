@@ -9,8 +9,6 @@
     </@noticebox>
 
     <@content>
-        <img src="images/buckets.png" />
-
         <h1>About</h1>
         <p>
             Curabitur mattis molestie ligula, ac vestibulum Curabitur

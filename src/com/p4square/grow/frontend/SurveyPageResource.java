@@ -152,13 +152,13 @@ public class SurveyPageResource extends FreeMarkerPageResource {
             }
 
             // Find the next question or finish the assessment.
-            String nextPage;
+            String nextPage = mConfig.getString("dynamicRoot", "");
             {
                 String nextQuestionId = (String) questionData.get("nextQuestion");
                 if (nextQuestionId == null) {
-                    nextPage = "/account/assessment/results";
+                    nextPage += "/account/assessment/results";
                 } else {
-                    nextPage = "/account/assessment/question/" + nextQuestionId;
+                    nextPage += "/account/assessment/question/" + nextQuestionId;
                 }
             }
 
@@ -176,7 +176,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
      * @return The backend endpoint URI
      */
     private String getBackendEndpoint() {
-        return mConfig.getString("backendUri", "http://localhost:9095");
+        return mConfig.getString("backendUri", "riap://component/backend");
     }
 
     /**
