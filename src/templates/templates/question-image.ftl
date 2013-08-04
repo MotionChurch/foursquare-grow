@@ -1,9 +1,9 @@
 <div class="imageQuestion question">
     <#list question.answers?keys as answerid>
         <#if selectedAnswerId?? && answerid == selectedAnswerId>
-            <a href="#" class="answer" id="${answerid}" onclick="selectAnswer(this)" class="selected"><img src="${staticRoot}/images/${question.id}-${answerid}.png" alt="${question.answers[answerid]!}" /></a>
+            <img class="answer selected" id="${answerid}" onclick="selectAnswer(this)" src="${staticRoot}/images/${question.id}-${answerid}-hover.jpg" />
         <#else>
-            <a href="#" class="answer" id="${answerid}" onclick="selectAnswer(this)" class="answer"><img src="${staticRoot}/images/${question.id}-${answerid}.png" alt="${question.answers[answerid]!}" /></a>
+            <img class="answer" id="${answerid}" onclick="selectAnswer(this)" src="${staticRoot}/images/${question.id}-${answerid}.jpg" />
         </#if>
     </#list>
 </div>

@@ -14,5 +14,10 @@
     
     <dependencies defaultconf="default,sources">
         <dependency org="net.jesterpm" name="fmfacade" rev="[1.0-SNAPSHOT,)" />
+
+        <!-- Backend Dependencies -->
+        <dependency org="com.netflix.astyanax" name="astyanax-core" rev="[1.0,)" />
+        <dependency org="com.netflix.astyanax" name="astyanax-thrift" rev="[1.0,)" />
+        <dependency org="com.netflix.astyanax" name="astyanax-cassandra" rev="[1.0,)" />
     </dependencies>
 </ivy-module>

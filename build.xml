@@ -18,4 +18,12 @@
         </java>
     </target>
 
+    <target name="backend" depends="compile">
+        <java classname="com.p4square.grow.backend.GrowBackend"
+            classpathref="classpath.run" fork="true">
+
+            <arg file="build/WEB-INF/classes/grow.properties" />
+        </java>
+    </target>
+
 </project>

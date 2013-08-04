@@ -5,20 +5,16 @@ html, body {
     height: 100%;
 }
 
-body.videopage {
-    background: #181818;
-}
-
 #notfooter {
     min-height: 100%;
     height: auto !important;
     height: 100%;
-    margin: 0 auto -5em;
+    margin: 0 auto -50px;
 }
 
 #push {
-    height: 5em;
-    background: #3C3C3C;
+    height: 50px;
+    clear: both;
 }
 
 header {
@@ -74,7 +70,7 @@ nav.primary a.current {
 }
 
 #hero {
-    background: url('images/hero.png') #262626 no-repeat top center;
+    background: url('/images/hero.png') #262626 no-repeat top center;
     width: 100%;
     color: white;
     text-align: center;
@@ -89,6 +85,7 @@ nav.primary a.current {
 #middlebar {
     background: #262626;
     color: white;
+    min-height: 90px;
 }
 
 #noticebox {
@@ -96,6 +93,7 @@ nav.primary a.current {
     padding: 1.5em 20% 1.5em 20%;
     max-width: 700px;
     margin: 0 auto 0 auto;
+    display: none;
 }
 
 #noticebox img.icon {
@@ -155,8 +153,9 @@ footer {
     color: #737373;
     font-weight: bold;
     font-size: 80%;
-    padding: 2em 20% 0 20%;
-    height: 3em;
+    padding: 20px 20% 0 20%;
+    height: 30px;
+    clear: both;
 }
 
 footer .left {
@@ -175,6 +174,151 @@ footer a {
 
 footer a:hover {
     color: white;
+}
+
+.progressbar, .progress {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    height: 10px;
+    background: #eaeaea;
+}
+
+.progress {
+    height: 10px;
+    background: #fd6000;
+}
+
+.progresslabel {
+    position: relative;
+    text-align: left;
+    margin-left: -1em;
+    color: #fd6000;
+    font-weight: bold;
+}
+
+#content nav {
+    font-size: 120%;
+}
+
+#content nav a {
+    text-decoration: none;
+    color: #eaeaea;
+    letter-spacing: 2px;
+}
+
+#content nav a.current, #content nav a:hover {
+    color: #fd6000;
+}
+
+#chapterprogress {
+    margin: 2em auto 2em auto;
+    width: 75%;
+    text-align: left;
+}
+
+#videos {
+    float: left;
+    width: 70%;
+    text-align: left;
+}
+
+#videos article {
+    display: inline-block;
+    width: 280px;
+    margin-right: 30px;
+}
+
+#videos article h2 {
+    display: inline;
+    font-size: 100%;
+}
+
+#videos .image {
+    position: relative;
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+#videos .image.completed a:before {
+    content: url('/images/complete.png');
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#videos .image a:hover:before {
+    content: url('/images/play.png');
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -19px 0 0 -19px;
+}
+
+#thefeed {
+    float: left;
+    width: 30%; 
+    text-align: left;
+}
+
+#thefeed article {
+    margin-bottom: 1em;
+}
+
+
+#thefeed .question, #thefeed .answer {
+    padding: 1.5em;
+    border-radius: 5px;
+}
+
+#thefeed article .question {
+    background: #eeeeee;
+    padding-bottom: 0.5em;
+}
+
+#thefeed article .answer {
+    background: #f6f6f6;
+}
+
+#thefeed article .question div {
+    margin-top: 1em;
+    text-align: right;
+}
+
+#thefeed article .question a.reply {
+    background: url('/images/reply.png') left center  no-repeat;
+    padding-left: 12px;
+    color: #aeaeae;
+    text-decoration: none;
+}
+
+#thefeed article .answer a.readmore {
+    color: #fc6200;
+    text-decoration: none;
+    font-size: 90%;
+}
+
+#thefeed article a:hover {
+    font-weight: bold;
+}
+
+#videoplayer {
+    display: none;
+    text-align: center;
+    height: 100%;
+    min-height: 100%;
+}
+
+#videoplayer .close {
+    text-align: right;
+    position: relative;
+    top: 50px;
+    right: 50px;
+}
+
+#videoplayer div.video {
+    position: relative;
+    top: 50%;
+    margin-top: -405px;
 }
 
 #previous, #next {
@@ -217,3 +361,75 @@ footer a:hover {
     text-decoration: none;
 }
 
+.sliderQuestion .answers {
+    text-align: justify;
+    -ms-text-justify: distribute-all-lines;
+    text-justify: distribute-all-lines;
+}
+
+.sliderQuestion .label {
+    display: inline-block;
+    *display: inline; zoom:1;
+    font-weight: bold;
+    margin-top: 1em;
+    color: #676767;
+    width: 20%;
+    vertical-align: top;
+}
+
+.sliderQuestion .answers .stretch {
+    width: 100%;
+    display: inline-block;
+    font-size: 0;
+    line-height: 0
+}
+
+.sliderbar {
+    background: #E1E1E1;
+}
+
+.sliderbar .slider {
+    cursor: pointer;
+}
+
+.quadQuestion {
+    text-align: center;
+    margin-top: 5em;
+}
+
+.quadQuestion .middle div {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.quadQuestion .top, .quadQuestion .bottom, .quadQuestion .left, .quadQuestion .right {
+    font-weight: bold;
+    margin: 1em;
+    color: #ff6100;
+}
+
+.quadQuestion .left, .quadQuestion .right {
+    width: 20%;
+}
+
+.quadQuestion .left {
+    text-align: right;
+}
+
+.quadQuestion .right {
+    text-align: left;
+}
+
+.quad {
+    background: url('/images/quad.png') center center no-repeat;
+    width: 273px;
+    height: 273px;
+    margin: 0 auto 0 auto;
+    text-align: left;
+}
+
+.quad .selector {
+    top: 126px;
+    left: 126px;
+    cursor: pointer;
+}

@@ -4,6 +4,8 @@
 
 package com.p4square.grow.frontend;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -35,15 +37,15 @@ import com.p4square.grow.config.Config;
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
-public class SurveyPageResource extends FreeMarkerPageResource {
-    private static Logger cLog = Logger.getLogger(SurveyPageResource.class);
+public class TrainingPageResource extends FreeMarkerPageResource {
+    private static Logger cLog = Logger.getLogger(TrainingPageResource.class);
 
     private Config mConfig;
-    private Template mSurveyTemplate;
+    private Template mTrainingTemplate;
     private JsonRequestClient mJsonClient;
 
     // Fields pertaining to this request.
-    private String mQuestionId;
+    private String mChapter;
     private String mUserId;
 
     @Override
@@ -52,15 +54,15 @@ public class SurveyPageResource extends FreeMarkerPageResource {
 
         GrowFrontend growFrontend = (GrowFrontend) getApplication();
         mConfig = growFrontend.getConfig();
-        mSurveyTemplate = growFrontend.getTemplate("templates/survey.ftl");
-        if (mSurveyTemplate == null) {
-            cLog.fatal("Could not find survey template.");
+        mTrainingTemplate = growFrontend.getTemplate("templates/training.ftl");
+        if (mTrainingTemplate == null) {
+            cLog.fatal("Could not find training template.");
             setStatus(Status.SERVER_ERROR_INTERNAL);
         }
 
         mJsonClient = new JsonRequestClient(getContext().getClientDispatcher());
 
-        mQuestionId = getAttribute("questionId");
+        mChapter = getAttribute("chapter");
         mUserId = getRequest().getClientInfo().getUser().getIdentifier();
     }
 
@@ -70,36 +72,53 @@ public class SurveyPageResource extends FreeMarkerPageResource {
     @Override
     protected Representation get() {
         try {
-            // Get the current question.
-            if (mQuestionId == null) {
+            // Get the current chapter.
+            if (mChapter == null) {
                 // TODO: Get user's current question
-                mQuestionId = "1";
+                mChapter = "seeker";
             }
 
-            Map questionData = null;
+            // Get videos for the chapter.
+            List<Map<String, Object>> videos = null;
             {
-                JsonResponse response = backendGet("/assessment/question/" + mQuestionId);
+                JsonResponse response = backendGet("/training/" + mChapter);
                 if (!response.getStatus().isSuccess()) {
                     setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                     return null;
                 }
-                questionData = response.getMap();
+                videos = (List<Map<String, Object>>) response.getMap().get("videos");
             }
 
-            // Get any previous answer to the question
-            String selectedAnswer = null;
+            // Get list of completed videos
+            Map<String, Object> trainingRecord = null;
+            Map<String, Object> completedVideos = new HashMap<String, Object>();
             {
-                JsonResponse response = backendGet("/accounts/" + mUserId + "/assessment/answers/" + mQuestionId);
+                JsonResponse response = backendGet("/accounts/" + mUserId + "/training");
                 if (response.getStatus().isSuccess()) {
-                    selectedAnswer = (String) response.getMap().get("answerId");
+                    trainingRecord = response.getMap();
+                    completedVideos = (Map<String, Object>) trainingRecord.get("videos");
                 }
             }
 
-            Map root = getRootObject();
-            root.put("question", questionData);
-            root.put("selectedAnswerId", selectedAnswer);
+            // Mark the completed videos as completed
+            int chapterProgress = 0;
+            for (Map<String, Object> video : videos) {
+                boolean completed = (null != completedVideos.get(video.get("id")));
+                video.put("completed", completed);
 
-            return new TemplateRepresentation(mSurveyTemplate, root, MediaType.TEXT_HTML);
+                if (completed) {
+                    chapterProgress++;
+                }
+            }
+            chapterProgress = chapterProgress * 100 / videos.size();
+
+            Map root = getRootObject();
+            root.put("chapter", mChapter);
+            root.put("chapterProgress", chapterProgress);
+            root.put("videos", videos);
+            root.put("completedVideos", completedVideos);
+
+            return new TemplateRepresentation(mTrainingTemplate, root, MediaType.TEXT_HTML);
 
         } catch (Exception e) {
             cLog.fatal("Could not render page: " + e.getMessage(), e);
@@ -113,9 +132,9 @@ public class SurveyPageResource extends FreeMarkerPageResource {
      */
     @Override
     protected Representation post(Representation entity) {
-        final Form form = new Form(entity);
+        return null;
+        /*final Form form = new Form(entity);
         final String answerId = form.getFirstValue("answer");
-        final String direction = form.getFirstValue("direction");
 
         if (mQuestionId == null || answerId == null || answerId.length() == 0) {
             // Something is wrong.
@@ -155,26 +174,9 @@ public class SurveyPageResource extends FreeMarkerPageResource {
             // Find the next question or finish the assessment.
             String nextPage = mConfig.getString("dynamicRoot", "");
             {
-                String nextQuestionId = null;
-                if ("previous".equals(direction)) {
-                   nextQuestionId = (String) questionData.get("previousQuestion");
-                } else {
-                   nextQuestionId = (String) questionData.get("nextQuestion");
-                }
-
+                String nextQuestionId = (String) questionData.get("nextQuestion");
                 if (nextQuestionId == null) {
-                    //nextPage += "/account/assessment/results";
-                    // TODO: Remove this hack:
-                    JsonResponse response = backendGet("/accounts/" + mUserId + "/assessment");
-                    if (!response.getStatus().isSuccess()) {
-                        nextPage += "/account/assessment/results";
-                    } else {
-                        final String score = (String) response.getMap().get("result");
-                        if (score != null) {
-                            nextPage += "/account/training/" + score;
-                        }
-                    }
-                    
+                    nextPage += "/account/assessment/results";
                 } else {
                     nextPage += "/account/assessment/question/" + nextQuestionId;
                 }
@@ -187,7 +189,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
             cLog.fatal("Could not render page: " + e.getMessage(), e);
             setStatus(Status.SERVER_ERROR_INTERNAL);
             return null;
-        }
+        }*/
     }
 
     /**
@@ -212,7 +214,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         return response;
     }
 
-    protected JsonResponse backendPut(final String uri, final Map data) {
+    private JsonResponse backendPut(final String uri, final Map data) {
         cLog.debug("Sending backend PUT " + uri);
 
         final JsonResponse response = mJsonClient.put(getBackendEndpoint() + uri, data);

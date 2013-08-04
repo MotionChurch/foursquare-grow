@@ -4,8 +4,14 @@
 
 package com.p4square.grow.frontend;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.restlet.Application;
 import org.restlet.Component;
+import org.restlet.Restlet;
 import org.restlet.data.Protocol;
+import org.restlet.resource.Directory;
 import org.restlet.routing.Router;
 
 import org.apache.log4j.Logger;
@@ -71,6 +77,8 @@ public class GrowFrontend extends FMFacade {
         final Router accountRouter = new Router(getContext());
         accountRouter.attach("/assessment/question/{questionId}", SurveyPageResource.class);
         accountRouter.attach("/assessment", SurveyPageResource.class);
+        accountRouter.attach("/training/{chapter}", TrainingPageResource.class);
+        accountRouter.attach("/training", TrainingPageResource.class);
 
         final LoginAuthenticator accountGuard =
             new LoginAuthenticator(getContext(), false, loginPage);
@@ -88,6 +96,17 @@ public class GrowFrontend extends FMFacade {
         final Component component = new Component();
         component.getServers().add(Protocol.HTTP, 8085);
         component.getClients().add(Protocol.HTTP);
+        component.getClients().add(Protocol.FILE);
+        
+        // Static content
+        try {
+            component.getDefaultHost().attach("/images/", new FileServingApp("./build/images/"));
+            component.getDefaultHost().attach("/scripts", new FileServingApp("./build/scripts"));
+            component.getDefaultHost().attach("/style.css", new FileServingApp("./build/style.css"));
+        } catch (IOException e) {
+            cLog.error("Could not create directory for static resources: " 
+                    + e.getMessage(), e);
+        }
 
         // Setup App
         GrowFrontend app = new GrowFrontend();
@@ -117,6 +136,19 @@ public class GrowFrontend extends FMFacade {
             component.start();
         } catch (Exception e) {
             cLog.fatal("Could not start: " + e.getMessage(), e);
+        }
+    }
+        
+    private static class FileServingApp extends Application {
+        private final String mPath;
+
+        public FileServingApp(String path) throws IOException {
+            mPath = new File(path).getAbsolutePath();
+        }
+
+        @Override
+        public Restlet createInboundRoot() {
+            return new Directory(getContext(), "file://" + mPath);
         }
     }
 }

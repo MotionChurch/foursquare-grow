@@ -14,11 +14,14 @@
 
     <div id="content">
         <form id="questionForm" action="${dynamicRoot}/account/assessment/question/${question.id}" method="post">
+        <input id="direction" type="hidden" name="direction" value="next" />
         <input id="answerField" type="hidden" name="answer" value="${selectedAnswerId!}" />
         <div id="previous">
+            <#if question.previousQuestion??>
             <a href="#" onclick="previousQuestion();return false;">
                 <img src="${staticRoot}/images/previous.png" alt="Previous Question" />
             </a>
+            </#if>
         </div>
         <div id="next">
             <a href="#" onclick="nextQuestion();return false;">
@@ -32,6 +35,12 @@
                     <#break>
                 <#case "image">
                     <#include "/templates/question-image.ftl">
+                    <#break>
+                <#case "slider">
+                    <#include "/templates/question-slider.ftl">
+                    <#break>
+                <#case "quad">
+                    <#include "/templates/question-quad.ftl">
                     <#break>
             </#switch>
         </article>
