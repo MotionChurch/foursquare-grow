@@ -77,6 +77,7 @@ public class GrowFrontend extends FMFacade {
         final Router accountRouter = new Router(getContext());
         accountRouter.attach("/assessment/question/{questionId}", SurveyPageResource.class);
         accountRouter.attach("/assessment", SurveyPageResource.class);
+        accountRouter.attach("/training/{chapter}/videos/{videoId}.json", VideosResource.class);
         accountRouter.attach("/training/{chapter}", TrainingPageResource.class);
         accountRouter.attach("/training", TrainingPageResource.class);
 

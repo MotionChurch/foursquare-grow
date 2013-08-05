@@ -28,13 +28,11 @@ import net.jesterpm.fmfacade.FreeMarkerPageResource;
 import com.p4square.grow.config.Config;
 
 /**
- * SurveyPageResource handles rendering the survey and processing user's answers.
+ * TrainingPageResource handles rendering the training page.
  *
  * This resource expects the user to be authenticated and the ClientInfo User object
- * to be populated. Each question is requested from the backend along with the
- * user's previous answer. Each answer is sent to the backend and the user is redirected
- * to the next question. After the last question the user is sent to his results.
- *
+ * to be populated.
+ * 
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class TrainingPageResource extends FreeMarkerPageResource {

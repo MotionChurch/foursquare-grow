@@ -177,7 +177,6 @@ footer a:hover {
 }
 
 .progressbar, .progress {
-    margin-top: 0.5em;
     margin-bottom: 0.5em;
     height: 10px;
     background: #eaeaea;

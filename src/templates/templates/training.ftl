@@ -36,7 +36,7 @@
         <div id="videos">
         <#list videos as video>
             <article>
-                <div class="image <#if video.completed>completed</#if>"><a href="#"><img src="${video.image!staticRoot+"/images/videoimage.jpg"}" alt="${video.title}" /></a></div>
+                <div class="image <#if video.completed>completed</#if>" id="${video.id}"><a href="#" onclick="playVideo('${video.id}'); return false"><img src="${video.image!staticRoot+"/images/videoimage.jpg"}" alt="${video.title}" /></a></div>
                 <h2>${video.title}</h2> <span class="duration">${video.length}</span> 
             </article>
         </#list>
@@ -66,6 +66,17 @@
             </article>
         </div>
     </div>
+
+    <div id="videoplayer">
+        <div class="close"><a href="#" onclick="closeVideo(); return false"><img src="${staticRoot}/images/close.png" alt="Close Video" /></a></div>
+        <div class="video">
+        <video width="720" height="405" controls="controls">
+            This video is not playable in your browser.
+            <a href="http://google.com/chrome">Try Chrome?</a>
+        </video>
+        </div>
+    </div>
+
 </@commonpage>
 
 

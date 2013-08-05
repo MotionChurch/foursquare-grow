@@ -126,7 +126,7 @@ function playVideo(videoId)
 {
     $.ajax({
         type: "GET",
-        url: "videos/" + videoId + ".json",
+        url: location.href + "/videos/" + videoId + ".json",
         dataType: "json"
     }).done(function(data) {
         if (data == null) {
@@ -175,6 +175,15 @@ function reportVideoComplete(data)
     $('#chapterprogress .progresslabel').html(percent);
 
     closeVideo();
+    
+    $.ajax({
+        type: "POST",
+        url: location.href + "/videos/" + videoId + ".json",
+        dataType: "json",
+        data: {'completed':'true'}
+    }).error(function(jqXHR, error) {
+        notice('Could not record video completiton due to ' + error + '. If the problem persists, please contact us.');    
+    });
 
     if (completed == total) {
         chapterComplete();
