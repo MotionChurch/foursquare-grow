@@ -7,7 +7,7 @@
     </div>
 
     <div class="right">
-        Cras nec nunc at lacus pretium.
+        <a href="http://myfoursquarechurch.com">Foursquare Church</a>
     </div>
 
 </footer>
