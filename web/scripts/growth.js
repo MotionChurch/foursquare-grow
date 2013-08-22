@@ -1,10 +1,10 @@
 $(document).ready(function()
 {
     $('.slider').draggable({
-        axis:"x", 
-        containment:"parent", 
+        axis:"x",
+        containment:"parent",
         cursor:"pointer",
-        stop: function (event, ui) { 
+        stop: function (event, ui) {
             var range = $(ui.helper).parent().width() - 46;
             var value = (ui.position.left + range / 2) / range;
             $("#answerField").val(value);
@@ -12,9 +12,9 @@ $(document).ready(function()
     });
 
     $('.quad .selector').draggable({
-        containment:"parent", 
+        containment:"parent",
         cursor:"pointer",
-        stop: function (event, ui) { 
+        stop: function (event, ui) {
             updateQuadAnswer(ui.position.left, ui.position.top);
         },
         drag: function (event, ui) {
@@ -35,7 +35,7 @@ $(document).ready(function()
             updateQuadAnswer(e.offsetX - 10, e.offsetY - 10);
         }
     });
-    
+
     var previousAnswer = $("#answerField").val();
     if (!isNaN(previousAnswer)) {
         var range = $('.sliderQuestion .sliderbar').width() - 46;
@@ -101,20 +101,20 @@ function selectAnswer(element)
 function previousQuestion()
 {
     $("#direction").val("previous");
-    sendAnswer();
+    sendAnswer(false);
 }
 
 function nextQuestion()
 {
     $("#direction").val("next");
-    sendAnswer();
+    sendAnswer(true);
 }
 
-function sendAnswer()
+function sendAnswer(required)
 {
     var selectedAnswer = $("#answerField").val();
-    
-    if (selectedAnswer == '') {
+
+    if (required && selectedAnswer == '') {
         notice('Please select an answer before moving to the next question');
         return;
     }
@@ -149,7 +149,7 @@ function playVideo(videoId)
 
         notice("We could not find a video format that will work with your browser. Please try another browser or contact us.");
     }).error(function(jqXHR, error) {
-        notice('Could not load video due to ' + error + '. If the problem persists, please contact us.');    
+        notice('Could not load video due to ' + error + '. If the problem persists, please contact us.');
     });
 }
 
@@ -175,14 +175,14 @@ function reportVideoComplete(data)
     $('#chapterprogress .progresslabel').html(percent);
 
     closeVideo();
-    
+
     $.ajax({
         type: "POST",
         url: location.href + "/videos/" + videoId + ".json",
         dataType: "json",
         data: {'completed':'true'}
     }).error(function(jqXHR, error) {
-        notice('Could not record video completiton due to ' + error + '. If the problem persists, please contact us.');    
+        notice('Could not record video completiton due to ' + error + '. If the problem persists, please contact us.');
     });
 
     if (completed == total) {

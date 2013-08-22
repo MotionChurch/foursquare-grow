@@ -116,11 +116,18 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         final Form form = new Form(entity);
         final String answerId = form.getFirstValue("answer");
         final String direction = form.getFirstValue("direction");
+        boolean justGoBack = false; // FIXME: Ugly hack
 
         if (mQuestionId == null || answerId == null || answerId.length() == 0) {
-            // Something is wrong.
-            setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-            return null;
+            if ("previous".equals(direction)) {
+                // Just go back
+                justGoBack = true;
+
+            } else {
+                // Something is wrong.
+                setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+                return null;
+            }
         }
 
         try {
@@ -138,7 +145,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
             }
 
             // Store answer
-            {
+            if (!justGoBack) {
                 Map<String, String> answer = new HashMap<String, String>();
                 answer.put("answerId", answerId);
                 JsonResponse response = backendPut("/accounts/" + mUserId +
@@ -174,7 +181,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
                             nextPage += "/account/training/" + score;
                         }
                     }
-                    
+
                 } else {
                     nextPage += "/account/assessment/question/" + nextQuestionId;
                 }

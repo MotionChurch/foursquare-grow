@@ -186,6 +186,7 @@ public class SurveyResultsResource extends ServerResource {
                     score.count++;
                     break;
 
+                case CIRCLE:
                 case QUAD:
                     scoreQuad(score, question, answerId);
                     break;

@@ -42,6 +42,9 @@
                 <#case "quad">
                     <#include "/templates/question-quad.ftl">
                     <#break>
+                <#case "circle">
+                    <#include "/templates/question-circle.ftl">
+                    <#break>
             </#switch>
         </article>
         </form>

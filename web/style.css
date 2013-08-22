@@ -419,6 +419,19 @@ footer a:hover {
     text-align: left;
 }
 
+.quadQuestion .above span, .quadQuestion .below span {
+    display: inline-block;
+    width: 40%;
+}
+
+.quadQuestion .above span {
+    vertical-align: bottom;
+}
+
+.quadQuestion .below span {
+    vertical-align: top;
+}
+
 .quad {
     background: url('/images/quad.png') center center no-repeat;
     width: 273px;

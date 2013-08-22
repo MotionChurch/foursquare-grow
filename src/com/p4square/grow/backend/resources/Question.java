@@ -10,12 +10,12 @@ import java.util.Map;
 
 /**
  * Model of an assessment question.
- * 
+ *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 class Question {
     public static enum QuestionType {
-        TEXT, IMAGE, SLIDER, QUAD;
+        TEXT, IMAGE, SLIDER, QUAD, CIRCLE;
     }
 
     private final String mQuestionId;
@@ -45,7 +45,7 @@ class Question {
             mAnswers.put(id, answerObj);
         }
     }
-    
+
     public String getId() {
         return mQuestionId;
     }
