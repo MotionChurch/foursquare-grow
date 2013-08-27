@@ -1,0 +1,19 @@
+{
+    "id": "17",
+    "type": "circle",
+    "question": "Character, Integrity, and Excellent Personal Conduct are:",
+    "topleft": "I want this, but work in progress",
+    "topright": "Old Fashioned and not realistic",
+    "bottomleft": "Important and you can lead others if you\'re trying hard",
+    "bottomright": "Essential to me personally and in order to lead others",
+
+    "answers": {
+        "1.00,1.00": { "score": "1" },
+        "1.00,-1.00": { "score": "4" },
+        "-1.00,-1.00": { "score": "2" },
+        "-1.00,1.00": { "score": "3" }
+    },
+
+    "previousQuestion": "16",
+    "nextQuestion": "18"
+}

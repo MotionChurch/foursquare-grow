@@ -1,0 +1,12 @@
+{
+    "id": "18",
+    "type": "slider",
+    "question": "My Behaviour and How I Live my Life",
+    "answers": {
+        "a1": { "text": "Is my own business", "score": "1" },
+        "a2": { "text": "Is not important as long as I don\'t hurt anyone", "score": "2" },
+        "a4": { "text": "Is something I should allow input on", "score": "3" },
+        "a4": { "text": "Is something I an accountable for", "score": "4" }
+    },
+    "previousQuestion": "17"
+}

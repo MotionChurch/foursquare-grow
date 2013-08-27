@@ -1,0 +1,13 @@
+{
+    "id": "4",
+    "type": "text",
+    "question": "I accepted Jesus Christ as my Savior...",
+    "answers": {
+        "a1": { "text": "In my current church.", "type": "none" },
+        "a2": { "text": "Somewhere else.", "type": "none" },
+        "a3": { "text": "I have not accepted Jesus Christ as my savior.", "score": "0", "type": "trump",
+                "nextQuestion": "5" }
+    },
+    "previousQuestion": "3",
+    "nextQuestion": "4a"
+}

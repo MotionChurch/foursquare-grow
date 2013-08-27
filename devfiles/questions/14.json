@@ -1,0 +1,13 @@
+{
+    "id": "14",
+    "type": "slider",
+    "question": "Participation in Small Groups",
+    "answers": {
+        "a1": { "text": "Not Important", "score": "1" },
+        "a2": { "text": "Only if Convienient", "score": "2" },
+        "a3": { "text": "Important", "score": "3" },
+        "a4": { "text": "Very Important", "score": "4" }
+    },
+    "previousQuestion": "13",
+    "nextQuestion": "15"
+}

@@ -1,0 +1,12 @@
+{
+    "id": "1",
+    "type": "slider",
+    "question": "I Believe God",
+    "answers": {
+        "a1": { "text": "Is a figure in religious teaching, but not personally significant to me", "score": "1" },
+        "a2": { "text": "Created the earth and us, and from that point His not actively involved in our lives", "score": "2" },
+        "a3": { "text": "Created the earth and everything in it, and is involved to some extent", "score": "3" },
+        "a4": { "text": "Is creator and ultimate authority in all things, and holds the future of all creation in His hands", "score": "4" }
+    },
+    "nextQuestion": "2"
+}

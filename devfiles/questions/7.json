@@ -1,0 +1,13 @@
+{
+    "id": "7",
+    "type": "slider",
+    "question": "I believe following the Bible\'s teachings is",
+    "answers": {
+        "a1": { "text": "Outdated", "score": "1" },
+        "a2": { "text": "Good Idea", "score": "2" },
+        "a3": { "text": "Encouraged by God", "score": "3" },
+        "a4": { "text": "Essential", "score": "4" }
+    },
+    "previousQuestion": "6",
+    "nextQuestion": "8"
+}

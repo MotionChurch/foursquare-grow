@@ -1,0 +1,13 @@
+{
+    "id": "11",
+    "type": "text",
+    "question": "Prayer. Fasting. Daily Bible Reading, Stewardship, Solitude, and Worship are:",
+    "answers": {
+        "a1": { "text": "Essential to my life as a follower of Jesus", "score": "4" },
+        "a2": { "text": "Important in the life of a follower of Jesus, but I am not consistent with them", "score": "3" },
+        "a3": { "text": "A good idea, I do some of them sometimes", "score": "2" },
+        "a4": { "text": "Somebody else\'s idea of busy Christian stuaff", "score": "1" }
+    },
+    "previousQuestion": "10",
+    "nextQuestion": "12"
+}

@@ -1,0 +1,13 @@
+{
+    "id": "12",
+    "type": "text",
+    "question": "I give money to my Church:",
+    "answers": {
+        "a1": { "text": "Regularly, 10% of my income and offerings as the Lord leads", "score": "4" },
+        "a2": { "text": "Regularly, 10% of my income", "score": "3" },
+        "a3": { "text": "Occasionally, I give what is convenient", "score": "2" },
+        "a4": { "text": "I don\'t give at all, the church does not need my money", "score": "1" }
+    },
+    "previousQuestion": "11",
+    "nextQuestion": "13"
+}

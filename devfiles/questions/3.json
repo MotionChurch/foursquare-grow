@@ -1,0 +1,19 @@
+{
+    "id": "3",
+    "type": "circle",
+    "question": "In my life, Jesus is",
+    "topleft": "Leader & Savior and I generally apply his teaching",
+    "topright": "Leader & Savior and obedience is essential",
+    "bottomleft": "The Son of God, and I\'m learning more about him",
+    "bottomright": "An important person or figure in history",
+
+    "answers": {
+        "1.00,1.00": { "score": "4" },
+        "1.00,-1.00": { "score": "1" },
+        "-1.00,-1.00": { "score": "2" },
+        "-1.00,1.00": { "score": "3" }
+    },
+
+    "previousQuestion": "2",
+    "nextQuestion": "4"
+}
