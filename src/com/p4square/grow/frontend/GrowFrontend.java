@@ -7,19 +7,31 @@ package com.p4square.grow.frontend;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.Arrays;
+import java.util.UUID;
+
 import org.restlet.Application;
 import org.restlet.Component;
+import org.restlet.Client;
+import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.data.Protocol;
 import org.restlet.resource.Directory;
 import org.restlet.routing.Router;
+import org.restlet.security.Authenticator;
 
 import org.apache.log4j.Logger;
 
-import net.jesterpm.fmfacade.FMFacade;
-import net.jesterpm.fmfacade.FreeMarkerPageResource;
+import com.p4square.fmfacade.FMFacade;
+import com.p4square.fmfacade.FreeMarkerPageResource;
 
 import com.p4square.grow.config.Config;
+
+import com.p4square.f1oauth.F1OAuthHelper;
+import com.p4square.f1oauth.SecondPartyVerifier;
+
+import com.p4square.grow.frontend.session.SessionCheckingAuthenticator;
+import com.p4square.grow.frontend.session.SessionCreatingAuthenticator;
 
 /**
  * This is the Restlet Application implementing the Grow project front-end.
@@ -33,6 +45,8 @@ public class GrowFrontend extends FMFacade {
     private static Logger cLog = Logger.getLogger(GrowFrontend.class);
 
     private Config mConfig;
+
+    private F1OAuthHelper mHelper;
 
     public GrowFrontend() {
         mConfig = new Config();
@@ -62,14 +76,23 @@ public class GrowFrontend extends FMFacade {
         }
     }
 
+    F1OAuthHelper getHelper() {
+        if (mHelper == null) {
+            mHelper = new F1OAuthHelper(getContext(), mConfig.getString("f1ConsumerKey", ""),
+                    mConfig.getString("f1ConsumerSecret", ""),
+                    mConfig.getString("f1BaseUrl", "staging.fellowshiponeapi.com"),
+                    mConfig.getString("f1ChurchCode", "pfseawa"),
+                    F1OAuthHelper.UserType.WEBLINK);
+        }
+
+        return mHelper;
+    }
+
     @Override
     protected Router createRouter() {
         Router router = new Router(getContext());
 
-        final String loginPage = getConfig().getString("dynamicRoot", "") + "/login.html";
-
-        final LoginAuthenticator defaultGuard =
-            new LoginAuthenticator(getContext(), true, loginPage);
+        final Authenticator defaultGuard = new SessionCheckingAuthenticator(getContext(), true);
         defaultGuard.setNext(FreeMarkerPageResource.class);
         router.attachDefault(defaultGuard);
         router.attach("/login.html", LoginPageResource.class);
@@ -81,12 +104,34 @@ public class GrowFrontend extends FMFacade {
         accountRouter.attach("/training/{chapter}", TrainingPageResource.class);
         accountRouter.attach("/training", TrainingPageResource.class);
 
-        final LoginAuthenticator accountGuard =
-            new LoginAuthenticator(getContext(), false, loginPage);
-        accountGuard.setNext(accountRouter);
+        final Authenticator accountGuard = createAuthenticatorChain(accountRouter);
         router.attach("/account", accountGuard);
 
         return router;
+    }
+
+    private Authenticator createAuthenticatorChain(Restlet last) {
+        final Context context = getContext();
+        final String loginPage = getConfig().getString("dynamicRoot", "") + "/login.html";
+
+        // This is used to check for an existing session
+        SessionCheckingAuthenticator sessionChk = new SessionCheckingAuthenticator(context, true);
+
+        // This is used to authenticate the user
+        SecondPartyVerifier f1Verifier = new SecondPartyVerifier(getHelper());
+        LoginFormAuthenticator loginAuth = new LoginFormAuthenticator(context, false, f1Verifier);
+        loginAuth.setLoginFormUrl(loginPage);
+        loginAuth.setLoginPostUrl("/account/authenticate");
+
+        // This is used to create a new session for a newly authenticated user.
+        SessionCreatingAuthenticator sessionCreate = new SessionCreatingAuthenticator(context);
+
+        sessionChk.setNext(loginAuth);
+        loginAuth.setNext(sessionCreate);
+
+        sessionCreate.setNext(last);
+
+        return sessionChk;
     }
 
     /**
@@ -98,14 +143,16 @@ public class GrowFrontend extends FMFacade {
         component.getServers().add(Protocol.HTTP, 8085);
         component.getClients().add(Protocol.HTTP);
         component.getClients().add(Protocol.FILE);
-        
+        component.getClients().add(new Client(null, Arrays.asList(Protocol.HTTPS), "org.restlet.ext.httpclient.HttpClientHelper"));
+
         // Static content
         try {
             component.getDefaultHost().attach("/images/", new FileServingApp("./build/images/"));
             component.getDefaultHost().attach("/scripts", new FileServingApp("./build/scripts"));
             component.getDefaultHost().attach("/style.css", new FileServingApp("./build/style.css"));
+            component.getDefaultHost().attach("/favicon.ico", new FileServingApp("./build/favicon.ico"));
         } catch (IOException e) {
-            cLog.error("Could not create directory for static resources: " 
+            cLog.error("Could not create directory for static resources: "
                     + e.getMessage(), e);
         }
 
@@ -139,7 +186,7 @@ public class GrowFrontend extends FMFacade {
             cLog.fatal("Could not start: " + e.getMessage(), e);
         }
     }
-        
+
     private static class FileServingApp extends Application {
         private final String mPath;
 

@@ -2,9 +2,7 @@
  * Copyright 2013 Jesse Morgan
  */
 
-package com.p4square.grow.frontend;
-
-import org.apache.log4j.Logger;
+package com.p4square.grow.frontend.session;
 
 import org.restlet.Context;
 import org.restlet.Request;
@@ -13,27 +11,12 @@ import org.restlet.security.Authenticator;
 import org.restlet.security.User;
 
 /**
- * LoginAuthenticator decrypts a cookie containing the user's session info
- * and makes that information available as the ClientInfo's User object.
- *
- * If this Authenticator is not optional, the user will be redirected to a
- * login page.
- *
+ * 
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
-public class LoginAuthenticator extends Authenticator {
-    private static Logger cLog = Logger.getLogger(LoginAuthenticator.class);
-
-    public static final String COOKIE_NAME = "growsession";
-
-    private final String mLoginPage;
-
-    public LoginAuthenticator(Context context, boolean optional, String loginPage) {
-        super(context, optional);
-
-        mLoginPage = loginPage;
-    }
-
+public class SessionAuthenticator /*extends Authenticator*/ {
+    /*
+    @Override
     protected boolean authenticate(Request request, Response response) {
         // Check for authentication cookie
         final String cookie = request.getCookies().getFirstValue(COOKIE_NAME);
@@ -49,4 +32,5 @@ public class LoginAuthenticator extends Authenticator {
         response.redirectSeeOther(mLoginPage);
         return false;
     }
+    */
 }

@@ -14,6 +14,7 @@
     
     <dependencies defaultconf="default,sources">
         <dependency org="net.jesterpm" name="fmfacade" rev="[1.0-SNAPSHOT,)" />
+        <dependency org="org.restlet.jse" name="org.restlet.ext.httpclient" rev="[2.1,)" />
 
         <!-- Backend Dependencies -->
         <dependency org="com.netflix.astyanax" name="astyanax-core" rev="[1.0,)" />

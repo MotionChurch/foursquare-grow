@@ -17,8 +17,8 @@ import org.restlet.resource.ServerResource;
 
 import org.apache.log4j.Logger;
 
-import net.jesterpm.fmfacade.json.JsonRequestClient;
-import net.jesterpm.fmfacade.json.JsonResponse;
+import com.p4square.fmfacade.json.JsonRequestClient;
+import com.p4square.fmfacade.json.JsonResponse;
 
 import com.p4square.grow.config.Config;
 
