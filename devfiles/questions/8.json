@@ -1,0 +1,12 @@
+{
+    "id": "8",
+    "type": "image",
+    "question": "My spiritual life resembles...",
+    "answers": {
+        "a1": { "score": "3", "type": "none" },
+        "a2": { "score": "2", "type": "none" },
+        "a3": { "score": "1", "type": "none" }
+    },
+    "previousQuestion": "7",
+    "nextQuestion": "9"
+}

@@ -1,0 +1,19 @@
+{
+    "id": "9",
+    "type": "circle",
+    "question": "Prayer for me is:",
+    "topleft": "Important and I pray regularly",
+    "topright": "Constant, conversational, a lifestyle, and absolutely indespensible in my life",
+    "bottomleft": "Helpful I think, and I pray occassionally",
+    "bottomright": "Not important, I don\'t believe it\'s helpful or useful",
+
+    "answers": {
+        "1.00,1.00": { "score": "4" },
+        "1.00,-1.00": { "score": "1" },
+        "-1.00,-1.00": { "score": "2" },
+        "-1.00,1.00": { "score": "3" }
+    },
+
+    "previousQuestion": "8",
+    "nextQuestion": "10"
+}

@@ -1,0 +1,15 @@
+{
+    "id": "2",
+    "type": "image",
+    "question": "I see God this way",
+    "answers": {
+        "a1": { "score": "2" },
+        "a2": { "score": "1" },
+        "a3": { "score": "3" },
+        "a4": { "score": "1" },
+        "a5": { "score": "1" },
+        "a6": { "score": "1" }
+    },
+    "previousQuestion": "1",
+    "nextQuestion": "3"
+}

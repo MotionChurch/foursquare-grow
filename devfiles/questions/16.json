@@ -1,0 +1,14 @@
+{
+    "id": "16",
+    "type": "text",
+    "question": "Helping others grow in their faith is...",
+    "answers": {
+        "a1": { "text": "Essential in the life of a mature follower of Jesus", "score": "4" },
+        "a2": { "text": "Important, but for now I need a mentor", "score": "3" },
+        "a3": { "text": "Probably a good idea", "score": "2" },
+        "a4": { "text": "Not my business. This is a personal issue.", "score": "1" }
+    },
+    "previousQuestion": "15",
+    "nextQuestion": "17"
+}
+

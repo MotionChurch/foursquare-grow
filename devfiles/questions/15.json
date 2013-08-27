@@ -1,0 +1,15 @@
+{
+    "id": "15",
+    "type": "slider",
+    "question": "Meeting with Followers of Jesus Outside of Church",
+    "answers": {
+        "a1": { "text": "Never", "score": "1" },
+        "a2": { "text": "Less than Monthly", "score": "2" },
+        "a3": { "text": "Monthly", "score": "2.25" },
+        "a4": { "text": "Twice a Month", "score": "2.5" },
+        "a5": { "text": "Weekly", "score": "3" },
+        "a6": { "text": "I lead others Weekly", "score": "4" }
+    },
+    "previousQuestion": "14",
+    "nextQuestion": "16"
+}
