@@ -118,6 +118,10 @@ nav.primary a.current {
     margin: 1em auto 1em auto;
 }
 
+#content article.text {
+    text-align: left;
+}
+
 #content h1 {
     color: #696969;
     font-size: 24pt;

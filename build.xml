@@ -3,6 +3,10 @@
 
     <property name="main.class" value="com.p4square.grow.frontend.GrowFrontend" />
 
+    <property name="deploy.manager.url" value="http://californium.jesterpm.net:9090/manager/text" />
+    <property name="deploy.manager.username" value="deploymentscript" />
+    <property name="deploy.context.path" value="/grow-frontend" />
+
     <property file="${user.home}/.jesterpm-build-tools.properties" />
     <property name="jesterpm.buildtools.root" value="../jesterpm-build-tools" />
     <import file="${jesterpm.buildtools.root}/ant/tomcat-common.xml" />

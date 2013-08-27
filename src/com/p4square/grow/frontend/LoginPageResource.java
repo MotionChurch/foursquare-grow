@@ -57,7 +57,11 @@ public class LoginPageResource extends FreeMarkerPageResource {
 
             Map<String, Object> root = getRootObject();
 
-            root.put("errorMessage", mErrorMessage);
+            Form query = getRequest().getOriginalRef().getQueryAsForm();
+            String retry = query.getFirstValue("retry");
+            if ("t".equals("retry")) {
+                root.put("errorMessage", "Invalid email or password.");
+            }
 
             return new TemplateRepresentation(t, root, MediaType.TEXT_HTML);
 
@@ -68,36 +72,4 @@ public class LoginPageResource extends FreeMarkerPageResource {
         }
     }
 
-    /**
-     * Process login and authenticate the user.
-     */
-    @Override
-    protected Representation post(Representation entity) {
-        final Form form = new Form(entity);
-        final String email = form.getFirstValue("email");
-        final String password = form.getFirstValue("password");
-
-        boolean authenticated = false;
-
-        // TODO: Do something real here
-        if (email != null && !"".equals(email)) {
-            cLog.debug("Got login request from " + email);
-
-            // TODO: Encrypt user info
-            getResponse().getCookieSettings().add(LoginAuthenticator.COOKIE_NAME, email);
-
-            authenticated = true;
-        }
-
-        if (authenticated) {
-            // TODO: Better return url.
-            getResponse().redirectSeeOther(mGrowFrontend.getConfig().getString("dynamicRoot", "") + "/index.html");
-            return null;
-
-        } else {
-            // Send them back to the login page...
-            mErrorMessage = "Incorrect Email or Password.";
-            return get();
-        }
-    }
 }
