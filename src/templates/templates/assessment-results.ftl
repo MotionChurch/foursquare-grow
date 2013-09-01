@@ -5,7 +5,7 @@
     <@noticebox>
     </@noticebox>
 
-    <@textcontent>
+    <@content class="text">
         <p>Congratulations for completing your GROW assessment!</p>
 
         <p>Based on your responses you have been identified as a ${stage?cap_first}.</p>
@@ -22,7 +22,7 @@
             will produce positive quantifiable and quality results in your life, as
             you learn, and then apply this learning in your life.
         </p>
-    </@textcontent>
+    </@content>
 
     <div id="getstarted">
         <a class="greenbutton" href="${dynamicRoot}/account/training/${stage?lower_case}">Begin GROWing &#x2799;</a>

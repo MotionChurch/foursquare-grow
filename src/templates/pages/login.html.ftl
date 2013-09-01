@@ -2,13 +2,14 @@
 <#include "/macros/common-page.ftl">
 
 <@commonpage>
-    <@noticebox>
-        <#if errorMessage??>
+    <#if errorMessage??>
+        <@noticebox class="visible">
             ${errorMessage?html}
-        <#else>
-            Welcome!
-        </#if>
-    </@noticebox>
+        </@noticebox>
+    <#else>
+        <@noticebox>
+        </@noticebox>
+    </#if>
 
     <@content>
         <p>Welcome! You will need to login with your Foursquare Church InFellowship login.</p>

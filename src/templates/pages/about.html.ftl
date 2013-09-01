@@ -5,7 +5,7 @@
     <@noticebox>
     </@noticebox>
 
-    <@textcontent>
+    <@content class="text">
         <h1>About</h1>
 
         <p>
@@ -15,7 +15,7 @@
         </p>
 
         <p>
-            Disciple means “learner” and our goal is to help you be an
+            Disciple means "learner" and our goal is to help you be an
             effective learner and grow in the knowledge of Jesus Christ, the
             Word of God, the essentials of your faith that will cause the
             transformation God promises you will experience.  And that
@@ -60,11 +60,11 @@
         </p>
 
         <p>
-            Now it’s your turn to act!  Get started now in your journey by
+            Now it's your turn to act!  Get started now in your journey by
             taking the GROW assessment. Identify your starting place as a
             Seeker, Believer, Disciple or Teacher and be a disciple.
         </p>
-    </@textcontent>
+    </@content>
 
     <#include "/templates/getstarted-button.ftl">
 </@commonpage>

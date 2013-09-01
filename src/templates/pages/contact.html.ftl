@@ -5,7 +5,7 @@
     <@noticebox>
     </@noticebox>
 
-    <@textcontent>
+    <@content class="text">
         <h1>Contact Us</h1>
 
         <p>
@@ -30,7 +30,7 @@
         <p><input type="submit" value="Send" /></p>
         </form>
 
-    </@textcontent>
+    </@content>
 
 </@commonpage>
 

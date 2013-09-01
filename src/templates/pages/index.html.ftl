@@ -21,7 +21,7 @@
             GROW process is an on-line application and network to help you GROW
             as a follower of Jesus Christ.  
         </p>
-            Let’s join together in a spiritual formation journey and begin the
+            Let's join together in a spiritual formation journey and begin the
             discipleship process that will transform your life.
         </p>
     </@content>
