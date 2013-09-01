@@ -1,5 +1,6 @@
 <#include "/macros/common.ftl">
 <#include "/macros/common-page.ftl">
+<#include "/macros/hms.ftl">
 
 <@commonpage>
     <@noticebox>
@@ -37,7 +38,7 @@
         <#list videos as video>
             <article>
                 <div class="image <#if video.completed>completed</#if>" id="${video.id}"><a href="#" onclick="playVideo('${video.id}'); return false"><img src="${video.image!staticRoot+"/images/videoimage.jpg"}" alt="${video.title}" /></a></div>
-                <h2>${video.title}</h2> <span class="duration">${video.length}</span> 
+                <h2>${video.title}</h2> <span class="duration"><@hms seconds=video.length /></span> 
             </article>
         </#list>
         </div>
