@@ -26,7 +26,7 @@ import com.p4square.grow.backend.resources.TrainingRecordResource;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class GrowBackend extends Application {
-    private final static Logger cLog = Logger.getLogger(GrowBackend.class);
+    private final static Logger LOG = Logger.getLogger(GrowBackend.class);
 
     private final Config mConfig;
     private final CassandraDatabase mDatabase;
@@ -42,7 +42,7 @@ public class GrowBackend extends Application {
 
         // Survey API
         router.attach("/assessment/question/{questionId}", SurveyResource.class);
-        
+
         router.attach("/accounts/{userId}/assessment", SurveyResultsResource.class);
         router.attach("/accounts/{userId}/assessment/answers/{questionId}",
                 SurveyResultsResource.class);
@@ -50,7 +50,7 @@ public class GrowBackend extends Application {
         // Training API
         router.attach("/training/{level}", TrainingResource.class);
         router.attach("/training/{level}/videos/{videoId}", TrainingResource.class);
-        
+
         router.attach("/accounts/{userId}/training", TrainingRecordResource.class);
         router.attach("/accounts/{userId}/training/videos/{videoId}",
                 TrainingRecordResource.class);
@@ -58,14 +58,14 @@ public class GrowBackend extends Application {
 
         return router;
     }
-    
+
     /**
      * Open the database.
      */
     @Override
     public void start() throws Exception {
         super.start();
-        
+
         // Load config
         final String configDomain =
             getContext().getParameters().getFirstValue("configDomain");
@@ -79,6 +79,7 @@ public class GrowBackend extends Application {
             getContext().getParameters().getFirstValue("configFile");
 
         if (configFilename != null) {
+            LOG.info("Loading configuration from " + configFilename);
             mConfig.updateConfig(configFilename);
         }
 
@@ -87,13 +88,13 @@ public class GrowBackend extends Application {
         mDatabase.setKeyspaceName(mConfig.getString("keyspace", "GROW"));
         mDatabase.init();
     }
-    
+
     /**
      * Close the database.
      */
     @Override
     public void stop() throws Exception {
-        cLog.info("Shutting down...");
+        LOG.info("Shutting down...");
         mDatabase.close();
 
         super.stop();
@@ -115,24 +116,24 @@ public class GrowBackend extends Application {
         component.getServers().add(Protocol.HTTP, 9095);
         component.getClients().add(Protocol.HTTP);
         component.getDefaultHost().attach(new GrowBackend());
-        
+
         // Setup shutdown hook
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 try {
                     component.stop();
                 } catch (Exception e) {
-                    cLog.error("Exception during cleanup", e);
+                    LOG.error("Exception during cleanup", e);
                 }
             }
         });
 
-        cLog.info("Starting server...");
+        LOG.info("Starting server...");
 
         try {
             component.start();
         } catch (Exception e) {
-            cLog.fatal("Could not start: " + e.getMessage(), e);
+            LOG.fatal("Could not start: " + e.getMessage(), e);
         }
     }
 }

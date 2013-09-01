@@ -36,6 +36,7 @@ public class SessionCreatingAuthenticator extends Authenticator {
 
         if (request.getClientInfo().isAuthenticated() && user != null) {
             Sessions.getInstance().create(request, response);
+            LOG.debug(response);
             return true;
         }
 

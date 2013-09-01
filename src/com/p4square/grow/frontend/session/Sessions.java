@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.restlet.Response;
 import org.restlet.Request;
+import org.restlet.data.CookieSetting;
 import org.restlet.security.User;
 
 /**
@@ -72,8 +73,11 @@ public class Sessions {
     public Session create(Request request, Response response) {
         Session s = create(request.getClientInfo().getUser());
 
-        request.getCookies().add(COOKIE_NAME, s.getId());
-        response.getCookieSettings().add(COOKIE_NAME, s.getId());
+        CookieSetting cookie = new CookieSetting(COOKIE_NAME, s.getId());
+        cookie.setPath("/");
+
+        request.getCookies().add(cookie);
+        response.getCookieSettings().add(cookie);
 
         return s;
     }

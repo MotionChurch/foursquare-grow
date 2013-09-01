@@ -27,6 +27,7 @@ public class SessionCheckingAuthenticator extends Authenticator {
         Session s = Sessions.getInstance().get(request);
 
         if (s != null) {
+            LOG.debug("Found session for user " + s.getUser());
             request.getClientInfo().setUser(s.getUser());
             return true;
 
