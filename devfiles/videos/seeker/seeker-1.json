@@ -1,7 +1,7 @@
 {
     "id": "seeker-1",
-    "number": 1,
-    "title": "The Basics",
-    "length": 330,
-    "urls": [{"src":"seeker-the-basics.mp4", "type":"video/mp4"}, {"src":"seeker-the-basics.webm", "type":"video/webm"}]
+    "number": "1",
+    "title": "Introduction Final",
+    "length": 395,
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video 1 - Introduction Final.mov", "type":"video/mp4"}]
 }

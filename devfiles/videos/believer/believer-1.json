@@ -1,7 +1,7 @@
 {
     "id": "believer-1",
-    "number": 1,
-    "title": "Star Trek Voyager: Caretaker",
-    "length": 6000,
-    "urls": [{"type": "video/x-msvideo", "src": "http://localhost/~jesterpm/videos/Star%20Trek/Voyager/Season%201/Star%20Trek%20Voyager%20-%20101-102%20-%20Caretaker.avi"}]
+    "number": "1",
+    "title": "Intro",
+    "length": 460,
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer Video 1 - Intro.mov", "type":"video/mp4"}]
 }
