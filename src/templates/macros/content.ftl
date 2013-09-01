@@ -1,6 +1,6 @@
-<#macro content>
+<#macro content class="">
     <div id="content">
-        <article>
+        <article class="${class}">
             <#nested>
         </article>
     </div>

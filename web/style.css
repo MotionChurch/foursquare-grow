@@ -96,6 +96,10 @@ nav.primary a.current {
     display: none;
 }
 
+#noticebox.visible {
+    display: block;
+}
+
 #noticebox img.icon {
     float: left;
     margin-right: 2em;

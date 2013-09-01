@@ -5,7 +5,7 @@
     <@noticebox>
     </@noticebox>
 
-    <@textcontent>
+    <@content class="text">
         <h1>Congratulations!</h1>
 
         <p>
@@ -48,7 +48,7 @@
             has for you.
         </p>
 
-    </@textcontent>
+    </@content>
 
     <div id="getstarted">
         <a class="greenbutton" href="${dynamicRoot}/account/training/${nextstage}">Continue GROWing &#x2799;</a>

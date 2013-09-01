@@ -5,7 +5,7 @@
     <@noticebox>
     </@noticebox>
 
-    <@textcontent>
+    <@content class="text">
         <h1>Assessment</h1>
 
         <p>
@@ -15,8 +15,7 @@
         </p>
 
         <p>
-            <!-- TODO: Insert Image Here -->
-            **************** Insert the image here. *************************
+            <img src="${staticRoot}/images/about-grow.png" alt="Growth Process" />
         </p>
 
         <p>
@@ -31,10 +30,10 @@
         </p>
 
         <p>
-            Let’s get with your personal GROW assessment now, it will only take a few minutes.
+            Let's get with your personal GROW assessment now, it will only take a few minutes.
         </p>
 
-    </@textcontent>
+    </@content>
 
     <div id="getstarted">
         <a class="greenbutton" href="${dynamicRoot}/account/assessment">Begin Assessment &#x2799;</a>
