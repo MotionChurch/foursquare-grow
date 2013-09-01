@@ -117,6 +117,7 @@ public class GrowFrontend extends FMFacade {
         final Context context = getContext();
         final String loginPage = getConfig().getString("dynamicRoot", "") + "/login.html";
         final String loginPost = getConfig().getString("dynamicRoot", "") + "/account/authenticate";
+        final String defaultPage = getConfig().getString("dynamicRoot", "") + "/index.html";
 
         // This is used to check for an existing session
         SessionCheckingAuthenticator sessionChk = new SessionCheckingAuthenticator(context, true);
@@ -126,6 +127,7 @@ public class GrowFrontend extends FMFacade {
         LoginFormAuthenticator loginAuth = new LoginFormAuthenticator(context, false, f1Verifier);
         loginAuth.setLoginFormUrl(loginPage);
         loginAuth.setLoginPostUrl(loginPost);
+        loginAuth.setDefaultPage(defaultPage);
 
         // This is used to create a new session for a newly authenticated user.
         SessionCreatingAuthenticator sessionCreate = new SessionCreatingAuthenticator(context);
