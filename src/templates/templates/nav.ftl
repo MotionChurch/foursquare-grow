@@ -1,6 +1,6 @@
 <#macro navLink href>
     <li><a
-    <#if currentPage == href>
+    <#if currentPage!"" == href>
         class="current"
     </#if>
     href="${href}"><#nested></a></li>
