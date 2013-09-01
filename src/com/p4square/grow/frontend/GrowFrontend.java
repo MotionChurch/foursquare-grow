@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.UUID;
 
+import freemarker.template.Template;
+
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Client;
@@ -74,6 +76,11 @@ public class GrowFrontend extends FMFacade {
             mConfig.updateConfig(configFilename);
         }
 
+        Template errorTemplate = getTemplate("templates/error.ftl");
+        if (errorTemplate != null) {
+            ErrorPage.setTemplate(errorTemplate);
+        }
+
         super.start();
     }
 
@@ -97,6 +104,7 @@ public class GrowFrontend extends FMFacade {
         defaultGuard.setNext(FreeMarkerPageResource.class);
         router.attachDefault(defaultGuard);
         router.attach("/login.html", LoginPageResource.class);
+        router.attach("/newaccount.html", NewAccountResource.class);
 
         final Router accountRouter = new Router(getContext());
         accountRouter.attach("/authenticate", AuthenticatedResource.class);
