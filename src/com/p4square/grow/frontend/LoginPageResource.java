@@ -58,6 +58,8 @@ public class LoginPageResource extends FreeMarkerPageResource {
             Map<String, Object> root = getRootObject();
 
             Form query = getRequest().getOriginalRef().getQueryAsForm();
+            String redirect = query.getFirstValue("redirect");
+            root.put("redirect", redirect);
             String retry = query.getFirstValue("retry");
             if ("t".equals(retry)) {
                 root.put("errorMessage", "Invalid email or password.");
