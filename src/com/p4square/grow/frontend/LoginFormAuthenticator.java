@@ -12,12 +12,13 @@ import org.restlet.Response;
 import org.restlet.data.ChallengeResponse;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.data.Form;
+import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.security.Authenticator;
 import org.restlet.security.Verifier;
 
 /**
- * LoginFormAuthenticator changes 
+ * LoginFormAuthenticator changes
  *
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
@@ -47,7 +48,7 @@ public class LoginFormAuthenticator extends Authenticator {
 
     @Override
     protected int beforeHandle(Request request, Response response) {
-        if (request.getClientInfo().isAuthenticated()) {
+        if (!isLoginAttempt(request) && request.getClientInfo().isAuthenticated()) {
             // TODO: Logout
             LOG.debug("Already authenticated. Skipping");
             return CONTINUE;
@@ -60,12 +61,11 @@ public class LoginFormAuthenticator extends Authenticator {
 
     @Override
     protected boolean authenticate(Request request, Response response) {
-        String requestPath = request.getResourceRef().getPath();
-        boolean isLoginAttempt = mLoginPostUrl.equals(requestPath);
+        boolean isLoginAttempt = isLoginAttempt(request);
 
         Form query = request.getOriginalRef().getQueryAsForm();
         String redirect = query.getFirstValue("redirect");
-        if (redirect == null) {
+        if (redirect == null || redirect.length() == 0) {
             if (isLoginAttempt) {
                 redirect = mDefaultRedirect;
             } else {
@@ -96,8 +96,6 @@ public class LoginFormAuthenticator extends Authenticator {
                 // We expect the verifier to setup the User object.
                 int result = mVerifier.verify(request, response);
                 if (result == Verifier.RESULT_VALID) {
-                    // TODO: Ensure redirect is a relative url.
-                    response.redirectSeeOther(redirect);
                     return true;
                 }
             }
@@ -113,10 +111,32 @@ public class LoginFormAuthenticator extends Authenticator {
                 ref.addQueryParameter("retry", "t");
             }
 
-            LOG.debug("Redirecting to " + ref.toString());
+            LOG.debug("Redirecting to " + ref);
             response.redirectSeeOther(ref.toString());
         }
         LOG.debug("Failing authentication.");
         return false;
+    }
+
+    @Override
+    protected int authenticated(Request request, Response response) {
+        super.authenticated(request, response);
+
+        Form query = request.getOriginalRef().getQueryAsForm();
+        String redirect = query.getFirstValue("redirect");
+        if (redirect == null || redirect.length() == 0) {
+            redirect = mDefaultRedirect;
+        }
+
+        // TODO: Ensure redirect is a relative url.
+        LOG.debug("Redirecting to " + redirect);
+        response.redirectSeeOther(redirect);
+
+        return CONTINUE;
+    }
+
+    private boolean isLoginAttempt(Request request) {
+        String requestPath = request.getResourceRef().getPath();
+        return request.getMethod() == Method.POST && mLoginPostUrl.equals(requestPath);
     }
 }

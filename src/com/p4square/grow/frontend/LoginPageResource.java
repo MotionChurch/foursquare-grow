@@ -59,7 +59,7 @@ public class LoginPageResource extends FreeMarkerPageResource {
 
             Form query = getRequest().getOriginalRef().getQueryAsForm();
             String retry = query.getFirstValue("retry");
-            if ("t".equals("retry")) {
+            if ("t".equals(retry)) {
                 root.put("errorMessage", "Invalid email or password.");
             }
 

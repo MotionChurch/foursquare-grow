@@ -42,7 +42,7 @@ import com.p4square.grow.frontend.session.SessionCreatingAuthenticator;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class GrowFrontend extends FMFacade {
-    private static Logger cLog = Logger.getLogger(GrowFrontend.class);
+    private static Logger LOG = Logger.getLogger(GrowFrontend.class);
 
     private Config mConfig;
 
@@ -57,9 +57,7 @@ public class GrowFrontend extends FMFacade {
     }
 
     @Override
-    public void start() throws Exception {
-        super.start();
-
+    public synchronized void start() throws Exception {
         final String configDomain =
             getContext().getParameters().getFirstValue("configDomain");
         if (configDomain != null) {
@@ -72,11 +70,14 @@ public class GrowFrontend extends FMFacade {
             getContext().getParameters().getFirstValue("configFile");
 
         if (configFilename != null) {
+            LOG.info("Loading configuration from " + configFilename);
             mConfig.updateConfig(configFilename);
         }
+
+        super.start();
     }
 
-    F1OAuthHelper getHelper() {
+    synchronized F1OAuthHelper getHelper() {
         if (mHelper == null) {
             mHelper = new F1OAuthHelper(getContext(), mConfig.getString("f1ConsumerKey", ""),
                     mConfig.getString("f1ConsumerSecret", ""),
@@ -98,6 +99,8 @@ public class GrowFrontend extends FMFacade {
         router.attach("/login.html", LoginPageResource.class);
 
         final Router accountRouter = new Router(getContext());
+        accountRouter.attach("/authenticate", AuthenticatedResource.class);
+
         accountRouter.attach("/assessment/question/{questionId}", SurveyPageResource.class);
         accountRouter.attach("/assessment", SurveyPageResource.class);
         accountRouter.attach("/training/{chapter}/videos/{videoId}.json", VideosResource.class);
@@ -113,6 +116,7 @@ public class GrowFrontend extends FMFacade {
     private Authenticator createAuthenticatorChain(Restlet last) {
         final Context context = getContext();
         final String loginPage = getConfig().getString("dynamicRoot", "") + "/login.html";
+        final String loginPost = getConfig().getString("dynamicRoot", "") + "/account/authenticate";
 
         // This is used to check for an existing session
         SessionCheckingAuthenticator sessionChk = new SessionCheckingAuthenticator(context, true);
@@ -121,7 +125,7 @@ public class GrowFrontend extends FMFacade {
         SecondPartyVerifier f1Verifier = new SecondPartyVerifier(getHelper());
         LoginFormAuthenticator loginAuth = new LoginFormAuthenticator(context, false, f1Verifier);
         loginAuth.setLoginFormUrl(loginPage);
-        loginAuth.setLoginPostUrl("/account/authenticate");
+        loginAuth.setLoginPostUrl(loginPost);
 
         // This is used to create a new session for a newly authenticated user.
         SessionCreatingAuthenticator sessionCreate = new SessionCreatingAuthenticator(context);
@@ -142,8 +146,9 @@ public class GrowFrontend extends FMFacade {
         final Component component = new Component();
         component.getServers().add(Protocol.HTTP, 8085);
         component.getClients().add(Protocol.HTTP);
+        component.getClients().add(Protocol.HTTPS);
         component.getClients().add(Protocol.FILE);
-        component.getClients().add(new Client(null, Arrays.asList(Protocol.HTTPS), "org.restlet.ext.httpclient.HttpClientHelper"));
+        //component.getClients().add(new Client(null, Arrays.asList(Protocol.HTTPS), "org.restlet.ext.httpclient.HttpClientHelper"));
 
         // Static content
         try {
@@ -152,7 +157,7 @@ public class GrowFrontend extends FMFacade {
             component.getDefaultHost().attach("/style.css", new FileServingApp("./build/style.css"));
             component.getDefaultHost().attach("/favicon.ico", new FileServingApp("./build/favicon.ico"));
         } catch (IOException e) {
-            cLog.error("Could not create directory for static resources: "
+            LOG.error("Could not create directory for static resources: "
                     + e.getMessage(), e);
         }
 
@@ -173,17 +178,17 @@ public class GrowFrontend extends FMFacade {
                 try {
                     component.stop();
                 } catch (Exception e) {
-                    cLog.error("Exception during cleanup", e);
+                    LOG.error("Exception during cleanup", e);
                 }
             }
         });
 
-        cLog.info("Starting server...");
+        LOG.info("Starting server...");
 
         try {
             component.start();
         } catch (Exception e) {
-            cLog.fatal("Could not start: " + e.getMessage(), e);
+            LOG.fatal("Could not start: " + e.getMessage(), e);
         }
     }
 

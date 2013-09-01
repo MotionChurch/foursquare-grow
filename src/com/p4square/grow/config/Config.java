@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class Config {
-    private static Logger cLog = Logger.getLogger(Config.class);
+    private static final Logger LOG = Logger.getLogger(Config.class);
 
     private String mDomain;
     private Properties mProperties;
@@ -49,7 +49,7 @@ public class Config {
      * @param domain The new domain.
      */
     public void setDomain(String domain) {
-        cLog.info("Setting Config domain to " + domain);
+        LOG.info("Setting Config domain to " + domain);
         mDomain = domain;
     }
 
@@ -60,14 +60,14 @@ public class Config {
     public void updateConfig(String propertyFilename) {
         final File propFile = new File(propertyFilename);
 
-        cLog.info("Loading properties from " + propFile);
+        LOG.info("Loading properties from " + propFile);
 
         try {
             InputStream in = new FileInputStream(propFile);
             updateConfig(in);
 
         } catch (IOException e) {
-            cLog.error("Could not load properties file: " + e.getMessage(), e);
+            LOG.error("Could not load properties file: " + e.getMessage(), e);
         }
     }
 
@@ -78,6 +78,7 @@ public class Config {
      * @param in The InputStream
      */
     public void updateConfig(InputStream in) throws IOException {
+        LOG.info("Loading properties from InputStream");
         mProperties.load(in);
         in.close();
     }
@@ -96,24 +97,24 @@ public class Config {
      *
      * @return The config value or defaultValue if it can not be found.
      */
-    public String getString(String key, String defaultValue) {
+    public String getString(final String key, final String defaultValue) {
         String result;
 
         final String domainKey = mDomain + "." + key;
         result = mProperties.getProperty(domainKey);
         if (result != null) {
-            cLog.debug("Reading config for key = { " + key + " }. Got result = { " + result + " }");
+            LOG.debug("Reading config for key = { " + key + " }. Got result = { " + result + " }");
             return result;
         }
 
         final String globalKey = "*." + key;
         result = mProperties.getProperty(globalKey);
         if (result != null) {
-            cLog.debug("Reading config for key = { " + key + " }. Got result = { " + result + " }");
+            LOG.debug("Reading config for key = { " + key + " }. Got result = { " + result + " }");
             return result;
         }
 
-        cLog.debug("Reading config for key = { " + key + " }. Got default value = { " + defaultValue + " }");
+        LOG.debug("Reading config for key = { " + key + " }. Got default value = { " + defaultValue + " }");
         return defaultValue;
     }
 
@@ -142,7 +143,7 @@ public class Config {
                 return result;
 
             } catch (NumberFormatException e) {
-                cLog.warn("Expected property to be an integer: "
+                LOG.warn("Expected property to be an integer: "
                         + key + " = { " + propertyValue + " }");
             }
         }

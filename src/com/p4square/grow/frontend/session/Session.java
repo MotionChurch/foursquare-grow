@@ -15,7 +15,7 @@ import org.restlet.security.User;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class Session {
-    private static final long LIFETIME = 86400;
+    private static final long LIFETIME = 86400000;
 
     private final String mSessionId;
     private final User mUser;
