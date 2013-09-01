@@ -6,7 +6,7 @@
 ##
 
 export TOOLS=`awk -F= '/jesterpm\.buildtools\.root/ { print $2 }' $HOME/.jesterpm-build-tools.properties`
-export DEVFILES=$(dirname $0)
+export DEVFILES=$(dirname $0)/..
 
 $TOOLS/scripts/setup-cassandra.sh
 

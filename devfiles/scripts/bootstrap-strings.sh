@@ -2,12 +2,17 @@
 
 ##
 ## This script clears the strings ColumnFamily and then rebuilds it.
+## If given a file name, it will put the commands into the file and not run it.
 ##
 
 export TOOLS=`awk -F= '/jesterpm\.buildtools\.root/ { print $2 }' $HOME/.jesterpm-build-tools.properties`
-export DEVFILES=$(dirname $0)
+export DEVFILES=$(dirname $0)/..
 
-TEMPFILE=`mktemp`
+SAVEFILE="$1"
+TEMPFILE="$SAVEFILE"
+if [ -z "$SAVEFILE" ]; then
+    TEMPFILE=`mktemp`
+fi
 
 cat > $TEMPFILE << EOF
 use GROW;
@@ -21,12 +26,14 @@ create column family strings
 EOF
 
 # Fill with questions
-./compile-questions.sh >> $TEMPFILE
+$DEVFILES/scripts/compile-questions.sh >> $TEMPFILE
 
 
 # Fill with videos
-./compile-videos.sh >> $TEMPFILE
+$DEVFILES/scripts/compile-videos.sh >> $TEMPFILE
 
 # GO!
-cassandra-cli < $TEMPFILE
-rm $TEMPFILE
+if [ -z "$SAVEFILE" ]; then
+    cassandra-cli < $TEMPFILE
+    rm $TEMPFILE
+fi
