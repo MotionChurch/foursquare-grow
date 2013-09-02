@@ -3,16 +3,18 @@
 import sys,os,errno
 import csv
 import string
+import urllib
 from string import Template
 
 BASE_URL="http://foursquaregrow.s3-website-us-east-1.amazonaws.com/"
 
-def mkjson(chapter, number, title, length, videos):
+def mkjson(chapter, number, title, length, pdf, videos):
     vtemplate = Template("""{
     "id": "$id",
     "number": "$number",
     "title": "$title",
     "length": $length,
+    "pdf": "$pdf",
     "urls": [""")
 
     urltemplate = Template("""{"src":"$src", "type":"$type"},""")
@@ -28,10 +30,10 @@ def mkjson(chapter, number, title, length, videos):
     filename = string.lower(directory + "/" + chapter + "-" + number + ".json")
     with open(filename, 'w') as outfile:
         outfile.write(vtemplate.substitute(dict(id=string.lower(chapter+"-"+number),
-            chapter=chapter, number=number, title=title, length=length)))
+            chapter=chapter, number=number, title=title, length=length, pdf=BASE_URL + urllib.quote(pdf))))
 
         for type,src in videos.iteritems():
-            outfile.write(urltemplate.substitute(dict(type=type, src=BASE_URL + src)))
+            outfile.write(urltemplate.substitute(dict(type=type, src=BASE_URL + urllib.quote(src))))
 
         outfile.seek(-1, 2)
         outfile.write("]\n}")
@@ -47,9 +49,10 @@ with open(filename, 'rb') as csvfile:
         number = row[1]
         title = row[2]
         length = row[3]
-        h264 = row[4]
+        pdf = row[4]
+        h264 = row[5]
 
         videos = { "video/mp4": h264 }
 
-        mkjson(chapter, number, title, length, videos)
+        mkjson(chapter, number, title, length, pdf, videos)
 

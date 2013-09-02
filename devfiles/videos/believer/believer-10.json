@@ -3,5 +3,6 @@
     "number": "10",
     "title": "Resurrection",
     "length": 529,
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer Video 10 – Resurrection.mov", "type":"video/mp4"}]
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%2010%20%E2%80%93%20Resurrection.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%2010%20%E2%80%93%20Resurrection.mov", "type":"video/mp4"}]
 }

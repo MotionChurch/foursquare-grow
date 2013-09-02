@@ -3,5 +3,6 @@
     "number": "2",
     "title": "Life Of A Disciple",
     "length": 551,
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple Video 2 - Life Of A Disciple.mov", "type":"video/mp4"}]
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%202%20-%20Life%20Of%20A%20Disciple.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%202%20-%20Life%20Of%20A%20Disciple.mov", "type":"video/mp4"}]
 }

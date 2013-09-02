@@ -3,5 +3,6 @@
     "number": "7",
     "title": "Solitude",
     "length": 470,
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple Video 7 - Solitude.mov", "type":"video/mp4"}]
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%207%20-%20Solitude.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%207%20-%20Solitude.mov", "type":"video/mp4"}]
 }

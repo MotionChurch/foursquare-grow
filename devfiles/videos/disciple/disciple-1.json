@@ -3,5 +3,6 @@
     "number": "1",
     "title": "Intro",
     "length": 344,
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Discipleship Video 1 - Intro.mov", "type":"video/mp4"}]
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Discipleship%20Video%201%20-%20Intro.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Discipleship%20Video%201%20-%20Intro.mov", "type":"video/mp4"}]
 }

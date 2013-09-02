@@ -3,5 +3,6 @@
     "number": "6",
     "title": "Worship",
     "length": 701,
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple Video 6 - Worship.mov", "type":"video/mp4"}]
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%206%20-%20Worship.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%206%20-%20Worship.mov", "type":"video/mp4"}]
 }

@@ -3,5 +3,6 @@
     "number": "6",
     "title": "The Church Part 1",
     "length": 405,
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer Video 6 - The Church Part 1.mov", "type":"video/mp4"}]
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%206%20-%20The%20Church%20Part%201.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%206%20-%20The%20Church%20Part%201.mov", "type":"video/mp4"}]
 }

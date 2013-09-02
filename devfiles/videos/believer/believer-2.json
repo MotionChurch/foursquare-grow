@@ -3,5 +3,6 @@
     "number": "2",
     "title": "The Bible",
     "length": 386,
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer Video 2 - The Bible.mov", "type":"video/mp4"}]
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%202%20-%20The%20Bible.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%202%20-%20The%20Bible.mov", "type":"video/mp4"}]
 }
