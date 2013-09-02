@@ -178,7 +178,7 @@ function reportVideoComplete(data)
 
     $.ajax({
         type: "POST",
-        url: location.href + "/videos/" + videoId + ".json",
+        url: location.href + "/videos/" + data.id + ".json",
         dataType: "json",
         data: {'completed':'true'}
     }).error(function(jqXHR, error) {

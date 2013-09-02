@@ -4,6 +4,7 @@
 
 package com.p4square.grow.frontend;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import freemarker.template.Template;
@@ -62,7 +63,7 @@ public class VideosResource extends ServerResource {
             JsonResponse response = backendGet("/training/" + mChapter + "/videos/" + mVideoId);
 
             if (response.getStatus().isSuccess()) {
-                return new JacksonRepresentation<Map>(response.getMap()); 
+                return new JacksonRepresentation<Map>(response.getMap());
 
             } else {
                 setStatus(response.getStatus());
@@ -81,6 +82,18 @@ public class VideosResource extends ServerResource {
      */
     @Override
     protected Representation post(Representation entity) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("completed", "t");
+        JsonResponse response = backendPut("/accounts/" + mUserId + "/training/videos/" + mVideoId, data);
+
+        if (!response.getStatus().isSuccess()) {
+            // Something went wrong talking to the backend, error out.
+            cLog.fatal("Error recording completed video " + response.getStatus());
+            setStatus(Status.SERVER_ERROR_INTERNAL);
+            return ErrorPage.BACKEND_ERROR;
+        }
+
+        setStatus(Status.SUCCESS_NO_CONTENT);
         return null;
     }
 
