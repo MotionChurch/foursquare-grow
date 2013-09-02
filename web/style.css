@@ -261,6 +261,10 @@ footer a:hover {
     margin: -19px 0 0 -19px;
 }
 
+#videos .pdf {
+    float: right;
+}
+
 #thefeed {
     float: left;
     width: 30%; 
