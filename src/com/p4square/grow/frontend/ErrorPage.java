@@ -31,6 +31,9 @@ public class ErrorPage extends WriterRepresentation {
     public static final ErrorPage RENDER_ERROR =
         new ErrorPage("Error rendering page.");
 
+    public static final ErrorPage BACKEND_ERROR =
+        new ErrorPage("Error communicating with backend.");
+
     private static Template cTemplate = null;
 
     private final String mMessage;

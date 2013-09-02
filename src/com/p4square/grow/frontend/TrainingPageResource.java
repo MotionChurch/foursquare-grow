@@ -65,7 +65,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
     }
 
     /**
-     * Return a page with a survey question.
+     * Return a page of videos.
      */
     @Override
     protected Representation get() {
@@ -121,73 +121,8 @@ public class TrainingPageResource extends FreeMarkerPageResource {
         } catch (Exception e) {
             cLog.fatal("Could not render page: " + e.getMessage(), e);
             setStatus(Status.SERVER_ERROR_INTERNAL);
-            return null;
+            return ErrorPage.RENDER_ERROR;
         }
-    }
-
-    /**
-     * Record a survey answer and redirect to the next question.
-     */
-    @Override
-    protected Representation post(Representation entity) {
-        return null;
-        /*final Form form = new Form(entity);
-        final String answerId = form.getFirstValue("answer");
-
-        if (mQuestionId == null || answerId == null || answerId.length() == 0) {
-            // Something is wrong.
-            setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-            return null;
-        }
-
-        try {
-            // Find the question
-            Map questionData = null;
-            {
-                JsonResponse response = backendGet("/assessment/question/" + mQuestionId);
-                if (!response.getStatus().isSuccess()) {
-                    // User is answering a question which doesn't exist
-                    setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-                    return null;
-                }
-
-                questionData = response.getMap();
-            }
-
-            // Store answer
-            {
-                Map<String, String> answer = new HashMap<String, String>();
-                answer.put("answerId", answerId);
-                JsonResponse response = backendPut("/accounts/" + mUserId +
-                        "/assessment/answers/" + mQuestionId, answer);
-
-                if (!response.getStatus().isSuccess()) {
-                    // Something went wrong talking to the backend, error out.
-                    cLog.fatal("Error recording survey answer " + response.getStatus());
-                    setStatus(Status.SERVER_ERROR_INTERNAL);
-                    return null;
-                }
-            }
-
-            // Find the next question or finish the assessment.
-            String nextPage = mConfig.getString("dynamicRoot", "");
-            {
-                String nextQuestionId = (String) questionData.get("nextQuestion");
-                if (nextQuestionId == null) {
-                    nextPage += "/account/assessment/results";
-                } else {
-                    nextPage += "/account/assessment/question/" + nextQuestionId;
-                }
-            }
-
-            getResponse().redirectSeeOther(nextPage);
-            return null;
-
-        } catch (Exception e) {
-            cLog.fatal("Could not render page: " + e.getMessage(), e);
-            setStatus(Status.SERVER_ERROR_INTERNAL);
-            return null;
-        }*/
     }
 
     /**
