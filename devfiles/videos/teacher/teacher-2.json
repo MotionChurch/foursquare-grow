@@ -3,5 +3,6 @@
     "number": "2",
     "title": "Biblical Expectations Final",
     "length": 481,
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Teacher Video 2 - Biblical Expectations Final.mov", "type":"video/mp4"}]
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Teacher%20Video%202%20-%20Biblical%20Expectations%20Final.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Teacher%20Video%202%20-%20Biblical%20Expectations%20Final.mov", "type":"video/mp4"}]
 }

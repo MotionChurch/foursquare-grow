@@ -3,5 +3,6 @@
     "number": "8",
     "title": "Stewardship",
     "length": 163,
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple Video 8 - Stewardship.mov", "type":"video/mp4"}]
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%208%20-%20Stewardship.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%208%20-%20Stewardship.mov", "type":"video/mp4"}]
 }

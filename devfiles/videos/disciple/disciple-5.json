@@ -3,5 +3,6 @@
     "number": "5",
     "title": "Fasting",
     "length": 511,
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple Video 5 - Fasting.mov", "type":"video/mp4"}]
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%205%20-%20Fasting.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%205%20-%20Fasting.mov", "type":"video/mp4"}]
 }

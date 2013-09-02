@@ -3,5 +3,6 @@
     "number": "3",
     "title": "Foursquare Expectations",
     "length": 342,
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Teacher Video 3 - Foursquare Expectations.mov", "type":"video/mp4"}]
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Teacher%20Video%203%20-%20Foursquare%20Expectations.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Teacher%20Video%203%20-%20Foursquare%20Expectations.mov", "type":"video/mp4"}]
 }

@@ -3,5 +3,6 @@
     "number": "1",
     "title": "Introduction Final",
     "length": 395,
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video 1 - Introduction Final.mov", "type":"video/mp4"}]
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%201%20-%20Introduction%20Final.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%201%20-%20Introduction%20Final.mov", "type":"video/mp4"}]
 }
