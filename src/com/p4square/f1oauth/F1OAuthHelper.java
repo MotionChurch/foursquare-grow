@@ -13,7 +13,9 @@ import org.restlet.Response;
 import org.restlet.Request;
 import org.restlet.data.ChallengeResponse;
 import org.restlet.data.ChallengeScheme;
+import org.restlet.data.MediaType;
 import org.restlet.data.Method;
+import org.restlet.data.Status;
 import org.restlet.engine.util.Base64;
 import org.restlet.representation.StringRepresentation;
 
@@ -108,21 +110,28 @@ public class F1OAuthHelper extends OAuthHelper {
         return processAccessTokenRequest(request);
     }
 
-    public void createAccount(String firstname, String lastname, String email, String redirect)
+    public boolean createAccount(String firstname, String lastname, String email, String redirect)
             throws OAuthException {
         String req = String.format("{\n\"account\":{\n\"firstName\":\"%s\",\n"
                                  + "\"lastName\":\"%s\",\n\"email\":\"%s\",\n"
                                  + "\"urlRedirect\":\"%s\"\n}\n}",
                                  firstname, lastname, email, redirect);
 
-        Request request = new Request(Method.POST, mBaseUrl + "/Accounts");
+        Request request = new Request(Method.POST, mBaseUrl + "Accounts");
         request.setChallengeResponse(new ChallengeResponse(ChallengeScheme.HTTP_OAUTH));
-        request.setEntity(new StringRepresentation(req));
+        request.setEntity(new StringRepresentation(req, MediaType.APPLICATION_JSON));
 
         Response response = getResponse(request);
 
-        if (!response.getStatus().isSuccess()) {
-            throw new OAuthException(response.getStatus());
+        Status status = response.getStatus();
+        if (Status.SUCCESS_NO_CONTENT.equals(status)) {
+            return true;
+
+        } else if (Status.CLIENT_ERROR_CONFLICT.equals(status)) {
+            return false;
+
+        } else {
+            throw new OAuthException(status);
         }
     }
 }

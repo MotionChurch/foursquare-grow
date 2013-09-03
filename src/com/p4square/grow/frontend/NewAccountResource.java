@@ -46,10 +46,12 @@ public class NewAccountResource extends FreeMarkerPageResource {
         mGrowFrontend = (GrowFrontend) getApplication();
         mHelper = mGrowFrontend.getHelper();
 
-        mErrorMessage = null;
+        mErrorMessage = "";
 
-        mLoginPageUrl = "";
-        mVerificationPage = "";
+        mLoginPageUrl = mGrowFrontend.getConfig().getString("postAccountCreationPage",
+                getRequest().getRootRef().toString());
+        mVerificationPage = mGrowFrontend.getConfig().getString("dynamicRoot", "")
+                                + "/verification.html";
     }
 
     /**
@@ -66,7 +68,9 @@ public class NewAccountResource extends FreeMarkerPageResource {
             }
 
             Map<String, Object> root = getRootObject();
-            root.put("errorMessage", mErrorMessage);
+            if (mErrorMessage.length() > 0) {
+                root.put("errorMessage", mErrorMessage);
+            }
 
             return new TemplateRepresentation(t, root, MediaType.TEXT_HTML);
 
@@ -100,7 +104,11 @@ public class NewAccountResource extends FreeMarkerPageResource {
         }
 
         try {
-            mHelper.createAccount(firstname, lastname, email, mLoginPageUrl);
+            if (!mHelper.createAccount(firstname, lastname, email, mLoginPageUrl)) {
+                mErrorMessage = "An account with that address already exists.";
+                return get();
+            }
+
             getResponse().redirectSeeOther(mVerificationPage);
             return new StringRepresentation("Redirecting to " + mVerificationPage);
 
@@ -110,6 +118,6 @@ public class NewAccountResource extends FreeMarkerPageResource {
     }
 
     private boolean isEmpty(String s) {
-        return s != null && s.trim().length() > 0;
+        return s == null || s.trim().length() == 0;
     }
 }

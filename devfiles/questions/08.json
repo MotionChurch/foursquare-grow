@@ -1,5 +1,5 @@
 {
-    "id": "8",
+    "id": "08",
     "type": "image",
     "question": "My spiritual life resembles...",
     "answers": {
@@ -7,6 +7,6 @@
         "a2": { "score": "2", "type": "none" },
         "a3": { "score": "1", "type": "none" }
     },
-    "previousQuestion": "7",
-    "nextQuestion": "9"
+    "previousQuestion": "07",
+    "nextQuestion": "09"
 }
