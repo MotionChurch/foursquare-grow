@@ -4,8 +4,12 @@
 
 package com.p4square.grow.backend.resources;
 
+import java.io.IOException;
+
 import java.util.Map;
 import java.util.HashMap;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
@@ -24,7 +28,9 @@ import com.p4square.grow.backend.db.CassandraDatabase;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class SurveyResource extends ServerResource {
-    private final static Logger cLog = Logger.getLogger(SurveyResource.class);
+    private static final Logger LOG = Logger.getLogger(SurveyResource.class);
+
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private CassandraDatabase mDb;
 
@@ -45,16 +51,24 @@ public class SurveyResource extends ServerResource {
      */
     @Override
     protected Representation get() {
-        String result = "";
+        String result = "{}";
 
         if (mQuestionId == null) {
             // TODO: List all question ids
 
         } else if (mQuestionId.equals("first")) {
-            // TODO: Get the first question id from db?
-            result = "1";
+            // Get the first question id from db?
+            Map<?, ?> questionSummary = getQuestionsSummary();
+            mQuestionId = (String) questionSummary.get("first");
 
-        } else {
+        } else if (mQuestionId.equals("count")) {
+            // Get the first question id from db?
+            Map<?, ?> questionSummary = getQuestionsSummary();
+
+            return new StringRepresentation(String.valueOf((Integer) questionSummary.get("count")));
+        }
+
+        if (mQuestionId != null) {
             // Get a question by id
             result = mDb.getKey("strings", "/questions/" + mQuestionId);
 
@@ -66,5 +80,20 @@ public class SurveyResource extends ServerResource {
         }
 
         return new StringRepresentation(result);
+    }
+
+    private Map<?, ?> getQuestionsSummary() {
+        try {
+            String json = mDb.getKey("strings", "/questions");
+
+            if (json != null) {
+                return MAPPER.readValue(json, Map.class);
+            }
+
+        } catch (IOException e) {
+            LOG.info("Exception reading questions summary.", e);
+        }
+
+        return null;
     }
 }

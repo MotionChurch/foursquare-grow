@@ -14,12 +14,14 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ServerResource;
 
 import org.apache.log4j.Logger;
 
 import net.jesterpm.fmfacade.json.JsonRequestClient;
 import net.jesterpm.fmfacade.json.JsonResponse;
+import net.jesterpm.fmfacade.json.ClientException;
 
 import net.jesterpm.fmfacade.FreeMarkerPageResource;
 
@@ -36,7 +38,7 @@ import com.p4square.grow.config.Config;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class SurveyPageResource extends FreeMarkerPageResource {
-    private static Logger cLog = Logger.getLogger(SurveyPageResource.class);
+    private static final Logger LOG = Logger.getLogger(SurveyPageResource.class);
 
     private Config mConfig;
     private Template mSurveyTemplate;
@@ -54,7 +56,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         mConfig = growFrontend.getConfig();
         mSurveyTemplate = growFrontend.getTemplate("templates/survey.ftl");
         if (mSurveyTemplate == null) {
-            cLog.fatal("Could not find survey template.");
+            LOG.fatal("Could not find survey template.");
             setStatus(Status.SERVER_ERROR_INTERNAL);
         }
 
@@ -72,19 +74,28 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         try {
             // Get the current question.
             if (mQuestionId == null) {
-                // TODO: Get user's current question
-                mQuestionId = "1";
+                // Get user's current question
+                mQuestionId = getCurrentQuestionId();
+
+                if (mQuestionId != null) {
+                    Map<?, ?> lastQuestion = getQuestion(mQuestionId);
+                    return redirectToNextQuestion(lastQuestion);
+                }
             }
 
-            Map questionData = null;
-            {
-                JsonResponse response = backendGet("/assessment/question/" + mQuestionId);
-                if (!response.getStatus().isSuccess()) {
-                    setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-                    return null;
-                }
-                questionData = response.getMap();
+            // If we don't have a current question, get the first one.
+            if (mQuestionId == null) {
+                mQuestionId = "first";
             }
+
+            Map questionData = getQuestion(mQuestionId);
+            if (questionData == null) {
+                setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                return new ErrorPage("Could not find the question.");
+            }
+
+            // Set the real question id if a meta-id was used (i.e. first)
+            mQuestionId = (String) questionData.get("id");
 
             // Get any previous answer to the question
             String selectedAnswer = null;
@@ -102,9 +113,9 @@ public class SurveyPageResource extends FreeMarkerPageResource {
             return new TemplateRepresentation(mSurveyTemplate, root, MediaType.TEXT_HTML);
 
         } catch (Exception e) {
-            cLog.fatal("Could not render page: " + e.getMessage(), e);
+            LOG.fatal("Could not render page: " + e.getMessage(), e);
             setStatus(Status.SERVER_ERROR_INTERNAL);
-            return null;
+            return ErrorPage.RENDER_ERROR;
         }
     }
 
@@ -126,22 +137,17 @@ public class SurveyPageResource extends FreeMarkerPageResource {
             } else {
                 // Something is wrong.
                 setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-                return null;
+                return new ErrorPage("Question or answer messing.");
             }
         }
 
         try {
             // Find the question
-            Map questionData = null;
-            {
-                JsonResponse response = backendGet("/assessment/question/" + mQuestionId);
-                if (!response.getStatus().isSuccess()) {
-                    // User is answering a question which doesn't exist
-                    setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-                    return null;
-                }
-
-                questionData = response.getMap();
+            Map<?, ?> questionData = getQuestion(mQuestionId);
+            if (questionData == null) {
+                // User is answering a question which doesn't exist
+                setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                return new ErrorPage("Question not found.");
             }
 
             // Store answer
@@ -153,48 +159,100 @@ public class SurveyPageResource extends FreeMarkerPageResource {
 
                 if (!response.getStatus().isSuccess()) {
                     // Something went wrong talking to the backend, error out.
-                    cLog.fatal("Error recording survey answer " + response.getStatus());
+                    LOG.fatal("Error recording survey answer " + response.getStatus());
                     setStatus(Status.SERVER_ERROR_INTERNAL);
-                    return null;
+                    return ErrorPage.BACKEND_ERROR;
                 }
             }
 
             // Find the next question or finish the assessment.
-            String nextPage = mConfig.getString("dynamicRoot", "");
-            {
-                String nextQuestionId = null;
-                if ("previous".equals(direction)) {
-                   nextQuestionId = (String) questionData.get("previousQuestion");
-                } else {
-                   nextQuestionId = (String) questionData.get("nextQuestion");
-                }
+            if ("previous".equals(direction)) {
+                return redirectToPreviousQuestion(questionData);
 
-                if (nextQuestionId == null) {
-                    //nextPage += "/account/assessment/results";
-                    // TODO: Remove this hack:
-                    JsonResponse response = backendGet("/accounts/" + mUserId + "/assessment");
-                    if (!response.getStatus().isSuccess()) {
-                        nextPage += "/account/assessment/results";
-                    } else {
-                        final String score = (String) response.getMap().get("result");
-                        if (score != null) {
-                            nextPage += "/account/training/" + score;
-                        }
-                    }
-
-                } else {
-                    nextPage += "/account/assessment/question/" + nextQuestionId;
-                }
+            } else {
+                return redirectToNextQuestion(questionData);
             }
 
-            getResponse().redirectSeeOther(nextPage);
-            return null;
-
         } catch (Exception e) {
-            cLog.fatal("Could not render page: " + e.getMessage(), e);
+            LOG.fatal("Could not render page: " + e.getMessage(), e);
             setStatus(Status.SERVER_ERROR_INTERNAL);
+            return ErrorPage.RENDER_ERROR;
+        }
+    }
+
+    private Map<?, ?> getQuestion(String id) {
+        try {
+            Map<?, ?> questionData = null;
+
+            JsonResponse response = backendGet("/assessment/question/" + id);
+            if (!response.getStatus().isSuccess()) {
+                return null;
+            }
+            questionData = response.getMap();
+
+            return questionData;
+
+        } catch (ClientException e) {
+            LOG.warn("Error fetching question.", e);
             return null;
         }
+    }
+
+    private Representation redirectToNextQuestion(Map<?, ?> questionData) {
+        String nextQuestionId = (String) questionData.get("nextQuestion");
+
+        if (nextQuestionId == null) {
+            String nextPage = mConfig.getString("dynamicRoot", "");
+            JsonResponse response = backendGet("/accounts/" + mUserId + "/assessment");
+            if (!response.getStatus().isSuccess()) {
+                nextPage += "/account/assessment/results";
+            } else {
+                final String score = (String) response.getMap().get("result");
+                if (score != null) {
+                    nextPage += "/account/training/" + score;
+                }
+            }
+            getResponse().redirectSeeOther(nextPage);
+            return new StringRepresentation("Redirecting to " + nextPage);
+        }
+
+        return redirectToQuestion(nextQuestionId);
+    }
+
+    private Representation redirectToPreviousQuestion(Map<?, ?> questionData) {
+        String nextQuestionId = (String) questionData.get("previousQuestion");
+
+        if (nextQuestionId == null) {
+            nextQuestionId = (String) questionData.get("id");
+        }
+
+        return redirectToQuestion(nextQuestionId);
+    }
+
+    private Representation redirectToQuestion(String id) {
+        String nextPage = mConfig.getString("dynamicRoot", "");
+        nextPage += "/account/assessment/question/" + id;
+        getResponse().redirectSeeOther(nextPage);
+        return new StringRepresentation("Redirecting to " + nextPage);
+    }
+
+    private String getCurrentQuestionId() {
+        String id = null;
+        try {
+            JsonResponse response = backendGet("/accounts/" + mUserId + "/assessment");
+
+            if (response.getStatus().isSuccess()) {
+                return (String) response.getMap().get("lastAnswered");
+
+            } else {
+                LOG.warn("Failed to get assessment results: " + response.getStatus());
+            }
+
+        } catch (ClientException e) {
+            LOG.error("Exception getting assessment results.", e);
+        }
+
+        return null;
     }
 
     /**
@@ -208,24 +266,24 @@ public class SurveyPageResource extends FreeMarkerPageResource {
      * Helper method to send a GET to the backend.
      */
     private JsonResponse backendGet(final String uri) {
-        cLog.debug("Sending backend GET " + uri);
+        LOG.debug("Sending backend GET " + uri);
 
         final JsonResponse response = mJsonClient.get(getBackendEndpoint() + uri);
         final Status status = response.getStatus();
         if (!status.isSuccess() && !Status.CLIENT_ERROR_NOT_FOUND.equals(status)) {
-            cLog.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
+            LOG.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
         }
 
         return response;
     }
 
     protected JsonResponse backendPut(final String uri, final Map data) {
-        cLog.debug("Sending backend PUT " + uri);
+        LOG.debug("Sending backend PUT " + uri);
 
         final JsonResponse response = mJsonClient.put(getBackendEndpoint() + uri, data);
         final Status status = response.getStatus();
         if (!status.isSuccess() && !Status.CLIENT_ERROR_NOT_FOUND.equals(status)) {
-            cLog.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
+            LOG.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
         }
 
         return response;
