@@ -1,5 +1,5 @@
 {
-    "id": "6",
+    "id": "06",
     "type": "circle",
     "question": "I believe the Bible is:",
     "topleft": "Inspired word of God and I try to read it regularly",
@@ -14,6 +14,6 @@
         "-1.00,1.00": { "score": "3" }
     },
 
-    "previousQuestion": "5",
-    "nextQuestion": "7"
+    "previousQuestion": "05",
+    "nextQuestion": "07"
 }

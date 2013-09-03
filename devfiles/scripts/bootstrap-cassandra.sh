@@ -12,13 +12,13 @@ $TOOLS/scripts/setup-cassandra.sh
 
 # Bootstrap keyspace
 TEMPFILE=`mktemp`
-cat $DEVFILES/cassandra-bootstrap.cql > $TEMPFILE
+cat $DEVFILES/scripts/cassandra-bootstrap.cql > $TEMPFILE
 
 # Fill with questions
-./compile-questions.sh >> $TEMPFILE
+$DEVFILES/scripts/compile-questions.sh >> $TEMPFILE
 
 # Fill with videos
-./compile-videos.sh >> $TEMPFILE
+$DEVFILES/scripts/compile-videos.sh >> $TEMPFILE
 
 # GO!
 #cat $TEMPFILE | less

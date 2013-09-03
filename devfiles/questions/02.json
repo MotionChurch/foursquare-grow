@@ -1,5 +1,5 @@
 {
-    "id": "2",
+    "id": "02",
     "type": "image",
     "question": "I see God this way",
     "answers": {
@@ -10,6 +10,6 @@
         "a5": { "score": "1" },
         "a6": { "score": "1" }
     },
-    "previousQuestion": "1",
-    "nextQuestion": "3"
+    "previousQuestion": "01",
+    "nextQuestion": "03"
 }

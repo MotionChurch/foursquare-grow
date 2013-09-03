@@ -1,5 +1,5 @@
 {
-    "id": "5",
+    "id": "05",
     "type": "slider",
     "question": "I share my faith in Jesus...",
     "answers": {
@@ -8,6 +8,6 @@
         "a3": { "text": "Sometimes", "score": "3" },
         "a4": { "text": "Frequently", "score": "4" }
     },
-    "previousQuestion": "4",
-    "nextQuestion": "6"
+    "previousQuestion": "04",
+    "nextQuestion": "06"
 }

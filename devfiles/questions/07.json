@@ -1,5 +1,5 @@
 {
-    "id": "7",
+    "id": "07",
     "type": "slider",
     "question": "I believe following the Bible\'s teachings is",
     "answers": {
@@ -8,6 +8,6 @@
         "a3": { "text": "Encouraged by God", "score": "3" },
         "a4": { "text": "Essential", "score": "4" }
     },
-    "previousQuestion": "6",
-    "nextQuestion": "8"
+    "previousQuestion": "06",
+    "nextQuestion": "08"
 }
