@@ -5,7 +5,7 @@
     "answers": {
         "a1": { "text": "Not Important", "score": "1" },
         "a2": { "text": "Only if Convenient", "score": "2" },
-        "a3": { "text": "Important but I\'m not consistent", "score": "3" },
+        "a3": { "text": "Important but I'm not consistent", "score": "3" },
         "a4": { "text": "Very Important part of my life", "score": "4" }
     },
     "previousQuestion": "13",

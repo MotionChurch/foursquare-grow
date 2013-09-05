@@ -5,7 +5,7 @@ for i in $DEVFILES/videos/*; do
     for j in $i/*.json; do
         id=`basename $j .json`
         echo "set strings['/training/${level}']['${id}'] = '"
-        cat $j
+        cat $j|sed "s/'/\\\'/g"
         echo "';"
     done
 done

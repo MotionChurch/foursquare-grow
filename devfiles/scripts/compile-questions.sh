@@ -9,7 +9,7 @@ for i in $DEVFILES/questions/*.json; do
         FIRST=$id
     fi
     echo "set strings['/questions/${id}']['value'] = '"
-    cat $i
+    cat $i|sed "s/'/\\\'/g"
     echo "';"
     COUNT=$((COUNT + 1))
 done
