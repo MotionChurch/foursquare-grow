@@ -1,10 +1,10 @@
 {
     "id": "06",
-    "type": "circle",
     "question": "I believe the Bible is:",
+    "type": "circle",
     "topleft": "Inspired word of God and I try to read it regularly",
     "topright": "Authoritative and essential to my life and I read it daily",
-    "bottomleft": "Pretty good wisdome, compiled that I occasionally read",
+    "bottomleft": "Pretty good wisdom that I occasionally read",
     "bottomright": "A collection of moral stories, but generally not relevant to me",
 
     "answers": {
