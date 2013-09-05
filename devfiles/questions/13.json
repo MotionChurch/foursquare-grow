@@ -1,11 +1,11 @@
 {
     "id": "13",
-    "type": "circle",
     "question": "Those closest to me are:",
-    "topleft": "Outside the church",
-    "topright": "Inside the church but don\'t know my secrets",
-    "bottomleft": "Inside the church and know me a bit",
-    "bottomright": "Church family, know me well, and pray for me",
+    "type": "circle",
+    "bottomright": "Outside the church",
+    "bottomleft": "Inside the church but don\'t know my secrets",
+    "topleft": "Inside the church and know me a bit",
+    "topright": "Church family, knows me well, and prays for me",
 
     "answers": {
         "1.00,1.00": { "score": "2" },

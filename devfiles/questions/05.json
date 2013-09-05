@@ -1,7 +1,7 @@
 {
     "id": "05",
     "type": "slider",
-    "question": "I share my faith in Jesus...",
+    "question": "I share my faith in Jesus:",
     "answers": {
         "a1": { "text": "Never", "score": "1" },
         "a2": { "text": "Rarely", "score": "2" },

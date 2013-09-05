@@ -1,7 +1,7 @@
 {
     "id": "08",
     "type": "image",
-    "question": "My spiritual life resembles...",
+    "question": "My spiritual life resembles:",
     "answers": {
         "a1": { "score": "3", "type": "none" },
         "a2": { "score": "2", "type": "none" },

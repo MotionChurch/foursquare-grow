@@ -1,7 +1,7 @@
 {
     "id": "04a",
     "type": "text",
-    "question": "I accepted Jesus Christ as my Savior...",
+    "question": "I accepted Jesus Christ as my Savior:",
     "answers": {
         "a1": { "text": "1 - 2 years ago", "type": "none" },
         "a2": { "text": "3 - 4 years ago", "type": "none" },

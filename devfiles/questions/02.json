@@ -1,7 +1,7 @@
 {
     "id": "02",
+    "question": "I see God this way:",
     "type": "image",
-    "question": "I see God this way",
     "answers": {
         "a1": { "score": "2" },
         "a2": { "score": "1" },

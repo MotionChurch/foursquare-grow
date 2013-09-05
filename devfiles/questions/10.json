@@ -4,7 +4,7 @@
     "question": "How I feel about Church:",
     "answers": {
         "a1": { "text": "Unnecessary", "score": "1" },
-        "a2": { "text": "An Obligation", "score": "2" },
+        "a2": { "text": "An obligation", "score": "2" },
         "a3": { "text": "Enjoyable", "score": "3" },
         "a4": { "text": "Lifestyle", "score": "4" }
     },

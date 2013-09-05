@@ -1,7 +1,7 @@
 {
     "id": "04",
     "type": "text",
-    "question": "I accepted Jesus Christ as my Savior...",
+    "question": "I accepted Jesus Christ as my Savior:",
     "answers": {
         "a1": { "text": "In my current church.", "type": "none" },
         "a2": { "text": "Somewhere else.", "type": "none" },
