@@ -1,7 +1,7 @@
 {
     "id": "07",
     "type": "slider",
-    "question": "I believe following the Bible\'s teachings is:",
+    "question": "I believe following the Bible's teachings is:",
     "answers": {
         "a1": { "text": "Outdated", "score": "1" },
         "a2": { "text": "Good Idea", "score": "2" },
