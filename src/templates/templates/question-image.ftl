@@ -1,3 +1,10 @@
+<h1>${question.question}</h1>
+<#if question.description??>
+<p>
+    ${question.description}
+</p>
+</#if>
+
 <div class="imageQuestion question">
     <#list question.answers?keys as answerid>
         <#if selectedAnswerId?? && answerid == selectedAnswerId>
@@ -8,9 +15,3 @@
     </#list>
 </div>
 
-<h1>${question.question}</h1>
-<#if question.description??>
-<p>
-    ${question.description}
-</p>
-</#if>
