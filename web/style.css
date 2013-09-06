@@ -5,6 +5,16 @@ html, body {
     height: 100%;
 }
 
+a {
+    color: #BDBDBD;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #9ace00;
+}
+
 #notfooter {
     min-height: 100%;
     height: auto !important;
@@ -70,11 +80,11 @@ nav.primary a.current {
 }
 
 #hero {
-    background: url('/images/hero.png') #262626 no-repeat top center;
+    background: url('/images/hero.png') #2b2c2b no-repeat top center;
     width: 100%;
     color: white;
     text-align: center;
-    padding: 250px 0 50px 0;
+    padding: 200px 0 200px 0;
 }
 
 #hero p {
@@ -146,6 +156,7 @@ a.greenbutton {
     text-decoration: none;
     border-radius: 5px;
     -moz-border-radius: 5px;
+    font-weight: normal;
 }
 
 a.greenbutton:hover {
@@ -211,6 +222,7 @@ footer a:hover {
     text-decoration: none;
     color: #eaeaea;
     letter-spacing: 2px;
+    font-weight: normal;
 }
 
 #content nav a.current, #content nav a:hover {
@@ -308,6 +320,10 @@ footer a:hover {
     font-size: 90%;
 }
 
+#thefeed article a {
+    font-weight: normal;
+}
+
 #thefeed article a:hover {
     font-weight: bold;
 }
@@ -370,6 +386,7 @@ footer a:hover {
 
 .textQuestion .question a {
     text-decoration: none;
+    font-weight: normal;
 }
 
 .sliderQuestion .answers {

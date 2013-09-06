@@ -11,7 +11,7 @@
     </@noticebox>
 
     <@content>
-        <img src="${staticRoot}/images/buckets.png" />
+        <img src="${staticRoot}/images/about-grow.png" />
 
         <h1>Grow "Buckets"</h1>
         <p>
@@ -19,7 +19,7 @@
         </p>
         <p>
             GROW process is an on-line application and network to help you GROW
-            as a follower of Jesus Christ.  
+            as a follower of Jesus Christ.
         </p>
             Let's join together in a spiritual formation journey and begin the
             discipleship process that will transform your life.
