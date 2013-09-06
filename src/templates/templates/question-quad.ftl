@@ -1,3 +1,10 @@
+<h1>${question.question}</h1>
+<#if question.description??>
+<p>
+    ${question.description}
+</p>
+</#if>
+
 <div class="quadQuestion question">
     <div class="top">${question.top}</div>
     <div class="middle">
@@ -8,9 +15,3 @@
     <div class="bottom">${question.bottom}</div>
 </div>
 
-<h1>${question.question}</h1>
-<#if question.description??>
-<p>
-    ${question.description}
-</p>
-</#if>
