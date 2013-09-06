@@ -203,15 +203,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
 
         if (nextQuestionId == null) {
             String nextPage = mConfig.getString("dynamicRoot", "");
-            JsonResponse response = backendGet("/accounts/" + mUserId + "/assessment");
-            if (!response.getStatus().isSuccess()) {
-                nextPage += "/account/assessment/results";
-            } else {
-                final String score = (String) response.getMap().get("result");
-                if (score != null) {
-                    nextPage += "/account/training/" + score;
-                }
-            }
+            nextPage += "/account/assessment/results";
             getResponse().redirectSeeOther(nextPage);
             return new StringRepresentation("Redirecting to " + nextPage);
         }

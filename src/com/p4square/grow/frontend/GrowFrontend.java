@@ -32,8 +32,8 @@ import com.p4square.grow.config.Config;
 import com.p4square.f1oauth.F1OAuthHelper;
 import com.p4square.f1oauth.SecondPartyVerifier;
 
-import com.p4square.grow.frontend.session.SessionCheckingAuthenticator;
-import com.p4square.grow.frontend.session.SessionCreatingAuthenticator;
+import com.p4square.session.SessionCheckingAuthenticator;
+import com.p4square.session.SessionCreatingAuthenticator;
 
 /**
  * This is the Restlet Application implementing the Grow project front-end.
@@ -110,6 +110,7 @@ public class GrowFrontend extends FMFacade {
         accountRouter.attach("/authenticate", AuthenticatedResource.class);
 
         accountRouter.attach("/assessment/question/{questionId}", SurveyPageResource.class);
+        accountRouter.attach("/assessment/results", AssessmentResultsPage.class);
         accountRouter.attach("/assessment", SurveyPageResource.class);
         accountRouter.attach("/training/{chapter}/videos/{videoId}.json", VideosResource.class);
         accountRouter.attach("/training/{chapter}", TrainingPageResource.class);
