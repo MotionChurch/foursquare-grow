@@ -1,5 +1,5 @@
 html, body {
-    font-family: sans-serif;
+    font-family: 'Arvo', serif;
     font-size: 90%;
     margin: 0;
     height: 100%;
@@ -13,6 +13,19 @@ a {
 
 a:hover {
     color: #9ace00;
+}
+
+input[type="text"], input[type="password"] {
+    background: #F5F5F5;
+    border: solid 1px #BDBDBD;
+    padding: 5px;
+    width: 40%;
+}
+
+label {
+    text-align: right;
+    width: 10%;
+    display: inline-block;
 }
 
 #notfooter {
@@ -36,6 +49,10 @@ header {
 header h1 {
     display: inline;
     font-size: 14pt;
+    color: #7bc043;
+}
+
+header h1 a {
     color: #7bc043;
 }
 
@@ -111,8 +128,8 @@ nav.primary a.current {
 }
 
 #noticebox img.icon {
-    float: left;
     margin-right: 2em;
+    vertical-align: middle;
 }
 
 #noticebox .close {

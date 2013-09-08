@@ -4,12 +4,6 @@
 <@commonpage>
     <#include "/templates/index-hero.ftl">
 
-    <@noticebox>
-        The Grow Process focuses on the topic that you want to learn
-        about.  Out 'Assessment' test will give you the right courses
-        fit for your level.
-    </@noticebox>
-
     <@content>
         <img src="${staticRoot}/images/about-grow.png" />
 

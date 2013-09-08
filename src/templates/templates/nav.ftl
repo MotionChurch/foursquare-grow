@@ -7,7 +7,13 @@
 </#macro>
 
 <header>
-    <h1><img src="${staticRoot}/images/logo.png"> Grow Process</h1>
+    <h1>
+    <#if user??>
+        <a href="${dynamicRoot}/account"><img src="${staticRoot}/images/logo.png"> Grow Process</a>
+    <#else>
+        <a href="${dynamicRoot}/index.html"><img src="${staticRoot}/images/logo.png"> Grow Process</a>
+    </#if>
+    </h1>
 
     <nav class="primary">
         <ul>
