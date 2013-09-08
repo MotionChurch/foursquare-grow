@@ -45,7 +45,7 @@ public class LoginFormAuthenticator extends Authenticator {
     public void setLoginPostUrl(String url) {
         mLoginPostUrl = url;
     }
-    
+
     public void setDefaultPage(String url) {
         mDefaultRedirect = url;
     }
@@ -73,7 +73,7 @@ public class LoginFormAuthenticator extends Authenticator {
             if (isLoginAttempt) {
                 redirect = mDefaultRedirect;
             } else {
-                redirect = request.getResourceRef().getRelativePart();
+                redirect = request.getResourceRef().getPath();
             }
         }
 

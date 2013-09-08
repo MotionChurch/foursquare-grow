@@ -126,7 +126,7 @@ public class GrowFrontend extends FMFacade {
         final Context context = getContext();
         final String loginPage = getConfig().getString("dynamicRoot", "") + "/login.html";
         final String loginPost = getConfig().getString("dynamicRoot", "") + "/account/authenticate";
-        final String defaultPage = getConfig().getString("dynamicRoot", "") + "/index.html";
+        final String defaultPage = getConfig().getString("dynamicRoot", "") + "/account";
 
         // This is used to check for an existing session
         SessionCheckingAuthenticator sessionChk = new SessionCheckingAuthenticator(context, true);
