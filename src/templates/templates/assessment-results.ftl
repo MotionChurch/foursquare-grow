@@ -11,7 +11,7 @@
         <p>Based on your responses you have been identified as a ${stage?cap_first}.</p>
 
         <p>
-            So what’s next?  Now you begin the process of GROWing. The button
+            So what's next?  Now you begin the process of GROWing. The button
             below will take you to the ${stage?cap_first} page.
         </p>
 
