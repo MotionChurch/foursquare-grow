@@ -3,9 +3,9 @@
     "type": "image",
     "question": "My spiritual life resembles:",
     "answers": {
-        "a1": { "score": "3", "type": "none" },
-        "a2": { "score": "2", "type": "none" },
-        "a3": { "score": "1", "type": "none" }
+        "a1": { "score": "3" },
+        "a2": { "score": "2" },
+        "a3": { "score": "1" }
     },
     "previousQuestion": "07",
     "nextQuestion": "09"
