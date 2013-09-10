@@ -418,8 +418,9 @@ footer a:hover {
     font-weight: bold;
     margin-top: 1em;
     color: #676767;
-    width: 20%;
+    width: 15%;
     vertical-align: top;
+    text-align: left;
 }
 
 .sliderQuestion .answers .stretch {
