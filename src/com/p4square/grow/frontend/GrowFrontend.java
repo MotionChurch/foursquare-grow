@@ -112,6 +112,7 @@ public class GrowFrontend extends FMFacade {
         accountRouter.attach("/assessment/question/{questionId}", SurveyPageResource.class);
         accountRouter.attach("/assessment/results", AssessmentResultsPage.class);
         accountRouter.attach("/assessment", SurveyPageResource.class);
+        accountRouter.attach("/training/{chapter}/completed", ChapterCompletePage.class);
         accountRouter.attach("/training/{chapter}/videos/{videoId}.json", VideosResource.class);
         accountRouter.attach("/training/{chapter}", TrainingPageResource.class);
         accountRouter.attach("/training", TrainingPageResource.class);

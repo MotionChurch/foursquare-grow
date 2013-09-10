@@ -165,6 +165,8 @@ function displayPlayer()
 function reportVideoComplete(data)
 {
     notice("You finished \u201C" + data.title + ".\u201D");
+    var completedBefore = $('#videos article .completed').length;
+
     $('#' + data.id).addClass('completed');
 
     var completed = $('#videos article .completed').length;
@@ -185,7 +187,7 @@ function reportVideoComplete(data)
         notice('Could not record video completiton due to ' + error + '. If the problem persists, please contact us.');
     });
 
-    if (completed == total) {
+    if (completed == total && completedBefore != completed) {
         chapterComplete();
     }
 }
@@ -202,4 +204,5 @@ function closeVideo()
 function chapterComplete()
 {
     notice("You've completed this chapter!");
+    location.href += "/completed";
 }
