@@ -11,6 +11,11 @@ create column family strings
     and comparator = 'UTF8Type'
     and default_validation_class = 'UTF8Type';
 
+create column family accounts
+    with key_validation_class = 'UTF8Type'
+    and comparator = 'UTF8Type'
+    and default_validation_class = 'UTF8Type';
+
 create column family assessments
     with key_validation_class = 'UTF8Type'
     and comparator = 'UTF8Type'

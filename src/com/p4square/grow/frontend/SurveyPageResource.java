@@ -195,6 +195,24 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         }
     }
 
+    private Map<?, ?> getAccount(String id) {
+        try {
+            Map<?, ?> account = null;
+
+            JsonResponse response = backendGet("/accounts/" + id);
+            if (!response.getStatus().isSuccess()) {
+                return null;
+            }
+            account = response.getMap();
+
+            return account;
+
+        } catch (ClientException e) {
+            LOG.warn("Error fetching account.", e);
+            return null;
+        }
+    }
+
     private Map<?, ?> getQuestion(String id) {
         try {
             Map<?, ?> questionData = null;
@@ -217,6 +235,14 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         String nextQuestionId = (String) questionData.get("nextQuestion");
 
         if (nextQuestionId == null) {
+            // Just finished the last question. Update the user's account
+            Map account = getAccount(mUserId);
+            if (account == null) {
+                account = new HashMap();
+            }
+            account.put("landing", "training");
+            backendPut("/accounts/" + mUserId, account);
+
             String nextPage = mConfig.getString("dynamicRoot", "");
             nextPage += "/account/assessment/results";
             getResponse().redirectSeeOther(nextPage);
