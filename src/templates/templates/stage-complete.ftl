@@ -50,7 +50,9 @@
 
     </@content>
 
+    <#if nextstage??>
     <div id="getstarted">
         <a class="greenbutton" href="${dynamicRoot}/account/training/${nextstage}">Continue GROWing &#x2799;</a>
     </div>
+    </#if>
 </@commonpage>
