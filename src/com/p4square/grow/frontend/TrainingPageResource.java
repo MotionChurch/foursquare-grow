@@ -95,6 +95,11 @@ public class TrainingPageResource extends FreeMarkerPageResource {
                     }
                 }
 
+                if (mChapter == null) {
+                    // Everything is completed... send them back to seeker.
+                    mChapter = "seeker";
+                }
+
                 String nextPage = mConfig.getString("dynamicRoot", "");
                 nextPage += "/account/training/" + mChapter;
                 getResponse().redirectSeeOther(nextPage);
