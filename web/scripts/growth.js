@@ -73,7 +73,7 @@ $(document).ready(function()
 
 function notice(msg)
 {
-    $('#noticebox p').html(msg)
+    $('#noticebox p span').html(msg)
     $('#noticebox').slideDown();
 }
 
