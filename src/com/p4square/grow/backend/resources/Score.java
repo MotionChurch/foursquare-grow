@@ -10,6 +10,21 @@ package com.p4square.grow.backend.resources;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 class Score {
+    /**
+     * Return the integer value for the given Score String.
+     */
+    public static int numericScore(String score) {
+        if ("teacher".equals(score)) {
+            return 4;
+        } else if ("disciple".equals(score)) {
+            return 3;
+        } else if ("believer".equals(score)) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
     double sum;
     int count;
 
