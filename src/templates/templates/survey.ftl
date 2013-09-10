@@ -9,7 +9,7 @@
     </@noticebox>
 
     <div id="progressbar">
-        <div id="progress"></div>
+        <div class="progress" style="width: ${percentComplete!"0"}%"></div>
     </div>
 
     <div id="content">

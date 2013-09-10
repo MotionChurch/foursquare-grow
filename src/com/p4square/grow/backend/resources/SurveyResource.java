@@ -65,7 +65,8 @@ public class SurveyResource extends ServerResource {
             // Get the first question id from db?
             Map<?, ?> questionSummary = getQuestionsSummary();
 
-            return new StringRepresentation(String.valueOf((Integer) questionSummary.get("count")));
+            return new StringRepresentation("{\"count\":" +
+                    String.valueOf((Integer) questionSummary.get("count")) + "}");
         }
 
         if (mQuestionId != null) {

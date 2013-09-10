@@ -6,6 +6,8 @@
     </@noticebox>
 
     <@content class="text">
+        <h1>Congratulations!</h1>
+
         <p>Congratulations for completing your GROW assessment!</p>
 
         <p>Based on your responses you have been identified as a ${stage?cap_first}.</p>
