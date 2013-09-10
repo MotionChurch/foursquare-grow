@@ -31,7 +31,7 @@ import com.p4square.grow.backend.db.CassandraDatabase;
 public class SurveyResultsResource extends ServerResource {
     private final static Logger cLog = Logger.getLogger(SurveyResultsResource.class);
 
-    private final static ObjectMapper cMapper = new ObjectMapper();
+    private final static ObjectMapper MAPPER = new ObjectMapper();
 
     static enum RequestType {
         ASSESSMENT, ANSWER
@@ -72,7 +72,10 @@ public class SurveyResultsResource extends ServerResource {
                 break;
 
             case ASSESSMENT:
-                result = buildAssessment();
+                result = mDb.getKey("assessments", mUserId, "summary");
+                if (result == null) {
+                    result = buildAssessment();
+                }
                 break;
         }
 
@@ -135,7 +138,7 @@ public class SurveyResultsResource extends ServerResource {
         if (!row.isEmpty()) {
             Score score = new Score();
             for (Column<String> c : row) {
-                if (c.getName().equals("lastAnswered")) {
+                if (c.getName().equals("lastAnswered") || c.getName().equals("summary")) {
                     continue;
                 }
 
@@ -153,7 +156,12 @@ public class SurveyResultsResource extends ServerResource {
         }
 
         sb.append(" }");
-        return sb.toString();
+        String summary = sb.toString();
+
+        // Persist summary
+        mDb.putKey("assessments", mUserId, "summary", summary);
+
+        return summary;
     }
 
     private boolean scoreQuestion(final Score score, final String questionId,
@@ -162,8 +170,8 @@ public class SurveyResultsResource extends ServerResource {
         final String data = mDb.getKey("strings", "/questions/" + questionId);
 
         try {
-            final Map<?,?> questionMap = cMapper.readValue(data, Map.class);
-            final Map<?,?> answerMap = cMapper.readValue(answerJson, Map.class);
+            final Map<?,?> questionMap = MAPPER.readValue(data, Map.class);
+            final Map<?,?> answerMap = MAPPER.readValue(answerJson, Map.class);
             final Question question = new Question((Map<String, Object>) questionMap);
             final String answerId = (String) answerMap.get("answerId");
 

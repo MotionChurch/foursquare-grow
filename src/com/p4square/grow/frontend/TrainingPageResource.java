@@ -16,6 +16,7 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ServerResource;
 
 import org.apache.log4j.Logger;
@@ -70,10 +71,34 @@ public class TrainingPageResource extends FreeMarkerPageResource {
     @Override
     protected Representation get() {
         try {
-            // Get the current chapter.
+            // Get the training summary
+            Map<String, Object> trainingRecord = null;
+            Map<String, Object> completedVideos = new HashMap<String, Object>();
+            Map<String, Boolean> chapters = null;
+            {
+                JsonResponse response = backendGet("/accounts/" + mUserId + "/training");
+                if (response.getStatus().isSuccess()) {
+                    trainingRecord = response.getMap();
+                    completedVideos = (Map<String, Object>) trainingRecord.get("videos");
+                    chapters = (Map<String, Boolean>) trainingRecord.get("chapters");
+                }
+            }
+
+            // Get the current chapter (the lowest, incomplete chapter)
             if (mChapter == null) {
-                // TODO: Get user's current question
-                mChapter = "seeker";
+                int min = Integer.MAX_VALUE;
+                for (Map.Entry<String, Boolean> chapter : chapters.entrySet()) {
+                    int index = chapterIndex(chapter.getKey());
+                    if (!chapter.getValue() && index < min) {
+                        min = index;
+                        mChapter = chapter.getKey();
+                    }
+                }
+
+                String nextPage = mConfig.getString("dynamicRoot", "");
+                nextPage += "/account/training/" + mChapter;
+                getResponse().redirectSeeOther(nextPage);
+                return new StringRepresentation("Redirecting to " + nextPage);
             }
 
             // Get videos for the chapter.
@@ -85,17 +110,6 @@ public class TrainingPageResource extends FreeMarkerPageResource {
                     return null;
                 }
                 videos = (List<Map<String, Object>>) response.getMap().get("videos");
-            }
-
-            // Get list of completed videos
-            Map<String, Object> trainingRecord = null;
-            Map<String, Object> completedVideos = new HashMap<String, Object>();
-            {
-                JsonResponse response = backendGet("/accounts/" + mUserId + "/training");
-                if (response.getStatus().isSuccess()) {
-                    trainingRecord = response.getMap();
-                    completedVideos = (Map<String, Object>) trainingRecord.get("videos");
-                }
             }
 
             // Mark the completed videos as completed
@@ -157,5 +171,17 @@ public class TrainingPageResource extends FreeMarkerPageResource {
         }
 
         return response;
+    }
+
+    int chapterIndex(String chapter) {
+        if ("teacher".equals(chapter)) {
+            return 4;
+        } else if ("disciple".equals(chapter)) {
+            return 3;
+        } else if ("believer".equals(chapter)) {
+            return 2;
+        } else {
+            return 1;
+        }
     }
 }
