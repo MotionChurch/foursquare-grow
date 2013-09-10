@@ -110,6 +110,21 @@ public class SurveyPageResource extends FreeMarkerPageResource {
             root.put("question", questionData);
             root.put("selectedAnswerId", selectedAnswer);
 
+            // Get the question count and compute progress
+            Map countData = getQuestion("count");
+            if (countData != null) {
+                JsonResponse response = backendGet("/accounts/" + mUserId + "/assessment");
+                if (response.getStatus().isSuccess()) {
+                    Integer completed = (Integer) response.getMap().get("count");
+                    Integer total = (Integer) countData.get("count");
+
+                    if (completed != null && total != null && total != 0) {
+                        root.put("percentComplete", String.valueOf((int) (100.0 * completed) / total));
+                    }
+                }
+            }
+
+
             return new TemplateRepresentation(mSurveyTemplate, root, MediaType.TEXT_HTML);
 
         } catch (Exception e) {
