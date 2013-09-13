@@ -19,6 +19,7 @@ import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.data.Protocol;
 import org.restlet.resource.Directory;
+import org.restlet.routing.Redirector;
 import org.restlet.routing.Router;
 import org.restlet.security.Authenticator;
 
@@ -103,6 +104,7 @@ public class GrowFrontend extends FMFacade {
         final Authenticator defaultGuard = new SessionCheckingAuthenticator(getContext(), true);
         defaultGuard.setNext(FreeMarkerPageResource.class);
         router.attachDefault(defaultGuard);
+        router.attach("/", new Redirector(getContext(), "index.html", Redirector.MODE_CLIENT_PERMANENT));
         router.attach("/login.html", LoginPageResource.class);
         router.attach("/newaccount.html", NewAccountResource.class);
 
