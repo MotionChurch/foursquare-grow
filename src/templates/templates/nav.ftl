@@ -18,7 +18,7 @@
     <nav class="primary">
         <ul>
             <@navLink href="${dynamicRoot}/index.html">Home</@navLink>
-            <@navLink href="${dynamicRoot}/about.html">About</@navLink>
+            <@navLink href="${dynamicRoot}/learnmore.html">Learn More</@navLink>
             <@navLink href="${dynamicRoot}/contact.html">Contact</@navLink>
             <#if user??>
                 <@navLink href="${dynamicRoot}/account">Take Assessment</@navLink>
