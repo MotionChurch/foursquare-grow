@@ -10,7 +10,7 @@
 
         <p>
             If you have any questions about GROW, please complete the following
-            form, and we will be in touch soon, or call us at 253-848-9111.
+            form and we will be in touch soon, or call us at 253-848-9111.
         </p>
 
         <form action="${dynamicRoot}/contactus" method="post">
