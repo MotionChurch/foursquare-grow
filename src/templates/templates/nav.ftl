@@ -25,6 +25,7 @@
             <#else>
                 <@navLink href="${dynamicRoot}/login.html">Login / Sign Up</@navLink>
             </#if>
+            <a href="http://myfoursquarechurch.com">Foursquare Church</a>
         </ul>
     </nav>
 </header>
