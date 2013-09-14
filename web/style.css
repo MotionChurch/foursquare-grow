@@ -142,10 +142,11 @@ nav.primary a.current {
 
 #content {
     text-align: center;
-    color: #b0b0b0;
+    color: #505050;
     padding-bottom: 5em;
     margin: 1em auto 1em auto;
     max-width: 900px;
+    font-size: 115%;
 }
 
 #content article {
@@ -192,7 +193,7 @@ footer {
     background: #3C3C3C;
     color: #737373;
     font-weight: bold;
-    font-size: 80%;
+    font-size: 90%;
     padding: 20px 20% 0 20%;
     height: 30px;
     clear: both;

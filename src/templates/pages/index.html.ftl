@@ -5,20 +5,17 @@
     <#include "/templates/index-hero.ftl">
 
     <@content>
-        <img src="${staticRoot}/images/about-grow.png" />
+        <h1>Welcome to GROW</h1>
+        <p>
+            GROW is an on-line web based spiritual formation
+            process created by Foursquare Puyallup church with you in mind, to
+            assist you in your journey to discover God, and to be an effective
+            follower of Jesus Christ. 
+        </p>
 
-        <h1>Grow "Buckets"</h1>
-        <p>
-            We want to help you GROW
-        </p>
-        <p>
-            GROW process is an on-line application and network to help you GROW
-            as a follower of Jesus Christ.
-        </p>
-            Let's join together in a spiritual formation journey and begin the
-            discipleship process that will transform your life.
-        </p>
     </@content>
 
-    <#include "/templates/getstarted-button.ftl">
+    <div id="getstarted">
+        <a class="greenbutton" href="learnmore.html">Learn More! &#x2799;</a>
+    </div>
 </@commonpage>
