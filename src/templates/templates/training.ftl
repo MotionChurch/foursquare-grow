@@ -11,17 +11,18 @@
 
     <div id="progressbar">
         <#switch chapter>
-            <#case "seeker"><#assign overallProgress = 0><#break>
-            <#case "believer"><#assign overallProgress = 25><#break>
-            <#case "disciple"><#assign overallProgress = 50><#break>
-            <#case "teacher"><#assign overallProgress = 75><#break>
+            <#case "introduction"><#assign overallProgress = 0><#break>
+            <#case "seeker"><#assign overallProgress = 20><#break>
+            <#case "believer"><#assign overallProgress = 40><#break>
+            <#case "disciple"><#assign overallProgress = 60><#break>
+            <#case "teacher"><#assign overallProgress = 80><#break>
         </#switch>
         <div class="progress" style="width: ${overallProgress}%"></div>
     </div>
 
     <div id="content">
         <nav>
-            <#assign chapters = ["seeker", "believer", "disciple", "teacher"]>
+            <#assign chapters = ["introduction", "seeker", "believer", "disciple", "teacher"]>
             <#list chapters as x>
                 <a href="${dynamicRoot}/account/training/${x}" <#if x == chapter>class="current"</#if>>${x?capitalize}</a>
                 <#if x_has_next> - </#if>
@@ -41,7 +42,7 @@
                 <h2>${video.title}</h2>
                 <span class="duration"><@hms seconds=video.length /></span>
                 <#if (video.pdf!"") != "">
-                    <span class="pdf"><a href="${video.pdf}">Outline</a></span>
+                    <span class="pdf"><a href="${video.pdf}" target="_blank">Outline</a></span>
                 </#if>
             </article>
         </#list>

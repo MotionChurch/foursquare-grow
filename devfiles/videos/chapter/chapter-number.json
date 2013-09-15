@@ -1,8 +1,0 @@
-{
-    "id": "chapter-number",
-    "number": "Number",
-    "title": "Title",
-    "length": Length (seconds),
-    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/PDF",
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/H.264%20File", "type":"video/mp4"}]
-}

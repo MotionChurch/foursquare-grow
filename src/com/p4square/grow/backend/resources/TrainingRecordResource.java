@@ -32,7 +32,7 @@ import com.p4square.grow.backend.db.CassandraDatabase;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class TrainingRecordResource extends ServerResource {
-    private static final String[] CHAPTERS = { "seeker", "believer", "disciple", "teacher" };
+    private static final String[] CHAPTERS = { "introduction", "seeker", "believer", "disciple", "teacher" };
 
     private static final Logger LOG = Logger.getLogger(TrainingRecordResource.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -211,8 +211,15 @@ public class TrainingRecordResource extends ServerResource {
 
         // Get videos for each section and build playlist
         for (String chapter : CHAPTERS) {
-            // Chapter required if the floor of the score is <= the chapter's numeric value.
-            boolean required = score < Score.numericScore(chapter) + 1;
+            boolean required;
+
+            if ("introduction".equals(chapter)) {
+                // Introduction chapter is always required
+                required = true;
+            } else {
+                // Chapter required if the floor of the score is <= the chapter's numeric value.
+                required = score < Score.numericScore(chapter) + 1;
+            }
 
             ColumnList<String> row = mDb.getRow("strings", "/training/" + chapter);
             if (!row.isEmpty()) {
