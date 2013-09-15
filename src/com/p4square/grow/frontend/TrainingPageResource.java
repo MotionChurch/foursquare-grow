@@ -96,8 +96,8 @@ public class TrainingPageResource extends FreeMarkerPageResource {
                 }
 
                 if (mChapter == null) {
-                    // Everything is completed... send them back to seeker.
-                    mChapter = "seeker";
+                    // Everything is completed... send them back to introduction.
+                    mChapter = "introduction";
                 }
 
                 String nextPage = mConfig.getString("dynamicRoot", "");
@@ -185,8 +185,10 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             return 3;
         } else if ("believer".equals(chapter)) {
             return 2;
-        } else {
+        } else if ("seeker".equals(chapter)) {
             return 1;
+        } else {
+            return 0;
         }
     }
 }

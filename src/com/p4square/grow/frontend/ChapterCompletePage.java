@@ -102,6 +102,14 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
                 }
             }
 
+            // Skip the chapter complete message for "Introduction"
+            if ("introduction".equals(mChapter)) {
+                String nextPage = mConfig.getString("dynamicRoot", "");
+                nextPage += "/account/training/" + nextChapter;
+                getResponse().redirectSeeOther(nextPage);
+                return new StringRepresentation("Redirecting to " + nextPage);
+            }
+
             root.put("stage", mChapter);
             root.put("nextstage", nextChapter);
             return new TemplateRepresentation(t, root, MediaType.TEXT_HTML);
