@@ -1,8 +1,9 @@
 {
-    "id": "intro-1",
+    "id": "introduction-1",
     "number": "1",
     "title": "Introduction",
     "length": 140,
+    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Grow%20-%20Introduction.png",
     "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Grow%20-%20Introduction.pdf",
     "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Grow%20-%20Introduction.mov", "type":"video/mp4"}]
 }

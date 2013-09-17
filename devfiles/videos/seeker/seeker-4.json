@@ -3,6 +3,7 @@
     "number": "4",
     "title": "The Cross",
     "length": 289,
+    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%204%20-%20The%20Cross.png",
     "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%204%20-%20The%20Cross.pdf",
     "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%204%20-%20The%20Cross.mov", "type":"video/mp4"}]
 }
