@@ -21,7 +21,8 @@
             <@navLink href="${dynamicRoot}/learnmore.html">Learn More</@navLink>
             <@navLink href="${dynamicRoot}/contact.html">Contact</@navLink>
             <#if user??>
-                <@navLink href="${dynamicRoot}/account">Take Assessment</@navLink>
+                <@navLink href="${dynamicRoot}/account">Keep Growing</@navLink>
+                <@navLink href="${dynamicRoot}/account/logout">Logout</@navLink>
             <#else>
                 <@navLink href="${dynamicRoot}/login.html">Login / Sign Up</@navLink>
             </#if>
