@@ -3,6 +3,7 @@
     "number": "1",
     "title": "Intro",
     "length": 460,
+    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%201%20-%20Intro.png",
     "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%201%20-%20Intro.pdf",
     "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%201%20-%20Intro.mov", "type":"video/mp4"}]
 }

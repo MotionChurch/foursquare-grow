@@ -3,6 +3,7 @@
     "number": "9",
     "title": "Evangelism",
     "length": 490,
-    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%209%20%E2%80%93%20Evangelism.pdf",
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%209%20%E2%80%93%20Evangelism.mov", "type":"video/mp4"}]
+    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%209%20-%20Evangelism.png",
+    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%209%20-%20Evangelism.pdf",
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%209%20-%20Evangelism.mov", "type":"video/mp4"}]
 }

@@ -3,6 +3,7 @@
     "number": "3",
     "title": "The Trinity",
     "length": 364,
+    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%203%20-%20The%20Trinity.png",
     "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%203%20-%20The%20Trinity.pdf",
     "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%203%20-%20The%20Trinity.mov", "type":"video/mp4"}]
 }

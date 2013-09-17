@@ -3,6 +3,7 @@
     "number": "3",
     "title": "God Searches",
     "length": 399,
+    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%203%20-%20God%20Searches.png",
     "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%203%20-%20God%20Searches.pdf",
     "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%203%20-%20God%20Searches.mov", "type":"video/mp4"}]
 }
