@@ -2,7 +2,7 @@
  * Copyright 2013 Jesse Morgan
  */
 
-package com.p4square.grow.backend.resources;
+package com.p4square.grow.model;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
-class Answer {
+public class Answer {
     public static enum ScoreType {
         NONE, AVERAGE, TRUMP;
     }
@@ -20,6 +20,7 @@ class Answer {
     private final String mAnswerText;
     private final ScoreType mType;
     private final float mScoreFactor;
+    private final String mNextQuestionId;
 
     public Answer(final String id, final Map<String, Object> answer) {
         mAnswerId = id;
@@ -37,6 +38,7 @@ class Answer {
             mScoreFactor = 0;
         }
 
+        mNextQuestionId = (String) answer.get("nextQuestion");
     }
 
     public String getId() {
@@ -53,5 +55,9 @@ class Answer {
 
     public float getScoreFactor() {
         return mScoreFactor;
+    }
+
+    public String getNextQuestion() {
+        return mNextQuestionId;
     }
 }

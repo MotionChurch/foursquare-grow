@@ -26,6 +26,7 @@ import net.jesterpm.fmfacade.json.ClientException;
 import net.jesterpm.fmfacade.FreeMarkerPageResource;
 
 import com.p4square.grow.config.Config;
+import com.p4square.grow.model.Question;
 
 /**
  * SurveyPageResource handles rendering the survey and processing user's answers.
@@ -78,8 +79,8 @@ public class SurveyPageResource extends FreeMarkerPageResource {
                 mQuestionId = getCurrentQuestionId();
 
                 if (mQuestionId != null) {
-                    Map<?, ?> lastQuestion = getQuestion(mQuestionId);
-                    return redirectToNextQuestion(lastQuestion);
+                    Question lastQuestion = getQuestion(mQuestionId);
+                    return redirectToNextQuestion(lastQuestion, getAnswer(mQuestionId));
                 }
             }
 
@@ -88,42 +89,40 @@ public class SurveyPageResource extends FreeMarkerPageResource {
                 mQuestionId = "first";
             }
 
-            Map questionData = getQuestion(mQuestionId);
-            if (questionData == null) {
+            Question question = getQuestion(mQuestionId);
+            if (question == null) {
                 setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                 return new ErrorPage("Could not find the question.");
             }
 
             // Set the real question id if a meta-id was used (i.e. first)
-            mQuestionId = (String) questionData.get("id");
+            mQuestionId = question.getId();
 
             // Get any previous answer to the question
-            String selectedAnswer = null;
-            {
-                JsonResponse response = backendGet("/accounts/" + mUserId + "/assessment/answers/" + mQuestionId);
-                if (response.getStatus().isSuccess()) {
-                    selectedAnswer = (String) response.getMap().get("answerId");
-                }
-            }
+            String selectedAnswer = getAnswer(mQuestionId);
 
             Map root = getRootObject();
-            root.put("question", questionData);
+            root.put("question", question.getMap());
             root.put("selectedAnswerId", selectedAnswer);
 
             // Get the question count and compute progress
-            Map countData = getQuestion("count");
-            if (countData != null) {
-                JsonResponse response = backendGet("/accounts/" + mUserId + "/assessment");
+            {
+                JsonResponse response = backendGet("/assessment/question/count");
                 if (response.getStatus().isSuccess()) {
-                    Integer completed = (Integer) response.getMap().get("count");
-                    Integer total = (Integer) countData.get("count");
+                    Map countData = response.getMap();
+                    if (countData != null) {
+                        response = backendGet("/accounts/" + mUserId + "/assessment");
+                        if (response.getStatus().isSuccess()) {
+                            Integer completed = (Integer) response.getMap().get("count");
+                            Integer total = (Integer) countData.get("count");
 
-                    if (completed != null && total != null && total != 0) {
-                        root.put("percentComplete", String.valueOf((int) (100.0 * completed) / total));
+                            if (completed != null && total != null && total != 0) {
+                                root.put("percentComplete", String.valueOf((int) (100.0 * completed) / total));
+                            }
+                        }
                     }
                 }
             }
-
 
             return new TemplateRepresentation(mSurveyTemplate, root, MediaType.TEXT_HTML);
 
@@ -158,8 +157,8 @@ public class SurveyPageResource extends FreeMarkerPageResource {
 
         try {
             // Find the question
-            Map<?, ?> questionData = getQuestion(mQuestionId);
-            if (questionData == null) {
+            Question question = getQuestion(mQuestionId);
+            if (question == null) {
                 // User is answering a question which doesn't exist
                 setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                 return new ErrorPage("Question not found.");
@@ -182,10 +181,10 @@ public class SurveyPageResource extends FreeMarkerPageResource {
 
             // Find the next question or finish the assessment.
             if ("previous".equals(direction)) {
-                return redirectToPreviousQuestion(questionData);
+                return redirectToPreviousQuestion(question);
 
             } else {
-                return redirectToNextQuestion(questionData);
+                return redirectToNextQuestion(question, answerId);
             }
 
         } catch (Exception e) {
@@ -213,7 +212,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         }
     }
 
-    private Map<?, ?> getQuestion(String id) {
+    private Question getQuestion(String id) {
         try {
             Map<?, ?> questionData = null;
 
@@ -223,7 +222,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
             }
             questionData = response.getMap();
 
-            return questionData;
+            return new Question((Map<String, Object>) questionData);
 
         } catch (ClientException e) {
             LOG.warn("Error fetching question.", e);
@@ -231,8 +230,22 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         }
     }
 
-    private Representation redirectToNextQuestion(Map<?, ?> questionData) {
-        String nextQuestionId = (String) questionData.get("nextQuestion");
+    private String getAnswer(String questionId) {
+        try {
+            JsonResponse response = backendGet("/accounts/" + mUserId + "/assessment/answers/" + questionId);
+            if (response.getStatus().isSuccess()) {
+                return (String) response.getMap().get("answerId");
+            }
+
+        } catch (ClientException e) {
+            LOG.warn("Error fetching answer to question " + questionId, e);
+        }
+
+        return null;
+    }
+
+    private Representation redirectToNextQuestion(Question question, String answerid) {
+        String nextQuestionId = question.getNextQuestion(answerid);
 
         if (nextQuestionId == null) {
             // Just finished the last question. Update the user's account
@@ -252,11 +265,11 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         return redirectToQuestion(nextQuestionId);
     }
 
-    private Representation redirectToPreviousQuestion(Map<?, ?> questionData) {
-        String nextQuestionId = (String) questionData.get("previousQuestion");
+    private Representation redirectToPreviousQuestion(Question question) {
+        String nextQuestionId = question.getPreviousQuestion();
 
         if (nextQuestionId == null) {
-            nextQuestionId = (String) questionData.get("id");
+            nextQuestionId = (String) question.getId();
         }
 
         return redirectToQuestion(nextQuestionId);
