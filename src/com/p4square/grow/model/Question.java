@@ -2,7 +2,7 @@
  * Copyright 2013 Jesse Morgan
  */
 
-package com.p4square.grow.backend.resources;
+package com.p4square.grow.model;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,11 +13,12 @@ import java.util.Map;
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
-class Question {
+public class Question {
     public static enum QuestionType {
         TEXT, IMAGE, SLIDER, QUAD, CIRCLE;
     }
 
+    private final Map<String, Object> mMap;
     private final String mQuestionId;
     private final QuestionType mType;
     private final String mQuestionText;
@@ -27,6 +28,7 @@ class Question {
     private final String mNextQuestionId;
 
     public Question(final Map<String, Object> map) {
+        mMap = map;
         mQuestionId = (String) map.get("id");
         mType = QuestionType.valueOf(((String) map.get("type")).toUpperCase());
 
@@ -58,15 +60,42 @@ class Question {
         return mQuestionText;
     }
 
-    public String getPrevious() {
+    public String getPreviousQuestion() {
         return mPreviousQuestionId;
     }
 
-    public String getNext() {
+    public String getNextQuestion() {
         return mNextQuestionId;
     }
 
     public Map<String, Answer> getAnswers() {
         return Collections.unmodifiableMap(mAnswers);
+    }
+
+    public Map<String, Object> getMap() {
+        return Collections.unmodifiableMap(mMap);
+    }
+
+    /**
+     * Determine the id of the next question based on the answer to this
+     * question.
+     *
+     * @param answerid
+     *              The id of the selected answer.
+     * @return a question id or null if this is the last question.
+     */
+    public String getNextQuestion(String answerid) {
+        String nextQuestion = null;
+
+        Answer a = mAnswers.get(answerid);
+        if (a != null) {
+            nextQuestion = a.getNextQuestion();
+        }
+
+        if (nextQuestion == null) {
+            nextQuestion = mNextQuestionId;
+        }
+
+        return nextQuestion;
     }
 }

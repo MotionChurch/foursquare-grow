@@ -20,6 +20,8 @@ import org.restlet.representation.StringRepresentation;
 
 import org.apache.log4j.Logger;
 
+import com.p4square.grow.model.Answer;
+import com.p4square.grow.model.Question;
 import com.p4square.grow.backend.GrowBackend;
 import com.p4square.grow.backend.db.CassandraDatabase;
 
