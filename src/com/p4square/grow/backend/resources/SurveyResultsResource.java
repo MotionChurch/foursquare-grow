@@ -139,6 +139,8 @@ public class SurveyResultsResource extends ServerResource {
         ColumnList<String> row = mDb.getRow("assessments", mUserId);
         if (!row.isEmpty()) {
             Score score = new Score();
+            boolean scoringDone = false;
+            int totalAnswers = 0;
             for (Column<String> c : row) {
                 if (c.getName().equals("lastAnswered") || c.getName().equals("summary")) {
                     continue;
@@ -146,14 +148,17 @@ public class SurveyResultsResource extends ServerResource {
 
                 final String questionId = c.getName();
                 final String answerId   = c.getStringValue();
-                if (!scoreQuestion(score, questionId, answerId)) {
-                    break;
+                if (!scoringDone) {
+                    scoringDone = !scoreQuestion(score, questionId, answerId);
                 }
+
+                totalAnswers++;
             }
 
             sb.append(", \"score\":" + score.sum / score.count);
             sb.append(", \"sum\":" + score.sum);
             sb.append(", \"count\":" + score.count);
+            sb.append(", \"totalAnswers\":" + totalAnswers);
             sb.append(", \"result\":\"" + score.toString() + "\"");
         }
 

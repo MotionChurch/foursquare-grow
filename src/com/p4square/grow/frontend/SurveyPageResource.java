@@ -113,7 +113,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
                     if (countData != null) {
                         response = backendGet("/accounts/" + mUserId + "/assessment");
                         if (response.getStatus().isSuccess()) {
-                            Integer completed = (Integer) response.getMap().get("count");
+                            Integer completed = (Integer) response.getMap().get("totalAnswers");
                             Integer total = (Integer) countData.get("count");
 
                             if (completed != null && total != null && total != 0) {
