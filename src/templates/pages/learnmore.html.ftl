@@ -45,7 +45,7 @@
         <p>
             Every individual is in one of four stages of spiritual formation:
         </p>
-        <p><img src="${staticRoot}/images/about-grow.png" alt="Seeker, Believer, Disciple, Teacher" /></p>
+        <p style="text-align: center"><img src="${staticRoot}/images/about-grow.png" alt="Seeker, Believer, Disciple, Teacher" /></p>
         <p>
             Our goal is to help you identify where you are, and to help you get to
             the next stage of development and spiritual maturity.
