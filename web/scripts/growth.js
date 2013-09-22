@@ -37,21 +37,23 @@ $(document).ready(function()
     });
 
     var previousAnswer = $("#answerField").val();
-    if (!isNaN(previousAnswer)) {
-        var range = $('.sliderQuestion .sliderbar').width() - 46;
-        var left = previousAnswer * range - range / 2;
-        $('.sliderQuestion .slider').css('left', left);
-    } else {
-        var index = previousAnswer.indexOf(',')
-        if (index != -1) {
-            var x = previousAnswer.substr(0, index);
-            var y = previousAnswer.substr(index + 1);
-            if (!isNaN(x) && !isNaN(y)) {
-                var posX = x * 125 + 125;
-                var posY = -y * 125 + 125;
-                $('.quadQuestion .selector').css({left:posX,top:posY});
-            }
+    if (previousAnswer != undefined) {
+        if (!isNaN(previousAnswer)) {
+            var range = $('.sliderQuestion .sliderbar').width() - 46;
+            var left = previousAnswer * range - range / 2;
+            $('.sliderQuestion .slider').css('left', left);
+        } else {
+            var index = previousAnswer.indexOf(',')
+            if (index != -1) {
+                var x = previousAnswer.substr(0, index);
+                var y = previousAnswer.substr(index + 1);
+                if (!isNaN(x) && !isNaN(y)) {
+                    var posX = x * 125 + 125;
+                    var posY = -y * 125 + 125;
+                    $('.quadQuestion .selector').css({left:posX,top:posY});
+                }
 
+            }
         }
     }
 
@@ -69,6 +71,11 @@ $(document).ready(function()
             e.target.src = url.replace('-hover.jpg', '.jpg');
         }
     });
+
+    var video = document.getElementById("herovideo");
+    if (video != null) {
+        video.removeAttribute("controls");
+    }
 });
 
 function notice(msg)
