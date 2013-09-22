@@ -72,13 +72,13 @@ header nav {
 
 nav ul {
     list-style: none;
-	display: inline;
-	padding-left: 0;
+    display: inline;
+    padding-left: 0;
 }
 
 nav ul li {
-	display: inline;
-	padding-right: 1em;
+    display: inline;
+    padding-right: 1em;
 }
 
 nav.primary a {
@@ -101,7 +101,7 @@ nav.primary a.current {
 }
 
 #hero {
-    background: url('/images/hero.png') #2b2c2b no-repeat top center;
+    background: #2a2d2a no-repeat top center;
     width: 100%;
     color: white;
     text-align: center;
