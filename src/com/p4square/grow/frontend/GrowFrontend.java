@@ -55,28 +55,16 @@ public class GrowFrontend extends FMFacade {
         mConfig = new Config();
     }
 
+    public GrowFrontend(Config config) {
+        mConfig = config;
+    }
+
     public Config getConfig() {
         return mConfig;
     }
 
     @Override
     public synchronized void start() throws Exception {
-        final String configDomain =
-            getContext().getParameters().getFirstValue("configDomain");
-        if (configDomain != null) {
-            mConfig.setDomain(configDomain);
-        }
-
-        mConfig.updateConfig(this.getClass().getResourceAsStream("/grow.properties"));
-
-        final String configFilename =
-            getContext().getParameters().getFirstValue("configFile");
-
-        if (configFilename != null) {
-            LOG.info("Loading configuration from " + configFilename);
-            mConfig.updateConfig(configFilename);
-        }
-
         Template errorTemplate = getTemplate("templates/error.ftl");
         if (errorTemplate != null) {
             ErrorPage.setTemplate(errorTemplate);

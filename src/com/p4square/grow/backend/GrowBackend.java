@@ -34,7 +34,11 @@ public class GrowBackend extends Application {
     private final CassandraDatabase mDatabase;
 
     public GrowBackend() {
-        mConfig = new Config();
+        this(new Config());
+    }
+
+    public GrowBackend(Config config) {
+        mConfig = config;
         mDatabase = new CassandraDatabase();
     }
 
@@ -70,23 +74,6 @@ public class GrowBackend extends Application {
     @Override
     public void start() throws Exception {
         super.start();
-
-        // Load config
-        final String configDomain =
-            getContext().getParameters().getFirstValue("configDomain");
-        if (configDomain != null) {
-            mConfig.setDomain(configDomain);
-        }
-
-        mConfig.updateConfig(this.getClass().getResourceAsStream("/grow.properties"));
-
-        final String configFilename =
-            getContext().getParameters().getFirstValue("configFile");
-
-        if (configFilename != null) {
-            LOG.info("Loading configuration from " + configFilename);
-            mConfig.updateConfig(configFilename);
-        }
 
         // Setup database
         mDatabase.setClusterName(mConfig.getString("clusterName", "Dev Cluster"));
