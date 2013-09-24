@@ -38,8 +38,8 @@
         <p>
             Disciple means "learner" and our goal is to help you be an
             effective learner and grow in the knowledge of Jesus Christ, the
-            Word of God, and the essentials of your faith, that will cause the
-            transformation God promises you will experience. And that
+            Word of God, and the essentials of your faith. This will cause the
+            transformation God promises you will experience, and that
             transformation will in turn change your life!
         </p>
         <p>
@@ -92,7 +92,7 @@
             <li>You begin by taking a short assessment that will help you identify where you are in the stages of development</li>
             <li>Upon completion of the survey, you will be invited to begin the process by watching a series of teaching videos, with accompanying printable participant outlines</li>
             <li>Each stage has a forum to communicate with others who are in the process with you</li>
-            <li>Each stage as a list of the actions and attributes that identify someone at that particular stage of development</li>
+            <li>Each stage has a list of the actions and attributes that identify someone at that particular stage of development</li>
             <li>Each stage has a "digger deeper" section for more learning tools and resources to continue to develop and grow</li>
             <li>Upon completion of each stage you will be invited to move to the next stage in the GROW process</li>
         </ul>
