@@ -64,10 +64,17 @@ header h1 img {
     vertical-align: middle;
 }
 
+#foursquarefloat {
+    position: relative;
+    left: -140px;
+    top: -20px;
+}
+
 header nav {
     display: inline;
     float: right;
     margin-top: 2em;
+    margin-bottom: 2em;
 }
 
 nav ul {

@@ -1,7 +1,25 @@
 <#include "/macros/common.ftl">
-<#include "/macros/common-page.ftl">
+<!doctype html>
+<html>
+<head>
+    <title>Grow Process</title>
 
-<@commonpage>
+    <link href="http://fonts.googleapis.com/css?family=Arvo:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="${staticRoot}/style.css" />
+    <script src="${staticRoot}/scripts/jquery.min.js"></script>
+    <script src="${staticRoot}/scripts/jquery-ui.js"></script>
+    <script src="${staticRoot}/scripts/growth.js"></script>
+</head>
+<body>
+<div id="notfooter">
+    <header>
+        <h1>
+            <a href="http://myfoursquarechurch.com"><img src="${staticRoot}/images/foursquarelg.png"></a>
+        </h1>
+
+        <#include "/templates/nav.ftl">
+    </header>
+
     <#include "/templates/index-hero.ftl">
 
     <@content>
@@ -10,7 +28,7 @@
             GROW is an on-line web based spiritual formation
             process created by Foursquare Puyallup church with you in mind, to
             assist you in your journey to discover God, and to be an effective
-            follower of Jesus Christ. 
+            follower of Jesus Christ.
         </p>
 
     </@content>
@@ -18,4 +36,11 @@
     <div id="getstarted">
         <a class="greenbutton" href="learnmore.html">Learn More! &#x2799;</a>
     </div>
-</@commonpage>
+
+    <div id="push"></div>
+</div>
+
+<#include "/templates/footer.ftl">
+
+</body>
+</html>
