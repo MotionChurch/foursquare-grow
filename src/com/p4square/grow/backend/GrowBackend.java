@@ -17,6 +17,7 @@ import com.p4square.grow.config.Config;
 import com.p4square.grow.backend.db.CassandraDatabase;
 
 import com.p4square.grow.backend.resources.AccountResource;
+import com.p4square.grow.backend.resources.BannerResource;
 import com.p4square.grow.backend.resources.SurveyResource;
 import com.p4square.grow.backend.resources.SurveyResultsResource;
 import com.p4square.grow.backend.resources.TrainingRecordResource;
@@ -64,6 +65,8 @@ public class GrowBackend extends Application {
         router.attach("/accounts/{userId}/training/videos/{videoId}",
                 TrainingRecordResource.class);
 
+        // Misc.
+        router.attach("/banner", BannerResource.class);
 
         return router;
     }

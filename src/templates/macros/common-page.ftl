@@ -12,6 +12,7 @@
     </head>
     <body>
     <div id="notfooter">
+        <#include "/templates/banner.ftl">
         <#include "/templates/header.ftl">
 
         <#nested>

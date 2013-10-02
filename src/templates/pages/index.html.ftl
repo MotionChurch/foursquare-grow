@@ -12,6 +12,7 @@
 </head>
 <body>
 <div id="notfooter">
+    <#include "/templates/banner.ftl">
     <header>
         <h1>
             <a href="http://myfoursquarechurch.com"><img src="${staticRoot}/images/foursquarelg.png"></a>

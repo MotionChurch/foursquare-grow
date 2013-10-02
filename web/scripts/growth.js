@@ -76,6 +76,8 @@ $(document).ready(function()
     if (video != null) {
         video.removeAttribute("controls");
     }
+
+    $("#banner").slideDown();
 });
 
 function notice(msg)
