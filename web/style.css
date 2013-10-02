@@ -44,6 +44,14 @@ blockquote {
     clear: both;
 }
 
+#banner {
+    padding: 0.5em;
+    border-bottom: outset 2px;
+    background: #FFFF91;
+    font-size: 90%;
+    display: none;
+}
+
 header {
     background: white;
     margin: 0 auto 0 auto;
