@@ -17,6 +17,7 @@ import org.restlet.data.Method;
 import org.restlet.data.Reference;
 import org.restlet.data.Status;
 import org.restlet.engine.Engine;
+import org.restlet.representation.Representation;
 
 /**
  * Helper Class for OAuth 1.0 Authentication.
@@ -99,16 +100,21 @@ public abstract class OAuthHelper {
      */
     protected Token processTokenRequest(Response response) throws OAuthException {
         Status status = response.getStatus();
+        Representation entity = response.getEntity();
 
-        if (status.isSuccess()) {
-            Form form = new Form(response.getEntity());
-            String token = form.getFirstValue("oauth_token");
-            String secret = form.getFirstValue("oauth_token_secret");
+        try {
+            if (status.isSuccess()) {
+                Form form = new Form(entity);
+                String token = form.getFirstValue("oauth_token");
+                String secret = form.getFirstValue("oauth_token_secret");
 
-            return new Token(token, secret);
+                return new Token(token, secret);
 
-        } else {
-            throw new OAuthException(status);
+            } else {
+                throw new OAuthException(status);
+            }
+        } finally {
+            entity.release();
         }
     }
 
