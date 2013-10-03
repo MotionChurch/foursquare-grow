@@ -381,12 +381,6 @@ footer a:hover {
     right: 50px;
 }
 
-#videoplayer div.video {
-    position: relative;
-    top: 50%;
-    margin-top: -405px;
-}
-
 #previous, #next {
     margin-top: 25%;
 }
