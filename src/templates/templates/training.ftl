@@ -50,7 +50,7 @@
     </div>
 
     <div id="videoplayer">
-        <div class="close"><a href="#" onclick="closeVideo(); return false"><img src="${staticRoot}/images/close.png" alt="Close Video" /></a></div>
+        <div class="close"><a href="#" onclick="closeVideo(); return false"><img src="${staticRoot}/images/close.png" alt="Close Video" title="Close" /></a></div>
         <div class="video">
         <video width="720" height="405" controls="controls">
             This video is not playable in your browser.

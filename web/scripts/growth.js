@@ -144,6 +144,10 @@ function playVideo(videoId)
         }
 
         var player = $('#videoplayer video')[0];
+        if (typeof player.canPlayType !== 'function') {
+            notice("Your browser does not support html5 videos. Please try another browser or contact us.");
+        }
+
         for (var i in data.urls) {
             var video = data.urls[i];
             if (player.canPlayType(video.type) != '') {
@@ -168,6 +172,12 @@ function displayPlayer()
     $("#content").fadeOut(100);
     $("body").animate({backgroundColor: '#181818'}, 500, 'linear', function(){
         $("#videoplayer").fadeIn(200);
+    });
+
+    $(document).keyup('displayPlayer.exit', function(e) {
+      if (e.keyCode == 27) {
+          closeVideo();
+      }
     });
 }
 
@@ -203,11 +213,17 @@ function reportVideoComplete(data)
 
 function closeVideo()
 {
-    $("#videoplayer video")[0].pause();
+    var player = $('#videoplayer video')[0];
+    if (typeof player.pause === 'function') {
+        player.pause();
+    }
+
     $("#videoplayer").fadeOut(100);
     $("body").animate({backgroundColor: '#FFFFFF'}, 500, 'linear', function(){
         $("#content").fadeIn(200);
     });
+
+    $(document).unbind('displayPlayer.exit');
 }
 
 function chapterComplete()
