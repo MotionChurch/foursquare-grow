@@ -5,6 +5,8 @@
 </p>
 </#if>
 
+<p>Slide the slider to answer the question.</p>
+
 <div class="sliderQuestion question">
     <div class="sliderbar"><img src="${staticRoot}/images/slider.png" class="slider" /></div>
     <div class="answers">

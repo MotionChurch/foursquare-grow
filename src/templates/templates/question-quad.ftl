@@ -5,6 +5,8 @@
 </p>
 </#if>
 
+<p>Move the white dot to answer the question.</p>
+
 <div class="quadQuestion question">
     <div class="top">${question.top}</div>
     <div class="middle">
