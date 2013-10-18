@@ -18,6 +18,8 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.WriterRepresentation;
 
+import net.jesterpm.fmfacade.FreeMarkerPageResource;
+
 /**
  * ErrorPage wraps a String or Template Representation and displays the given
  * error message.
@@ -35,6 +37,7 @@ public class ErrorPage extends WriterRepresentation {
         new ErrorPage("Error communicating with backend.");
 
     private static Template cTemplate = null;
+    private static Map<String, Object> cRoot = null;
 
     private final String mMessage;
 
@@ -48,8 +51,9 @@ public class ErrorPage extends WriterRepresentation {
         mMessage = msg;
     }
 
-    public static synchronized void setTemplate(Template template) {
+    public static synchronized void setTemplate(Template template, Map<String, Object> root) {
         cTemplate = template;
+        cRoot = root;
     }
 
     protected Representation getRepresentation() {
@@ -57,7 +61,7 @@ public class ErrorPage extends WriterRepresentation {
             return new StringRepresentation(mMessage);
 
         } else {
-            Map<String, Object> root = new HashMap<String, Object>();
+            Map<String, Object> root = new HashMap<String, Object>(cRoot);
             root.put("errorMessage", mMessage);
             return new TemplateRepresentation(cTemplate, root, MediaType.TEXT_HTML);
         }
