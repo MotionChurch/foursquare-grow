@@ -378,7 +378,8 @@ footer a:hover {
     text-align: right;
     position: relative;
     top: 50px;
-    right: 50px;
+    width: 900px;
+    margin: 0 auto 0 auto;
 }
 
 #previous, #next {
