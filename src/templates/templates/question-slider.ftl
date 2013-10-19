@@ -8,7 +8,7 @@
 <p>Slide the slider to answer the question.</p>
 
 <div class="sliderQuestion question">
-    <div class="sliderbar"><img src="${staticRoot}/images/slider.png" class="slider" /></div>
+    <div class="sliderbar"><div class="slider noselect"></div></div>
     <div class="answers">
     <#list question.answers?keys as answerid>
         <div id="${answerid}" class="label">${question.answers[answerid].text}</div>

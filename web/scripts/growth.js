@@ -10,6 +10,16 @@ $(document).ready(function()
             $("#answerField").val(value);
         }
     });
+    $('.sliderbar').mousedown(function(e) {
+        var left = $(this).offset().left;
+        var width = $(this).width();
+        proposed = Math.max(left, Math.min(e.pageX - 23, left + width - 46));
+        $(this).children('.slider').offset({left: proposed});
+
+        var range = width - 46;
+        var value = (proposed - left) / range;
+        $("#answerField").val(value);
+    });
 
     $('.quad .selector').draggable({
         containment:"parent",

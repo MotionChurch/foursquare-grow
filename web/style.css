@@ -32,6 +32,15 @@ blockquote {
     font-style: italic;
 }
 
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 #notfooter {
     min-height: 100%;
     height: auto !important;
@@ -449,10 +458,15 @@ footer a:hover {
 
 .sliderbar {
     background: #E1E1E1;
+    height: 24px;
 }
 
 .sliderbar .slider {
     cursor: pointer;
+    background: url('/images/slider.png') no-repeat center center;
+    width: 46px;
+    height: 24px;
+    display: inline-block;
 }
 
 .quadQuestion {
