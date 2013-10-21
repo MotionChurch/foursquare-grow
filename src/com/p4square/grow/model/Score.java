@@ -2,14 +2,14 @@
  * Copyright 2013 Jesse Morgan
  */
 
-package com.p4square.grow.backend.resources;
+package com.p4square.grow.model;
 
 /**
  * Simple structure containing a score's sum and count.
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
-class Score {
+public class Score {
     /**
      * Return the integer value for the given Score String.
      */
@@ -28,9 +28,30 @@ class Score {
     double sum;
     int count;
 
+    /**
+     * @return The sum of all the points.
+     */
+    public double getSum() {
+        return sum;
+    }
+
+    /**
+     * @return The number of questions included in the score.
+     */
+    public int getCount() {
+        return count;
+    }
+
+    /**
+     * @return The final score.
+     */
+    public double getScore() {
+        return sum / count;
+    }
+
     @Override
     public String toString() {
-        final double score = sum / count;
+        final double score = getScore();
 
         if (score >= 4) {
             return "teacher";
@@ -45,5 +66,5 @@ class Score {
             return "seeker";
         }
     }
-     
+
 }

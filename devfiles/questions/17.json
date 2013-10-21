@@ -2,16 +2,16 @@
     "id": "17",
     "question": "Character, integrity, and excellent personal conduct are:",
     "type": "circle",
-    "bottomleft": "what I aspire toward, but I'm a workin progress",
-    "bottomright": "Old Fashioned and not realistic",
-    "topleft": "Important but you can lead others if you're trying hard",
-    "topright": "Essential to me personally, and required in order to lead others",
+    "bottomLeft": "What I aspire toward, but I'm a work in progress",
+    "bottomRight": "Old Fashioned and not realistic",
+    "topLeft": "Important but you can lead others if you're trying hard",
+    "topRight": "Essential to me personally, and required in order to lead others",
 
     "answers": {
-        "1.00,1.00": { "score": "1" },
-        "1.00,-1.00": { "score": "4" },
-        "-1.00,-1.00": { "score": "2" },
-        "-1.00,1.00": { "score": "3" }
+        "1.00,1.00": { "score": "4" },
+        "1.00,-1.00": { "score": "1" },
+        "-1.00,-1.00": { "score": "3" },
+        "-1.00,1.00": { "score": "2" }
     },
 
     "previousQuestion": "16",

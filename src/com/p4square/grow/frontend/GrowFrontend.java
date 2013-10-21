@@ -156,10 +156,10 @@ public class GrowFrontend extends FMFacade {
 
         // Static content
         try {
-            component.getDefaultHost().attach("/images/", new FileServingApp("./build/images/"));
-            component.getDefaultHost().attach("/scripts", new FileServingApp("./build/scripts"));
-            component.getDefaultHost().attach("/style.css", new FileServingApp("./build/style.css"));
-            component.getDefaultHost().attach("/favicon.ico", new FileServingApp("./build/favicon.ico"));
+            component.getDefaultHost().attach("/images/", new FileServingApp("./build/root/images/"));
+            component.getDefaultHost().attach("/scripts", new FileServingApp("./build/root/scripts"));
+            component.getDefaultHost().attach("/style.css", new FileServingApp("./build/root/style.css"));
+            component.getDefaultHost().attach("/favicon.ico", new FileServingApp("./build/root/favicon.ico"));
         } catch (IOException e) {
             LOG.error("Could not create directory for static resources: "
                     + e.getMessage(), e);

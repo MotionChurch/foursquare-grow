@@ -2,10 +2,10 @@
     "id": "03",
     "question": "In my life, Jesus is:",
     "type": "circle", 
-    "topleft": "Leader & Savior and I generally apply his teaching",
-    "topright": "Leader & Savior and obedience is essential",
-    "bottomleft": "The Son of God, and I'm learning more about him",
-    "bottomright": "An important person or figure in history",
+    "topLeft": "Leader & Savior and I generally apply his teaching",
+    "topRight": "Leader & Savior and obedience is essential",
+    "bottomLeft": "The Son of God, and I'm learning more about him",
+    "bottomRight": "An important person or figure in history",
 
     "answers": {
         "1.00,1.00": { "score": "4" },

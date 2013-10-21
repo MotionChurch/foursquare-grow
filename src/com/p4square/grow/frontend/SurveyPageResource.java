@@ -4,6 +4,8 @@
 
 package com.p4square.grow.frontend;
 
+import java.io.IOException;
+
 import java.util.Map;
 import java.util.HashMap;
 
@@ -27,6 +29,8 @@ import net.jesterpm.fmfacade.FreeMarkerPageResource;
 
 import com.p4square.grow.config.Config;
 import com.p4square.grow.model.Question;
+import com.p4square.grow.provider.QuestionProvider;
+import com.p4square.grow.provider.Provider;
 
 /**
  * SurveyPageResource handles rendering the survey and processing user's answers.
@@ -44,6 +48,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
     private Config mConfig;
     private Template mSurveyTemplate;
     private JsonRequestClient mJsonClient;
+    private Provider<String, Question> mQuestionProvider;
 
     // Fields pertaining to this request.
     private String mQuestionId;
@@ -62,6 +67,12 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         }
 
         mJsonClient = new JsonRequestClient(getContext().getClientDispatcher());
+        mQuestionProvider = new QuestionProvider<String>(new JsonRequestProvider<Question>(getContext().getClientDispatcher(), Question.class)) {
+            @Override
+            public String makeKey(String questionId) {
+                return getBackendEndpoint() + "/assessment/question/" + questionId;
+            }
+        };
 
         mQuestionId = getAttribute("questionId");
         mUserId = getRequest().getClientInfo().getUser().getIdentifier();
@@ -102,7 +113,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
             String selectedAnswer = getAnswer(mQuestionId);
 
             Map root = getRootObject();
-            root.put("question", question.getMap());
+            root.put("question", question);
             root.put("selectedAnswerId", selectedAnswer);
 
             // Get the question count and compute progress
@@ -214,17 +225,9 @@ public class SurveyPageResource extends FreeMarkerPageResource {
 
     private Question getQuestion(String id) {
         try {
-            Map<?, ?> questionData = null;
+            return mQuestionProvider.get(id);
 
-            JsonResponse response = backendGet("/assessment/question/" + id);
-            if (!response.getStatus().isSuccess()) {
-                return null;
-            }
-            questionData = response.getMap();
-
-            return new Question((Map<String, Object>) questionData);
-
-        } catch (ClientException e) {
+        } catch (IOException e) {
             LOG.warn("Error fetching question.", e);
             return null;
         }
