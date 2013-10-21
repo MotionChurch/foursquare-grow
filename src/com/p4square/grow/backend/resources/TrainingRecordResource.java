@@ -27,6 +27,8 @@ import org.apache.log4j.Logger;
 import com.p4square.grow.backend.GrowBackend;
 import com.p4square.grow.backend.db.CassandraDatabase;
 
+import com.p4square.grow.model.Score;
+
 /**
  *
  * @author Jesse Morgan <jesse@jesterpm.net>

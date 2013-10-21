@@ -2,16 +2,16 @@
     "id": "13",
     "question": "Those closest to me are:",
     "type": "circle",
-    "bottomright": "Outside the church",
-    "bottomleft": "Inside the church but don't know my secrets",
-    "topleft": "Inside the church and know me a bit",
-    "topright": "Church family, knows me well, and prays for me",
+    "bottomRight": "Outside the church",
+    "bottomLeft": "Inside the church but don't know my secrets",
+    "topLeft": "Inside the church and know me a bit",
+    "topRight": "Church family, knows me well, and prays for me",
 
     "answers": {
-        "1.00,1.00": { "score": "2" },
-        "1.00,-1.00": { "score": "4" },
-        "-1.00,-1.00": { "score": "3" },
-        "-1.00,1.00": { "score": "1" }
+        "1.00,1.00": { "score": "4" },
+        "1.00,-1.00": { "score": "1" },
+        "-1.00,-1.00": { "score": "2" },
+        "-1.00,1.00": { "score": "3" }
     },
 
     "previousQuestion": "12",

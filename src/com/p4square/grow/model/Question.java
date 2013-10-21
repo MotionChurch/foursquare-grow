@@ -4,76 +4,125 @@
 
 package com.p4square.grow.model;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonSubTypes.Type;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 
 /**
  * Model of an assessment question.
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
-public class Question {
-    public static enum QuestionType {
-        TEXT, IMAGE, SLIDER, QUAD, CIRCLE;
-    }
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type")
+@JsonSubTypes({
+    @Type(value = TextQuestion.class, name = "text"),
+    @Type(value = ImageQuestion.class, name = "image"),
+    @Type(value = SliderQuestion.class, name = "slider"),
+    @Type(value = QuadQuestion.class, name = "quad"),
+    @Type(value = CircleQuestion.class, name = "circle"),
+})
+public abstract class Question {
+    /**
+     * QuestionType indicates the type of Question.
+     *
+     * @author Jesse Morgan <jesse@jesterpm.net>
+     */
+    public enum QuestionType {
+        TEXT,
+        IMAGE,
+        SLIDER,
+        QUAD,
+        CIRCLE;
 
-    private final Map<String, Object> mMap;
-    private final String mQuestionId;
-    private final QuestionType mType;
-    private final String mQuestionText;
-    private Map<String, Answer> mAnswers;
-
-    private final String mPreviousQuestionId;
-    private final String mNextQuestionId;
-
-    public Question(final Map<String, Object> map) {
-        mMap = map;
-        mQuestionId = (String) map.get("id");
-        mType = QuestionType.valueOf(((String) map.get("type")).toUpperCase());
-
-        mQuestionText = (String) map.get("text");
-
-        mPreviousQuestionId = (String) map.get("previousQuestion");
-        mNextQuestionId = (String) map.get("nextQuestion");
-
-        mAnswers = new HashMap<String, Answer>();
-        for (Map.Entry<String, Object> answer :
-                ((Map<String, Object>) map.get("answers")).entrySet()) {
-
-            final String id = answer.getKey();
-            final Map<String, Object> answerMap = (Map<String, Object>) answer.getValue();
-            final Answer answerObj = new Answer(id, answerMap);
-            mAnswers.put(id, answerObj);
+        @Override
+        public String toString() {
+            return name().toLowerCase();
         }
     }
 
+    private String mQuestionId;
+    private QuestionType mType;
+    private String mQuestionText;
+    private Map<String, Answer> mAnswers;
+
+    private String mPreviousQuestionId;
+    private String mNextQuestionId;
+
+    public Question() {
+        mAnswers = new HashMap<String, Answer>();
+    }
+
+    /**
+     * @return the id String for this question.
+     */
     public String getId() {
         return mQuestionId;
     }
 
-    public QuestionType getType() {
-        return mType;
+    /**
+     * Set the id String for this question.
+     * @param id New id
+     */
+    public void setId(String id) {
+        mQuestionId = id;
     }
 
-    public String getText() {
+    /**
+     * @return The Question text.
+     */
+    public String getQuestion() {
         return mQuestionText;
     }
 
+    /**
+     * Set the question text.
+     * @param value The new question text.
+     */
+    public void setQuestion(String value) {
+        mQuestionText = value;
+    }
+
+    /**
+     * @return The id String of the previous question or null if no previous question exists.
+     */
     public String getPreviousQuestion() {
         return mPreviousQuestionId;
     }
 
+    /**
+     * Set the id string of the previous question.
+     * @param id Previous question id or null if there is no previous question.
+     */
+    public void setPreviousQuestion(String id) {
+        mPreviousQuestionId = id;
+    }
+
+    /**
+     * @return The id String of the next question or null if no next question exists.
+     */
     public String getNextQuestion() {
         return mNextQuestionId;
     }
 
-    public Map<String, Answer> getAnswers() {
-        return Collections.unmodifiableMap(mAnswers);
+    /**
+     * Set the id string of the next question.
+     * @param id next question id or null if there is no next question.
+     */
+    public void setNextQuestion(String id) {
+        mNextQuestionId = id;
     }
 
-    public Map<String, Object> getMap() {
-        return Collections.unmodifiableMap(mMap);
+    /**
+     * @return a map of Answer id Strings to Answer objects.
+     */
+    public Map<String, Answer> getAnswers() {
+        return mAnswers;
     }
 
     /**
@@ -98,4 +147,19 @@ public class Question {
 
         return nextQuestion;
     }
+
+    /**
+     * Update the score based on the answer to this question.
+     *
+     * @param score The running score to update.
+     * @param answer The answer give to this question.
+     * @return true if scoring should continue, false if this answer trumps everything else.
+     */
+    public abstract boolean scoreAnswer(Score score, RecordedAnswer answer);
+
+    /**
+     * @return the QuestionType of this question.
+     */
+    public abstract QuestionType getType();
+
 }

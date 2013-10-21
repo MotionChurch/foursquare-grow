@@ -2,10 +2,10 @@
     "id": "09",
     "question": "Prayer for me is:",
     "type": "circle",
-    "topleft": "Important and I pray regularly",
-    "topright": "Constant, conversational, a lifestyle, and absolutely indispensible in my life",
-    "bottomleft": "Helpful I think, and I pray occasionally",
-    "bottomright": "Not important, I don't believe it's helpful or useful",
+    "topLeft": "Important and I pray regularly",
+    "topRight": "Constant, conversational, a lifestyle, and absolutely indispensible in my life",
+    "bottomLeft": "Helpful I think, and I pray occasionally",
+    "bottomRight": "Not important, I don't believe it's helpful or useful",
 
     "answers": {
         "1.00,1.00": { "score": "4" },
