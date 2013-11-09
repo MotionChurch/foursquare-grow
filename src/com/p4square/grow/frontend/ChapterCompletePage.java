@@ -23,6 +23,9 @@ import net.jesterpm.fmfacade.json.JsonResponse;
 import net.jesterpm.fmfacade.json.ClientException;
 
 import com.p4square.grow.config.Config;
+import com.p4square.grow.model.TrainingRecord;
+import com.p4square.grow.provider.TrainingRecordProvider;
+import com.p4square.grow.provider.Provider;
 
 /**
  * This resource displays the transitional page between chapters.
@@ -35,6 +38,7 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
     private GrowFrontend mGrowFrontend;
     private Config mConfig;
     private JsonRequestClient mJsonClient;
+    private Provider<String, TrainingRecord> mTrainingRecordProvider;
 
     private String mUserId;
     private String mChapter;
@@ -47,6 +51,12 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
         mConfig = mGrowFrontend.getConfig();
 
         mJsonClient = new JsonRequestClient(getContext().getClientDispatcher());
+        mTrainingRecordProvider = new TrainingRecordProvider<String>(new JsonRequestProvider<TrainingRecord>(getContext().getClientDispatcher(), TrainingRecord.class)) {
+            @Override
+            public String makeKey(String userid) {
+                return getBackendEndpoint() + "/accounts/" + userid + "/training";
+            }
+        };
 
         mUserId = getRequest().getClientInfo().getUser().getIdentifier();
 
@@ -69,17 +79,15 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
             Map<String, Object> root = getRootObject();
 
             // Get the training summary
-            Map<String, Object> trainingRecord = null;
-            Map<String, Boolean> chapters = null;
-            {
-                JsonResponse response = backendGet("/accounts/" + mUserId + "/training");
-                if (response.getStatus().isSuccess()) {
-                    trainingRecord = response.getMap();
-                    chapters = (Map<String, Boolean>) trainingRecord.get("chapters");
-                }
+            TrainingRecord trainingRecord = mTrainingRecordProvider.get(mUserId);
+            if (trainingRecord == null) {
+                // Wait. What? Everyone has a training record...
+                setStatus(Status.SERVER_ERROR_INTERNAL);
+                return new ErrorPage("Could not retrieve your training record.");
             }
 
             // Verify they completed the chapter.
+            Map<String, Boolean> chapters = trainingRecord.getPlaylist().getChapterStatuses();
             Boolean completed = chapters.get(mChapter);
             if (completed == null || !completed) {
                 // Redirect back to training page...

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import com.netflix.astyanax.model.Column;
 import com.netflix.astyanax.model.ColumnList;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;

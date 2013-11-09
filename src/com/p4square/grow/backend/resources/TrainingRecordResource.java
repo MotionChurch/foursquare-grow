@@ -14,7 +14,7 @@ import java.util.HashMap;
 import com.netflix.astyanax.model.Column;
 import com.netflix.astyanax.model.ColumnList;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
@@ -22,10 +22,20 @@ import org.restlet.resource.ServerResource;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 
+import org.restlet.ext.jackson.JacksonRepresentation;
+
 import org.apache.log4j.Logger;
 
 import com.p4square.grow.backend.GrowBackend;
 import com.p4square.grow.backend.db.CassandraDatabase;
+
+import com.p4square.grow.model.Playlist;
+import com.p4square.grow.model.VideoRecord;
+import com.p4square.grow.model.TrainingRecord;
+
+import com.p4square.grow.provider.Provider;
+import com.p4square.grow.provider.ProvidesTrainingRecords;
+import com.p4square.grow.provider.JsonEncodedProvider;
 
 import com.p4square.grow.model.Score;
 
@@ -43,22 +53,40 @@ public class TrainingRecordResource extends ServerResource {
         SUMMARY, VIDEO
     }
 
-    private GrowBackend mBackend;
     private CassandraDatabase mDb;
+    private Provider<String, TrainingRecord> mTrainingRecordProvider;
 
     private RequestType mRequestType;
     private String mUserId;
     private String mVideoId;
+    private TrainingRecord mRecord;
 
     @Override
     public void doInit() {
         super.doInit();
 
-        mBackend = (GrowBackend) getApplication();
-        mDb = mBackend.getDatabase();
+        mDb = ((GrowBackend) getApplication()).getDatabase();
+        mTrainingRecordProvider = ((ProvidesTrainingRecords) getApplication()).getTrainingRecordProvider();
 
         mUserId = getAttribute("userId");
         mVideoId = getAttribute("videoId");
+
+        try {
+            Playlist defaultPlaylist = ((GrowBackend) getApplication()).getDefaultPlaylist();
+
+            mRecord = mTrainingRecordProvider.get(mUserId);
+            if (mRecord == null) {
+                mRecord = new TrainingRecord();
+                mRecord.setPlaylist(defaultPlaylist);
+            } else {
+                // Merge the playlist with the most recent version.
+                mRecord.getPlaylist().merge(defaultPlaylist);
+            }
+
+        } catch (IOException e) {
+            LOG.error("IOException loading TrainingRecord: " + e.getMessage(), e);
+            mRecord = null;
+        }
 
         mRequestType = RequestType.SUMMARY;
         if (mVideoId != null) {
@@ -71,24 +99,35 @@ public class TrainingRecordResource extends ServerResource {
      */
     @Override
     protected Representation get() {
-        String result = null;
+        JacksonRepresentation<?> rep = null;
 
-        switch (mRequestType) {
-            case VIDEO:
-                result = mDb.getKey("training", mUserId, mVideoId);
-                break;
-
-            case SUMMARY:
-                result = buildSummary();
-                break;
-        }
-
-        if (result == null) {
-            setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+        if (mRecord == null) {
+            setStatus(Status.SERVER_ERROR_INTERNAL);
             return null;
         }
 
-        return new StringRepresentation(result);
+        switch (mRequestType) {
+            case VIDEO:
+                VideoRecord video = mRecord.getPlaylist().find(mVideoId);
+                if (video == null) {
+                    break; // Fall through and return 404
+                }
+                rep = new JacksonRepresentation<VideoRecord>(video);
+                break;
+
+            case SUMMARY:
+                rep = new JacksonRepresentation<TrainingRecord>(mRecord);
+                break;
+        }
+
+        if (rep == null) {
+            setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            return null;
+
+        } else {
+            rep.setObjectMapper(JsonEncodedProvider.MAPPER);
+            return rep;
+        }
     }
 
     /**
@@ -96,27 +135,37 @@ public class TrainingRecordResource extends ServerResource {
      */
     @Override
     protected Representation put(Representation entity) {
-        boolean success = false;
+        if (mRecord == null) {
+            setStatus(Status.SERVER_ERROR_INTERNAL);
+            return null;
+        }
 
         switch (mRequestType) {
             case VIDEO:
                 try {
-                    mDb.putKey("training", mUserId, mVideoId, entity.getText());
-                    mDb.putKey("training", mUserId, "lastVideo", mVideoId);
+                    JacksonRepresentation<VideoRecord> representation = 
+                        new JacksonRepresentation<>(entity, VideoRecord.class);
+                    representation.setObjectMapper(JsonEncodedProvider.MAPPER);
+                    VideoRecord update = representation.getObject();
+                    VideoRecord video = mRecord.getPlaylist().find(mVideoId);
 
-                    Playlist playlist = Playlist.load(mDb, mUserId);
-                    if (playlist != null) {
-                        VideoRecord r = playlist.find(mVideoId);
-                        if (r != null && !r.getComplete()) {
-                            r.complete();
-                            Playlist.save(mDb, mUserId, playlist);
-                        }
+                    if (video == null) {
+                        // TODO: Video isn't on their playlist...
+                        LOG.warn("Skipping video completion for video missing from playlist.");
+
+                    } else if (update.getComplete() && !video.getComplete()) {
+                        // Video was newly completed
+                        video.complete();
+                        mRecord.setLastVideo(mVideoId);
+
+                        mTrainingRecordProvider.put(mUserId, mRecord);
                     }
 
-                    success = true;
+                    setStatus(Status.SUCCESS_NO_CONTENT);
 
                 } catch (Exception e) {
                     LOG.warn("Caught exception updating training record: " + e.getMessage(), e);
+                    setStatus(Status.SERVER_ERROR_INTERNAL);
                 }
                 break;
 
@@ -124,116 +173,7 @@ public class TrainingRecordResource extends ServerResource {
                 setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
         }
 
-        if (success) {
-            setStatus(Status.SUCCESS_NO_CONTENT);
-
-        } else {
-            setStatus(Status.SERVER_ERROR_INTERNAL);
-        }
-
         return null;
     }
 
-    /**
-     * This method compiles the summary of the training completed.
-     */
-    private String buildSummary() {
-        StringBuilder sb = new StringBuilder("{ ");
-
-        // Last watch video
-        final String lastVideo = mDb.getKey("training", mUserId, "lastVideo");
-        if (lastVideo != null) {
-            sb.append("\"lastVideo\": \"" + lastVideo + "\", ");
-        }
-
-        // Get the user's video history
-        sb.append("\"videos\": { ");
-        ColumnList<String> row = mDb.getRow("training", mUserId);
-        if (!row.isEmpty()) {
-            boolean first = true;
-            for (Column<String> c : row) {
-                if ("lastVideo".equals(c.getName()) ||
-                    "playlist".equals(c.getName())) {
-                    continue;
-                }
-
-                if (first) {
-                    sb.append("\"" + c.getName() + "\": ");
-                    first = false;
-                } else {
-                    sb.append(", \"" + c.getName() + "\": ");
-                }
-
-                sb.append(c.getStringValue());
-            }
-        }
-        sb.append(" }");
-
-        // Get the user's playlist
-        try {
-            Playlist playlist = Playlist.load(mDb, mUserId);
-            if (playlist == null) {
-                playlist = createInitialPlaylist();
-            }
-
-            sb.append(", \"playlist\": ");
-            sb.append(playlist.toString());
-
-            // Last Completed Section
-            Map<String, Boolean> chapters = playlist.getChapterStatuses();
-            String chaptersString = MAPPER.writeValueAsString(chapters);
-            sb.append(", \"chapters\":");
-            sb.append(chaptersString);
-
-
-        } catch (IOException e) {
-            LOG.warn("IOException loading playlist for user " + mUserId, e);
-        }
-
-
-        sb.append(" }");
-        return sb.toString();
-    }
-
-    /**
-     * Create the user's initial playlist.
-     *
-     * @return Returns the String representation of the initial playlist.
-     */
-    private Playlist createInitialPlaylist() throws IOException {
-        Playlist playlist = new Playlist();
-
-        // Get assessment score
-        String summaryString = mDb.getKey("assessments", mUserId, "summary");
-        if (summaryString == null) {
-            return null;
-        }
-        Map<?,?> summary = MAPPER.readValue(summaryString, Map.class);
-        double score = (Double) summary.get("score");
-
-        // Get videos for each section and build playlist
-        for (String chapter : CHAPTERS) {
-            boolean required;
-
-            if ("introduction".equals(chapter)) {
-                // Introduction chapter is always required
-                required = true;
-            } else {
-                // Chapter required if the floor of the score is <= the chapter's numeric value.
-                required = score < Score.numericScore(chapter) + 1;
-            }
-
-            ColumnList<String> row = mDb.getRow("strings", "/training/" + chapter);
-            if (!row.isEmpty()) {
-                for (Column<String> c : row) {
-                    VideoRecord r = playlist.add(chapter, c.getName());
-                    r.setRequired(required);
-                }
-            }
-        }
-
-        Playlist.save(mDb, mUserId, playlist);
-
-        return playlist;
-    }
 }

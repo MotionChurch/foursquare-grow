@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;

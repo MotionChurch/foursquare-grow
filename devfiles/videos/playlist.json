@@ -1,0 +1,46 @@
+{
+    "introduction":{
+        "introduction-1":{ "required": true }
+    },
+    "seeker":{
+        "seeker-1":{ "required": true },
+        "seeker-2":{ "required": true },
+        "seeker-3":{ "required": true },
+        "seeker-4":{ "required": true },
+        "seeker-5":{ "required": true }
+    },
+    "believer":{
+        "believer-1":{ "required": true },
+        "believer-2":{ "required": true },
+        "believer-3":{ "required": true },
+        "believer-4":{ "required": true },
+        "believer-5":{ "required": true },
+        "believer-6":{ "required": true },
+        "believer-7":{ "required": true },
+        "believer-8":{ "required": true },
+        "believer-9":{ "required": true },
+        "believer-10":{ "required": true }
+    },
+    "disciple":{
+        "disciple-1":{ "required": true },
+        "disciple-2":{ "required": true },
+        "disciple-3":{ "required": true },
+        "disciple-4":{ "required": true },
+        "disciple-5":{ "required": true },
+        "disciple-6":{ "required": true },
+        "disciple-7":{ "required": true },
+        "disciple-8":{ "required": true },
+        "disciple-9":{ "required": true },
+        "disciple-10":{ "required": true }
+    },
+    "teacher":{
+        "teacher-1":{ "required": true },
+        "teacher-2":{ "required": true },
+        "teacher-3":{ "required": true },
+        "teacher-4":{ "required": true },
+        "teacher-5":{ "required": true },
+        "teacher-6":{ "required": true },
+        "teacher-7":{ "required": true }
+    },
+    "lastUpdated": 1383798629000
+}

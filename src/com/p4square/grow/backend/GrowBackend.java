@@ -4,6 +4,8 @@
 
 package com.p4square.grow.backend;
 
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
 
 import org.restlet.Application;
@@ -17,10 +19,15 @@ import com.p4square.grow.config.Config;
 import com.p4square.grow.backend.db.CassandraDatabase;
 import com.p4square.grow.backend.db.CassandraKey;
 import com.p4square.grow.backend.db.CassandraProviderImpl;
+import com.p4square.grow.backend.db.CassandraTrainingRecordProvider;
 
 import com.p4square.grow.model.Question;
+import com.p4square.grow.model.TrainingRecord;
+import com.p4square.grow.model.Playlist;
 
 import com.p4square.grow.provider.Provider;
+import com.p4square.grow.provider.ProvidesQuestions;
+import com.p4square.grow.provider.ProvidesTrainingRecords;
 import com.p4square.grow.provider.QuestionProvider;
 
 import com.p4square.grow.backend.resources.AccountResource;
@@ -35,7 +42,8 @@ import com.p4square.grow.backend.resources.TrainingResource;
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
-public class GrowBackend extends Application {
+public class GrowBackend extends Application
+        implements ProvidesQuestions, ProvidesTrainingRecords {
     private static final String DEFAULT_COLUMN = "value";
 
     private final static Logger LOG = Logger.getLogger(GrowBackend.class);
@@ -44,6 +52,7 @@ public class GrowBackend extends Application {
     private final CassandraDatabase mDatabase;
 
     private final Provider<String, Question> mQuestionProvider;
+    private final CassandraTrainingRecordProvider mTrainingRecordProvider;
 
     public GrowBackend() {
         this(new Config());
@@ -53,12 +62,14 @@ public class GrowBackend extends Application {
         mConfig = config;
         mDatabase = new CassandraDatabase();
 
-        mQuestionProvider = new QuestionProvider<CassandraKey>(new CassandraProviderImpl<Question>(mDatabase, "strings", Question.class)) {
+        mQuestionProvider = new QuestionProvider<CassandraKey>(new CassandraProviderImpl<Question>(mDatabase, Question.class)) {
             @Override
             public CassandraKey makeKey(String questionId) {
-                return new CassandraKey("/questions/" + questionId, DEFAULT_COLUMN);
+                return new CassandraKey("strings", "/questions/" + questionId, DEFAULT_COLUMN);
             }
         };
+
+        mTrainingRecordProvider = new CassandraTrainingRecordProvider(mDatabase);
     }
 
     @Override
@@ -120,8 +131,21 @@ public class GrowBackend extends Application {
         return mDatabase;
     }
 
+    @Override
     public Provider<String, Question> getQuestionProvider() {
         return mQuestionProvider;
+    }
+
+    @Override
+    public Provider<String, TrainingRecord> getTrainingRecordProvider() {
+        return mTrainingRecordProvider;
+    }
+
+    /**
+     * @return the Default Playlist.
+     */
+    public Playlist getDefaultPlaylist() throws IOException {
+        return mTrainingRecordProvider.getDefaultPlaylist();
     }
 
     /**
