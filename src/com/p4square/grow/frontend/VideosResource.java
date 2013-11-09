@@ -83,7 +83,7 @@ public class VideosResource extends ServerResource {
     @Override
     protected Representation post(Representation entity) {
         Map<String, Object> data = new HashMap<String, Object>();
-        data.put("completed", "t");
+        data.put("complete", "true");
         JsonResponse response = backendPut("/accounts/" + mUserId + "/training/videos/" + mVideoId, data);
 
         if (!response.getStatus().isSuccess()) {

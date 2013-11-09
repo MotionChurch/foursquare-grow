@@ -1,0 +1,18 @@
+{
+    "lastVideo": "teacher-1",
+    "playlist": {
+        "seeker": {
+            "seeker-2":{"required":false,"complete":false,"completionDate":null},
+            "seeker-1":{"required":false,"complete":false,"completionDate":null}
+        },
+        "disciple":{
+            "disciple-8":{"required":true,"complete":true,"completionDate":1379288805010},
+            "disciple-9":{"required":true,"complete":true,"completionDate":1379288805220},
+            "disciple-1":{"required":true,"complete":true,"completionDate":1379288805266}
+        },
+        "teacher":{
+            "teacher-2":{"required":true,"complete":false,"completionDate":null},
+            "teacher-1":{"required":true,"complete":true,"completionDate":1379288806266}
+        }
+    }
+}

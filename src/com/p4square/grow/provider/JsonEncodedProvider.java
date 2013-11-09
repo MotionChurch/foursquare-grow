@@ -6,9 +6,9 @@ package com.p4square.grow.provider;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * Provider provides a simple interface for loading and persisting
@@ -19,9 +19,9 @@ import org.codehaus.jackson.map.SerializationConfig;
 public abstract class JsonEncodedProvider<K, V> implements Provider<K, V> {
     public static final ObjectMapper MAPPER = new ObjectMapper();
     static {
-        MAPPER.configure(SerializationConfig.Feature.WRITE_ENUMS_USING_TO_STRING, true);
-        MAPPER.configure(DeserializationConfig.Feature.READ_ENUMS_USING_TO_STRING, true);
-        MAPPER.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        MAPPER.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
+        MAPPER.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true);
+        MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     private final Class<V> mClazz;

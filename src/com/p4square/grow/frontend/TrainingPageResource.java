@@ -27,13 +27,18 @@ import com.p4square.fmfacade.json.JsonResponse;
 import com.p4square.fmfacade.FreeMarkerPageResource;
 
 import com.p4square.grow.config.Config;
+import com.p4square.grow.model.TrainingRecord;
+import com.p4square.grow.model.VideoRecord;
+import com.p4square.grow.model.Playlist;
+import com.p4square.grow.provider.TrainingRecordProvider;
+import com.p4square.grow.provider.Provider;
 
 /**
  * TrainingPageResource handles rendering the training page.
  *
  * This resource expects the user to be authenticated and the ClientInfo User object
  * to be populated.
- * 
+ *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class TrainingPageResource extends FreeMarkerPageResource {
@@ -42,6 +47,8 @@ public class TrainingPageResource extends FreeMarkerPageResource {
     private Config mConfig;
     private Template mTrainingTemplate;
     private JsonRequestClient mJsonClient;
+
+    private Provider<String, TrainingRecord> mTrainingRecordProvider;
 
     // Fields pertaining to this request.
     private String mChapter;
@@ -60,6 +67,12 @@ public class TrainingPageResource extends FreeMarkerPageResource {
         }
 
         mJsonClient = new JsonRequestClient(getContext().getClientDispatcher());
+        mTrainingRecordProvider = new TrainingRecordProvider<String>(new JsonRequestProvider<TrainingRecord>(getContext().getClientDispatcher(), TrainingRecord.class)) {
+            @Override
+            public String makeKey(String userid) {
+                return getBackendEndpoint() + "/accounts/" + userid + "/training";
+            }
+        };
 
         mChapter = getAttribute("chapter");
         mUserId = getRequest().getClientInfo().getUser().getIdentifier();
@@ -72,17 +85,14 @@ public class TrainingPageResource extends FreeMarkerPageResource {
     protected Representation get() {
         try {
             // Get the training summary
-            Map<String, Object> trainingRecord = null;
-            Map<String, Object> completedVideos = new HashMap<String, Object>();
-            Map<String, Boolean> chapters = null;
-            {
-                JsonResponse response = backendGet("/accounts/" + mUserId + "/training");
-                if (response.getStatus().isSuccess()) {
-                    trainingRecord = response.getMap();
-                    completedVideos = (Map<String, Object>) trainingRecord.get("videos");
-                    chapters = (Map<String, Boolean>) trainingRecord.get("chapters");
-                }
+            TrainingRecord trainingRecord = mTrainingRecordProvider.get(mUserId);
+            if (trainingRecord == null) {
+                setStatus(Status.SERVER_ERROR_INTERNAL);
+                return new ErrorPage("Could not retrieve TrainingRecord.");
             }
+
+            Playlist playlist = trainingRecord.getPlaylist();
+            Map<String, Boolean> chapters = playlist.getChapterStatuses();
 
             // Get the current chapter (the lowest, incomplete chapter)
             if (mChapter == null) {
@@ -120,7 +130,13 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             // Mark the completed videos as completed
             int chapterProgress = 0;
             for (Map<String, Object> video : videos) {
-                boolean completed = (null != completedVideos.get(video.get("id")));
+                boolean completed = false;
+                VideoRecord record = playlist.find((String) video.get("id"));
+                cLog.info("VideoId: " + video.get("id"));
+                if (record != null) {
+                    cLog.info("VideoRecord: " + record.getComplete());
+                    completed = record.getComplete();
+                }
                 video.put("completed", completed);
 
                 if (completed) {
@@ -133,7 +149,6 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             root.put("chapter", mChapter);
             root.put("chapterProgress", chapterProgress);
             root.put("videos", videos);
-            root.put("completedVideos", completedVideos);
 
             return new TemplateRepresentation(mTrainingTemplate, root, MediaType.TEXT_HTML);
 
@@ -158,18 +173,6 @@ public class TrainingPageResource extends FreeMarkerPageResource {
         cLog.debug("Sending backend GET " + uri);
 
         final JsonResponse response = mJsonClient.get(getBackendEndpoint() + uri);
-        final Status status = response.getStatus();
-        if (!status.isSuccess() && !Status.CLIENT_ERROR_NOT_FOUND.equals(status)) {
-            cLog.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
-        }
-
-        return response;
-    }
-
-    private JsonResponse backendPut(final String uri, final Map data) {
-        cLog.debug("Sending backend PUT " + uri);
-
-        final JsonResponse response = mJsonClient.put(getBackendEndpoint() + uri, data);
         final Status status = response.getStatus();
         if (!status.isSuccess() && !Status.CLIENT_ERROR_NOT_FOUND.equals(status)) {
             cLog.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
