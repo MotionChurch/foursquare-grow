@@ -143,6 +143,11 @@ function sendAnswer(required)
 
 function playVideo(videoId)
 {
+    if (!$('#' + videoId).hasClass('allowed')) {
+        notice("You must watch the videos in order.");
+        return;
+    }
+
     $.ajax({
         type: "GET",
         url: location.href + "/videos/" + videoId + ".json",
@@ -197,6 +202,7 @@ function reportVideoComplete(data)
     var completedBefore = $('#videos article .completed').length;
 
     $('#' + data.id).addClass('completed');
+    $('#' + data.id).parent().next().children('div.image').addClass('allowed');
 
     var completed = $('#videos article .completed').length;
     var total = $('#videos article').length;

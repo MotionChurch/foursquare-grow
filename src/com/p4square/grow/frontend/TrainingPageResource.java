@@ -5,9 +5,12 @@
 package com.p4square.grow.frontend;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import freemarker.template.Template;
 
@@ -43,6 +46,24 @@ import com.p4square.grow.provider.Provider;
  */
 public class TrainingPageResource extends FreeMarkerPageResource {
     private static Logger cLog = Logger.getLogger(TrainingPageResource.class);
+
+    private static final String[] CHAPTERS = { "introduction", "seeker", "believer", "disciple", "teacher" };
+    private static final Comparator<Map<String, Object>> VIDEO_COMPARATOR = new Comparator<Map<String, Object>>() {
+        @Override
+        public int compare(Map<String, Object> left, Map<String, Object> right) {
+            String leftNumberStr = (String) left.get("number");
+            String rightNumberStr = (String) right.get("number");
+
+            if (leftNumberStr == null || rightNumberStr == null) {
+                return -1;
+            }
+
+            int leftNumber = Integer.valueOf(leftNumberStr);
+            int rightNumber = Integer.valueOf(rightNumberStr);
+
+            return leftNumber - rightNumber;
+        }
+    };
 
     private Config mConfig;
     private Template mTrainingTemplate;
@@ -93,28 +114,50 @@ public class TrainingPageResource extends FreeMarkerPageResource {
 
             Playlist playlist = trainingRecord.getPlaylist();
             Map<String, Boolean> chapters = playlist.getChapterStatuses();
+            Map<String, Boolean> allowedChapters = new LinkedHashMap<String, Boolean>();
 
-            // Get the current chapter (the lowest, incomplete chapter)
-            if (mChapter == null) {
-                int min = Integer.MAX_VALUE;
-                for (Map.Entry<String, Boolean> chapter : chapters.entrySet()) {
-                    int index = chapterIndex(chapter.getKey());
-                    if (!chapter.getValue() && index < min) {
-                        min = index;
-                        mChapter = chapter.getKey();
+            // The user is not allowed to view chapters after his highest completed chapter.
+            // In this loop we find which chapters are allowed and check if the user tried
+            // to skip ahead.
+            String defaultChapter = null;
+            boolean userTriedToSkip = false;
+
+            boolean foundRequired = false;
+            for (String chapterId : CHAPTERS) {
+                boolean allowed = true;
+
+                if (!foundRequired) {
+                   if (!chapters.get(chapterId)) {
+                        // The first incomplete chapter is the highest allowed chapter.
+                        foundRequired = true;
+                        defaultChapter = chapterId;
+                   }
+
+                } else {
+                    allowed = false;
+
+                    if (chapterId.equals(mChapter)) {
+                        userTriedToSkip = true;
                     }
                 }
 
-                if (mChapter == null) {
-                    // Everything is completed... send them back to introduction.
-                    mChapter = "introduction";
-                }
+                allowedChapters.put(chapterId, allowed);
+            }
 
+            if (defaultChapter == null) {
+                // Everything is completed... send them back to introduction.
+                defaultChapter = "introduction";
+            }
+
+            if (mChapter == null || userTriedToSkip) {
+                // No chapter was specified or the user tried to skip ahead.
+                // Either case, redirect.
                 String nextPage = mConfig.getString("dynamicRoot", "");
-                nextPage += "/account/training/" + mChapter;
+                nextPage += "/account/training/" + defaultChapter;
                 getResponse().redirectSeeOther(nextPage);
                 return new StringRepresentation("Redirecting to " + nextPage);
             }
+
 
             // Get videos for the chapter.
             List<Map<String, Object>> videos = null;
@@ -125,6 +168,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
                     return null;
                 }
                 videos = (List<Map<String, Object>>) response.getMap().get("videos");
+                Collections.sort(videos, VIDEO_COMPARATOR);
             }
 
             // Mark the completed videos as completed
@@ -147,6 +191,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
 
             Map root = getRootObject();
             root.put("chapter", mChapter);
+            root.put("isChapterAllowed", allowedChapters);
             root.put("chapterProgress", chapterProgress);
             root.put("videos", videos);
 
@@ -181,17 +226,4 @@ public class TrainingPageResource extends FreeMarkerPageResource {
         return response;
     }
 
-    int chapterIndex(String chapter) {
-        if ("teacher".equals(chapter)) {
-            return 4;
-        } else if ("disciple".equals(chapter)) {
-            return 3;
-        } else if ("believer".equals(chapter)) {
-            return 2;
-        } else if ("seeker".equals(chapter)) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
 }

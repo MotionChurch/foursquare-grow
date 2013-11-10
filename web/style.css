@@ -7,7 +7,7 @@ html, body {
 
 a {
     color: #BDBDBD;
-    text-decoration: none;
+    text-decoration: underline;
     font-weight: bold;
 }
 
@@ -75,6 +75,7 @@ header h1 {
 
 header h1 a {
     color: #7bc043;
+    text-decoration: none;
 }
 
 header h1 img {
@@ -266,13 +267,17 @@ footer a:hover {
 
 #content nav a {
     text-decoration: none;
-    color: #eaeaea;
+    color: #BDBDBD;
     letter-spacing: 2px;
     font-weight: normal;
 }
 
 #content nav a.current, #content nav a:hover {
     color: #fd6000;
+}
+
+#content nav .disabled {
+    color: #eaeaea;
 }
 
 #chapterprogress {
@@ -306,14 +311,22 @@ footer a:hover {
     border-radius: 10px;
 }
 
-#videos .image.completed a:before {
+#videos .image.completed.allowed a:before {
     content: url('/images/complete.png');
     position: absolute;
     top: 0;
     left: 0;
 }
 
-#videos .image a:hover:before {
+#videos .image.allowed a {
+    cursor: pointer;
+}
+
+#videos .image a {
+    cursor: default;
+}
+
+#videos .image.allowed a:hover:before {
     content: url('/images/play.png');
     position: absolute;
     top: 50%;
