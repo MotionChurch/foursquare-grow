@@ -24,7 +24,12 @@
         <nav>
             <#assign chapters = ["introduction", "seeker", "believer", "disciple", "teacher"]>
             <#list chapters as x>
-                <a href="${dynamicRoot}/account/training/${x}" <#if x == chapter>class="current"</#if>>${x?capitalize}</a>
+                <#if isChapterAllowed[x]>
+                    <a href="${dynamicRoot}/account/training/${x}" <#if x == chapter>class="current"</#if>>${x?capitalize}</a>
+                <#else>
+                    <span class="disabled">${x?capitalize}</span>
+                </#if>
+
                 <#if x_has_next> - </#if>
             </#list>
         </nav>
@@ -36,13 +41,17 @@
         </div>
 
         <div id="videos">
+        <#assign allowed = true>
         <#list videos as video>
             <article>
-                <div class="image <#if video.completed>completed</#if>" id="${video.id}"><a href="#" onclick="playVideo('${video.id}'); return false"><img src="${video.image!staticRoot+"/images/videoimage.jpg"}" alt="${video.title}" /></a></div>
-                <h2>${video.title}</h2>
+            <div class="image <#if video.completed>completed</#if> <#if allowed>allowed</#if>" id="${video.id}"><a href="#" onclick="playVideo('${video.id}'); return false"><img src="${video.image!staticRoot+"/images/videoimage.jpg"}" alt="${video.title}" /></a></div>
+                <h2>${video.number}. ${video.title}</h2>
                 <span class="duration"><@hms seconds=video.length /></span>
                 <#if (video.pdf!"") != "">
                     <span class="pdf"><a href="${video.pdf}" target="_blank">Outline</a></span>
+                </#if>
+                <#if allowed && !video.completed>
+                    <#assign allowed = false>
                 </#if>
             </article>
         </#list>
