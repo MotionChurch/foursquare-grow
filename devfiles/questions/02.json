@@ -3,11 +3,11 @@
     "question": "I see God this way:",
     "type": "image",
     "answers": {
-        "a1": { "score": "2" },
+        "a1": { "score": "2.5" },
         "a2": { "score": "1" },
-        "a3": { "score": "3" },
-        "a4": { "score": "1" },
-        "a5": { "score": "1" },
+        "a3": { "score": "4" },
+        "a4": { "score": "2" },
+        "a5": { "score": "2" },
         "a6": { "score": "1" }
     },
     "previousQuestion": "01",
