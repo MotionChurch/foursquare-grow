@@ -28,6 +28,19 @@ public class Score {
     double sum;
     int count;
 
+    public Score() {
+        sum = 0;
+        count = 0;
+    }
+
+    /**
+     * Copy Constructor.
+     */
+    public Score(Score other) {
+        sum = other.sum;
+        count = other.count;
+    }
+
     /**
      * @return The sum of all the points.
      */
@@ -46,6 +59,10 @@ public class Score {
      * @return The final score.
      */
     public double getScore() {
+        if (count == 0) {
+            return 0;
+        }
+
         return sum / count;
     }
 
