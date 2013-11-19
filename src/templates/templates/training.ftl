@@ -50,7 +50,7 @@
                 <#if (video.pdf!"") != "">
                     <span class="pdf"><a href="${video.pdf}" target="_blank">Outline</a></span>
                 </#if>
-                <#if allowed && !video.completed>
+                <#if !allowUserToSkip && allowed && !video.completed>
                     <#assign allowed = false>
                 </#if>
             </article>

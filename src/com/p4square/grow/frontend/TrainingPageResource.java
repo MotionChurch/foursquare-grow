@@ -119,6 +119,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             // The user is not allowed to view chapters after his highest completed chapter.
             // In this loop we find which chapters are allowed and check if the user tried
             // to skip ahead.
+            boolean allowUserToSkip = mConfig.getBoolean("allowUserToSkip", true);
             String defaultChapter = null;
             boolean userTriedToSkip = false;
 
@@ -134,9 +135,9 @@ public class TrainingPageResource extends FreeMarkerPageResource {
                    }
 
                 } else {
-                    allowed = false;
+                    allowed = allowUserToSkip;
 
-                    if (chapterId.equals(mChapter)) {
+                    if (!allowUserToSkip && chapterId.equals(mChapter)) {
                         userTriedToSkip = true;
                     }
                 }
@@ -194,6 +195,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             root.put("isChapterAllowed", allowedChapters);
             root.put("chapterProgress", chapterProgress);
             root.put("videos", videos);
+            root.put("allowUserToSkip", allowUserToSkip);
 
             return new TemplateRepresentation(mTrainingTemplate, root, MediaType.TEXT_HTML);
 

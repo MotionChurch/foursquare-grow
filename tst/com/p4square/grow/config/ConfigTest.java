@@ -51,5 +51,12 @@ public class ConfigTest {
 
         // Non number test
         assertEquals(Integer.MIN_VALUE, domain1.getInt("notANumber"));
+
+        // Test Boolean values
+        assertTrue(domain1.getBoolean("boolean1"));
+        assertTrue(domain1.getBoolean("boolean2"));
+        assertFalse(domain1.getBoolean("boolean3"));
+        assertFalse(domain1.getBoolean("notABool"));
+        assertTrue(domain1.getBoolean("notABool", true));
     }
 }
