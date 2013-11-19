@@ -150,4 +150,18 @@ public class Config {
 
         return defaultValue;
     }
+
+    public boolean getBoolean(String key) {
+        return getBoolean(key, false);
+    }
+
+    public boolean getBoolean(String key, boolean defaultValue) {
+        final String propertyValue = getString(key);
+
+        if (propertyValue != null) {
+            return (propertyValue.charAt(0) & 0xDF) == 'T';
+        }
+
+        return defaultValue;
+    }
 }
