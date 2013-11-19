@@ -16,6 +16,7 @@ import com.netflix.astyanax.ColumnMutation;
 import com.netflix.astyanax.model.Column;
 import com.netflix.astyanax.model.ColumnFamily;
 import com.netflix.astyanax.model.ColumnList;
+import com.netflix.astyanax.ColumnListMutation;
 import com.netflix.astyanax.MutationBatch;
 import com.netflix.astyanax.serializers.StringSerializer;
 import com.netflix.astyanax.thrift.ThriftFamilyFactory;
@@ -186,6 +187,25 @@ public class CassandraDatabase {
             m.deleteColumn().execute();
         } catch (ConnectionException e) {
             cLog.error("deleteKey failed due to Connection Exception", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Remove a row
+     */
+    public void deleteRow(final String cfName, final String key) {
+        ColumnFamily<String, String> cf = new ColumnFamily(cfName,
+            StringSerializer.get(),
+            StringSerializer.get());
+
+        try {
+            MutationBatch batch = mKeyspace.prepareMutationBatch();
+            ColumnListMutation<String> cfm = batch.withRow(cf, key).delete();
+            batch.execute();
+
+        } catch (ConnectionException e) {
+            cLog.error("deleteRow failed due to Connection Exception", e);
             throw new RuntimeException(e);
         }
     }
