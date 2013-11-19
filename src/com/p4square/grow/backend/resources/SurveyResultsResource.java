@@ -117,6 +117,7 @@ public class SurveyResultsResource extends ServerResource {
 
             default:
                 setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+                return null;
         }
 
         if (success) {
@@ -127,6 +128,52 @@ public class SurveyResultsResource extends ServerResource {
         }
 
         return null;
+    }
+
+    /**
+     * Clear assessment results.
+     */
+    @Override
+    protected Representation delete() {
+        boolean success = false;
+
+        switch (mRequestType) {
+            case ANSWER:
+                try {
+                    mDb.deleteKey("assessments", mUserId, mQuestionId);
+                    mDb.deleteKey("assessments", mUserId, "summary");
+                    success = true;
+
+                } catch (Exception e) {
+                    LOG.warn("Caught exception putting answer: " + e.getMessage(), e);
+                }
+                break;
+
+            case ASSESSMENT:
+                try {
+                    mDb.deleteRow("assessments", mUserId);
+                    mDb.deleteKey("accounts", mUserId, "value"); // TODO: IMPORTANT! This needs to be narrower.
+                    success = true;
+
+                } catch (Exception e) {
+                    LOG.warn("Caught exception putting answer: " + e.getMessage(), e);
+                }
+                break;
+
+            default:
+                setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+                return null;
+        }
+
+        if (success) {
+            setStatus(Status.SUCCESS_NO_CONTENT);
+
+        } else {
+            setStatus(Status.SERVER_ERROR_INTERNAL);
+        }
+
+        return null;
+
     }
 
     /**
