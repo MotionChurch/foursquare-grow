@@ -5,5 +5,6 @@
     "length": 344,
     "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Discipleship%20Video%201%20-%20Intro.png",
     "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Discipleship%20Video%201%20-%20Intro.pdf",
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Discipleship%20Video%201%20-%20Intro.mp4", "type":"video/mp4"}]
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Discipleship%20Video%201%20-%20Intro.mp4", "type":"video/mp4"},
+{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Discipleship%20Video%201%20-%20Intro.webmhd.webm", "type":"video/webm"}]
 }

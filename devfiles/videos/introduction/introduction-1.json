@@ -5,5 +5,6 @@
     "length": 140,
     "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Grow%20-%20Introduction.png",
     "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Grow%20-%20Introduction.pdf",
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Grow%20-%20Introduction.mp4", "type":"video/mp4"}]
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Grow%20-%20Introduction.mp4", "type":"video/mp4"},
+{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Grow%20-%20Introduction.webmhd.webm", "type":"video/webm"}]
 }
