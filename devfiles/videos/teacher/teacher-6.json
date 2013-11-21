@@ -5,5 +5,6 @@
     "length": 722,
     "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Teacher%20Video%206%20-%20Being%20a%20Disciple%20%26%20Developing%20Others.png",
     "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Teacher%20Video%206%20-%20Being%20a%20Disciple%20%26%20Developing%20Others.pdf",
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Teacher%20Video%206%20-%20Being%20a%20Disciple%20%26%20Developing%20Others.mp4", "type":"video/mp4"}]
+    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Teacher%20Video%206%20-%20Being%20a%20Disciple%20%26%20Developing%20Others.mp4", "type":"video/mp4"},
+{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Teacher%20Video%206%20-%20Being%20a%20Disciple%20%26%20Developing%20Others.webmhd.webm", "type":"video/webm"}]
 }

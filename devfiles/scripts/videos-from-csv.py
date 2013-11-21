@@ -18,7 +18,8 @@ def mkjson(chapter, number, title, length, image, pdf, videos):
     "pdf": "$pdf",
     "urls": [""")
 
-    urltemplate = Template("""{"src":"$src", "type":"$type"},""")
+    # NB we seek backwards to trim the comma after the loop
+    urltemplate = Template("""{"src":"$src", "type":"$type"},\n""")
 
     directory = string.lower("videos/" + chapter)
     try:
@@ -37,7 +38,7 @@ def mkjson(chapter, number, title, length, image, pdf, videos):
         for type,src in videos.iteritems():
             outfile.write(urltemplate.substitute(dict(type=type, src=BASE_URL + urllib.quote(src))))
 
-        outfile.seek(-1, 2)
+        outfile.seek(-2, 2)
         outfile.write("]\n}")
 
 # This script reads lines from the given csv file and creates json files for
@@ -54,8 +55,9 @@ with open(filename, 'rb') as csvfile:
         image = row[4]
         pdf = row[5]
         h264 = row[6]
+        webm = row[7]
 
-        videos = { "video/mp4": h264 }
+        videos = { "video/mp4": h264, "video/webm": webm }
 
         mkjson(chapter, number, title, length, image, pdf, videos)
 
