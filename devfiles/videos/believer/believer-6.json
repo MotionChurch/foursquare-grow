@@ -3,8 +3,8 @@
     "number": "6",
     "title": "The Church Part 1",
     "length": 405,
-    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%206%20-%20The%20Church%20Part%201.png",
-    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%206%20-%20The%20Church%20Part%201.pdf",
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%206%20-%20The%20Church%20Part%201.mp4", "type":"video/mp4"},
-{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%206%20-%20The%20Church%20Part%201.webmhd.webm", "type":"video/webm"}]
+    "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%206%20-%20The%20Church%20Part%201.png",
+    "pdf": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%206%20-%20The%20Church%20Part%201.pdf",
+    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%206%20-%20The%20Church%20Part%201.mp4", "type":"video/mp4"},
+{"src":"http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%206%20-%20The%20Church%20Part%201.webmhd.webm", "type":"video/webm"}]
 }

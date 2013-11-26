@@ -3,8 +3,8 @@
     "number": "1",
     "title": "Intro",
     "length": 344,
-    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Discipleship%20Video%201%20-%20Intro.png",
-    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Discipleship%20Video%201%20-%20Intro.pdf",
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Discipleship%20Video%201%20-%20Intro.mp4", "type":"video/mp4"},
-{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Discipleship%20Video%201%20-%20Intro.webmhd.webm", "type":"video/webm"}]
+    "image": "http://d12xq7pqelpwt.cloudfront.net/Discipleship%20Video%201%20-%20Intro.png",
+    "pdf": "http://d12xq7pqelpwt.cloudfront.net/Discipleship%20Video%201%20-%20Intro.pdf",
+    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Discipleship%20Video%201%20-%20Intro.mp4", "type":"video/mp4"},
+{"src":"http://d12xq7pqelpwt.cloudfront.net/Discipleship%20Video%201%20-%20Intro.webmhd.webm", "type":"video/webm"}]
 }

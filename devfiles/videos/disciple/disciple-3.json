@@ -3,8 +3,8 @@
     "number": "3",
     "title": "The Word",
     "length": 438,
-    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%203%20-%20The%20Word.png",
-    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%203%20-%20The%20Word.pdf",
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%203%20-%20The%20Word.mp4", "type":"video/mp4"},
-{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Disciple%20Video%203%20-%20The%20Word.webmhd.webm", "type":"video/webm"}]
+    "image": "http://d12xq7pqelpwt.cloudfront.net/Disciple%20Video%203%20-%20The%20Word.png",
+    "pdf": "http://d12xq7pqelpwt.cloudfront.net/Disciple%20Video%203%20-%20The%20Word.pdf",
+    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Disciple%20Video%203%20-%20The%20Word.mp4", "type":"video/mp4"},
+{"src":"http://d12xq7pqelpwt.cloudfront.net/Disciple%20Video%203%20-%20The%20Word.webmhd.webm", "type":"video/webm"}]
 }

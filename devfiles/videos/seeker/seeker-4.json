@@ -3,8 +3,8 @@
     "number": "4",
     "title": "The Cross",
     "length": 289,
-    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%204%20-%20The%20Cross.png",
-    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%204%20-%20The%20Cross.pdf",
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%204%20-%20The%20Cross.mp4", "type":"video/mp4"},
-{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%204%20-%20The%20Cross.webmhd.webm", "type":"video/webm"}]
+    "image": "http://d12xq7pqelpwt.cloudfront.net/Video%204%20-%20The%20Cross.png",
+    "pdf": "http://d12xq7pqelpwt.cloudfront.net/Video%204%20-%20The%20Cross.pdf",
+    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Video%204%20-%20The%20Cross.mp4", "type":"video/mp4"},
+{"src":"http://d12xq7pqelpwt.cloudfront.net/Video%204%20-%20The%20Cross.webmhd.webm", "type":"video/webm"}]
 }

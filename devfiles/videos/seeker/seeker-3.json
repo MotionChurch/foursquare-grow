@@ -3,8 +3,8 @@
     "number": "3",
     "title": "God Searches",
     "length": 399,
-    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%203%20-%20God%20Searches.png",
-    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%203%20-%20God%20Searches.pdf",
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%203%20-%20God%20Searches.mp4", "type":"video/mp4"},
-{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%203%20-%20God%20Searches.webmhd.webm", "type":"video/webm"}]
+    "image": "http://d12xq7pqelpwt.cloudfront.net/Video%203%20-%20God%20Searches.png",
+    "pdf": "http://d12xq7pqelpwt.cloudfront.net/Video%203%20-%20God%20Searches.pdf",
+    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Video%203%20-%20God%20Searches.mp4", "type":"video/mp4"},
+{"src":"http://d12xq7pqelpwt.cloudfront.net/Video%203%20-%20God%20Searches.webmhd.webm", "type":"video/webm"}]
 }

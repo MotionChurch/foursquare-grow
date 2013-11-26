@@ -3,8 +3,8 @@
     "number": "2",
     "title": "Our Condition",
     "length": 612,
-    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%202%20-%20Our%20Condition.png",
-    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%202%20-%20Our%20Condition.pdf",
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%202%20-%20Our%20Condition.mp4", "type":"video/mp4"},
-{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Video%202%20-%20Our%20Condition.webmhd.webm", "type":"video/webm"}]
+    "image": "http://d12xq7pqelpwt.cloudfront.net/Video%202%20-%20Our%20Condition.png",
+    "pdf": "http://d12xq7pqelpwt.cloudfront.net/Video%202%20-%20Our%20Condition.pdf",
+    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Video%202%20-%20Our%20Condition.mp4", "type":"video/mp4"},
+{"src":"http://d12xq7pqelpwt.cloudfront.net/Video%202%20-%20Our%20Condition.webmhd.webm", "type":"video/webm"}]
 }
