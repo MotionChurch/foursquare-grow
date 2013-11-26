@@ -6,7 +6,8 @@ import string
 import urllib
 from string import Template
 
-BASE_URL="http://foursquaregrow.s3-website-us-east-1.amazonaws.com/"
+#BASE_URL="http://foursquaregrow.s3-website-us-east-1.amazonaws.com/"
+BASE_URL="http://d12xq7pqelpwt.cloudfront.net/"
 
 def mkjson(chapter, number, title, length, image, pdf, videos):
     vtemplate = Template("""{

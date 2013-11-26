@@ -3,8 +3,8 @@
     "number": "2",
     "title": "The Bible",
     "length": 386,
-    "image": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%202%20-%20The%20Bible.png",
-    "pdf": "http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%202%20-%20The%20Bible.pdf",
-    "urls": [{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%202%20-%20The%20Bible.mp4", "type":"video/mp4"},
-{"src":"http://foursquaregrow.s3-website-us-east-1.amazonaws.com/Believer%20Video%202%20-%20The%20Bible.webmhd.webm", "type":"video/webm"}]
+    "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%202%20-%20The%20Bible.png",
+    "pdf": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%202%20-%20The%20Bible.pdf",
+    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%202%20-%20The%20Bible.mp4", "type":"video/mp4"},
+{"src":"http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%202%20-%20The%20Bible.webmhd.webm", "type":"video/webm"}]
 }
