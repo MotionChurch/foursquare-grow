@@ -45,7 +45,7 @@ import com.p4square.grow.provider.Provider;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class TrainingPageResource extends FreeMarkerPageResource {
-    private static Logger cLog = Logger.getLogger(TrainingPageResource.class);
+    private static final Logger LOG = Logger.getLogger(TrainingPageResource.class);
 
     private static final String[] CHAPTERS = { "introduction", "seeker", "believer", "disciple", "teacher" };
     private static final Comparator<Map<String, Object>> VIDEO_COMPARATOR = new Comparator<Map<String, Object>>() {
@@ -72,8 +72,8 @@ public class TrainingPageResource extends FreeMarkerPageResource {
     private Provider<String, TrainingRecord> mTrainingRecordProvider;
 
     // Fields pertaining to this request.
-    private String mChapter;
-    private String mUserId;
+    protected String mChapter;
+    protected String mUserId;
 
     @Override
     public void doInit() {
@@ -83,7 +83,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
         mConfig = growFrontend.getConfig();
         mTrainingTemplate = growFrontend.getTemplate("templates/training.ftl");
         if (mTrainingTemplate == null) {
-            cLog.fatal("Could not find training template.");
+            LOG.fatal("Could not find training template.");
             setStatus(Status.SERVER_ERROR_INTERNAL);
         }
 
@@ -122,28 +122,39 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             boolean allowUserToSkip = mConfig.getBoolean("allowUserToSkip", true);
             String defaultChapter = null;
             boolean userTriedToSkip = false;
+            int overallProgress = 0;
 
             boolean foundRequired = false;
-            for (String chapterId : CHAPTERS) {
+            for (String chapterId : getChaptersInOrder()) {
                 boolean allowed = true;
 
-                if (!foundRequired) {
-                   if (!chapters.get(chapterId)) {
-                        // The first incomplete chapter is the highest allowed chapter.
-                        foundRequired = true;
-                        defaultChapter = chapterId;
-                   }
+                Boolean completed = chapters.get(chapterId);
+                if (completed != null) {
+                    if (!foundRequired) {
+                       if (!completed) {
+                            // The first incomplete chapter is the highest allowed chapter.
+                            foundRequired = true;
+                            defaultChapter = chapterId;
+                       }
 
-                } else {
-                    allowed = allowUserToSkip;
+                    } else {
+                        allowed = allowUserToSkip;
 
-                    if (!allowUserToSkip && chapterId.equals(mChapter)) {
-                        userTriedToSkip = true;
+                        if (!allowUserToSkip && chapterId.equals(mChapter)) {
+                            userTriedToSkip = true;
+                        }
+                    }
+
+                    allowedChapters.put(chapterId, allowed);
+
+                    if (completed) {
+                        overallProgress++;
                     }
                 }
-
-                allowedChapters.put(chapterId, allowed);
             }
+
+            // Overall progress is the percentage of chapters complete
+            overallProgress = (int) ((double) overallProgress / getChaptersInOrder().length * 100);
 
             if (defaultChapter == null) {
                 // Everything is completed... send them back to introduction.
@@ -177,9 +188,9 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             for (Map<String, Object> video : videos) {
                 boolean completed = false;
                 VideoRecord record = playlist.find((String) video.get("id"));
-                cLog.info("VideoId: " + video.get("id"));
+                LOG.info("VideoId: " + video.get("id"));
                 if (record != null) {
-                    cLog.info("VideoRecord: " + record.getComplete());
+                    LOG.info("VideoRecord: " + record.getComplete());
                     completed = record.getComplete();
                 }
                 video.put("completed", completed);
@@ -192,18 +203,27 @@ public class TrainingPageResource extends FreeMarkerPageResource {
 
             Map root = getRootObject();
             root.put("chapter", mChapter);
+            root.put("chapters", allowedChapters.keySet());
             root.put("isChapterAllowed", allowedChapters);
             root.put("chapterProgress", chapterProgress);
+            root.put("overallProgress", overallProgress);
             root.put("videos", videos);
             root.put("allowUserToSkip", allowUserToSkip);
 
             return new TemplateRepresentation(mTrainingTemplate, root, MediaType.TEXT_HTML);
 
         } catch (Exception e) {
-            cLog.fatal("Could not render page: " + e.getMessage(), e);
+            LOG.fatal("Could not render page: " + e.getMessage(), e);
             setStatus(Status.SERVER_ERROR_INTERNAL);
             return ErrorPage.RENDER_ERROR;
         }
+    }
+
+    /**
+     * This method returns a list of chapters in the correct order.
+     */
+    protected String[] getChaptersInOrder() {
+        return CHAPTERS;
     }
 
     /**
@@ -217,12 +237,12 @@ public class TrainingPageResource extends FreeMarkerPageResource {
      * Helper method to send a GET to the backend.
      */
     private JsonResponse backendGet(final String uri) {
-        cLog.debug("Sending backend GET " + uri);
+        LOG.debug("Sending backend GET " + uri);
 
         final JsonResponse response = mJsonClient.get(getBackendEndpoint() + uri);
         final Status status = response.getStatus();
         if (!status.isSuccess() && !Status.CLIENT_ERROR_NOT_FOUND.equals(status)) {
-            cLog.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
+            LOG.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
         }
 
         return response;
