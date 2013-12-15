@@ -42,5 +42,13 @@
         "teacher-6":{ "required": true },
         "teacher-7":{ "required": true }
     },
-    "lastUpdated": 1383798629000
+    "leader":{
+        "leader-1":{ "required": true },
+        "leader-2":{ "required": true },
+        "leader-3":{ "required": true },
+        "leader-4":{ "required": true },
+        "leader-5":{ "required": true },
+        "leader-6":{ "required": true }
+    },
+    "lastUpdated": 1387066523000
 }

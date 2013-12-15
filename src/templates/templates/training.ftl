@@ -10,19 +10,11 @@
     </@noticebox>
 
     <div id="progressbar">
-        <#switch chapter>
-            <#case "introduction"><#assign overallProgress = 0><#break>
-            <#case "seeker"><#assign overallProgress = 20><#break>
-            <#case "believer"><#assign overallProgress = 40><#break>
-            <#case "disciple"><#assign overallProgress = 60><#break>
-            <#case "teacher"><#assign overallProgress = 80><#break>
-        </#switch>
         <div class="progress" style="width: ${overallProgress}%"></div>
     </div>
 
     <div id="content">
         <nav>
-            <#assign chapters = ["introduction", "seeker", "believer", "disciple", "teacher"]>
             <#list chapters as x>
                 <#if isChapterAllowed[x]>
                     <a href="${dynamicRoot}/account/training/${x}" <#if x == chapter>class="current"</#if>>${x?capitalize}</a>

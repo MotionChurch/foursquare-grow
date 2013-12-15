@@ -44,8 +44,6 @@ import com.p4square.grow.model.Score;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class TrainingRecordResource extends ServerResource {
-    private static final String[] CHAPTERS = { "introduction", "seeker", "believer", "disciple", "teacher" };
-
     private static final Logger LOG = Logger.getLogger(TrainingRecordResource.class);
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
