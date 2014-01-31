@@ -58,10 +58,10 @@ public class TrainingPageResource extends FreeMarkerPageResource {
                 return -1;
             }
 
-            int leftNumber = Integer.valueOf(leftNumberStr);
-            int rightNumber = Integer.valueOf(rightNumberStr);
+            double leftNumber = Double.valueOf(leftNumberStr);
+            double rightNumber = Double.valueOf(rightNumberStr);
 
-            return leftNumber - rightNumber;
+            return Double.compare(leftNumber, rightNumber);
         }
     };
 
