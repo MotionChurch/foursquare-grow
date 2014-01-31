@@ -1,10 +1,10 @@
 {
     "id": "believer-5",
-    "number": "5",
+    "number": "4",
     "title": "God Becomes Man",
     "length": 797,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%205%20-%20God%20Becomes%20Man.png",
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%205%20-%20God%20Becomes%20Man.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%205%20-%20God%20Becomes%20Man-low.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%205%20-%20God%20Becomes%20Man.webmhd.webm", "type":"video/webm"}]
+    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/believer-video-5-god-becomes-man.mp4", "type":"video/mp4"},
+{"src":"http://d12xq7pqelpwt.cloudfront.net/believer-video-5-god-becomes-man.webmhd.webm", "type":"video/webm"}]
 }

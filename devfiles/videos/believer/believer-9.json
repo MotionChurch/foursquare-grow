@@ -1,10 +1,10 @@
 {
     "id": "believer-9",
-    "number": "9",
+    "number": "7",
     "title": "Second Coming",
     "length": 478,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%209%20-%20Second%20Coming.png",
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%209%20-%20Second%20Coming.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%209%20-%20Second%20Coming-low.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%209%20-%20Second%20Comming.webmhd.webm", "type":"video/webm"}]
+    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/believer-video-9-second-comming.mp4", "type":"video/mp4"},
+{"src":"http://d12xq7pqelpwt.cloudfront.net/believer-video-9-second-comming.webmhd.webm", "type":"video/webm"}]
 }

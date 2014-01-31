@@ -1,10 +1,10 @@
 {
     "id": "teacher-7",
-    "number": "7",
+    "number": "6",
     "title": "Prerequisites",
     "length": 535,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Teacher%20Video%207%20-%20Prerequisites.png",
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/Teacher%20Video%207%20-%20Prerequisites.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Teacher%20Video%207%20-%20Prerequisites-low.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/Teacher%20Video%207%20-%20Prerequisites.webmhd.webm", "type":"video/webm"}]
+    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/teacher-video-7-prerequisites.mp4", "type":"video/mp4"},
+{"src":"http://d12xq7pqelpwt.cloudfront.net/teacher-video-7-prerequisites.webmhd.webm", "type":"video/webm"}]
 }

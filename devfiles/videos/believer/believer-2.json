@@ -1,10 +1,10 @@
 {
     "id": "believer-2",
-    "number": "2",
+    "number": "1",
     "title": "The Bible",
     "length": 386,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%202%20-%20The%20Bible.png",
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%202%20-%20The%20Bible.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%202%20-%20The%20Bible-low.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%202%20-%20The%20Bible.webmhd.webm", "type":"video/webm"}]
+    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/believer-video-2-the-bible.mp4", "type":"video/mp4"},
+{"src":"http://d12xq7pqelpwt.cloudfront.net/believer-video-2-the-bible.webmhd.webm", "type":"video/webm"}]
 }

@@ -1,10 +1,10 @@
 {
     "id": "disciple-8",
-    "number": "8",
+    "number": "7",
     "title": "Stewardship",
     "length": 163,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Disciple%20Video%208%20-%20Stewardship.png",
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/Disciple%20Video%208%20-%20Stewardship.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Disciple%20Video%208%20-%20Stewardship-low.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/Disciple%20Video%208%20-%20Stewardship.webmhd.webm", "type":"video/webm"}]
+    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/disciple-video-8-stewardship.mp4", "type":"video/mp4"},
+{"src":"http://d12xq7pqelpwt.cloudfront.net/disciple-video-8-stewardship.webmhd.webm", "type":"video/webm"}]
 }

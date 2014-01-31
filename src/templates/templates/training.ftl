@@ -37,7 +37,7 @@
         <#list videos as video>
             <article>
             <div class="image <#if video.completed>completed</#if> <#if allowed>allowed</#if>" id="${video.id}"><a href="#" onclick="playVideo('${video.id}'); return false"><img src="${video.image!staticRoot+"/images/videoimage.jpg"}" alt="${video.title}" /></a></div>
-                <h2>${video.number}. ${video.title}</h2>
+                <h2><#if video.number != "0">${video.number}. </#if>${video.title}</h2>
                 <span class="duration"><@hms seconds=video.length /></span>
                 <#if (video.pdf!"") != "">
                     <span class="pdf"><a href="${video.pdf}" target="_blank">Outline</a></span>
