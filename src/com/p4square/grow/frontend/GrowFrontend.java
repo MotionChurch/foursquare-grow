@@ -162,6 +162,8 @@ public class GrowFrontend extends FMFacade {
             component.getDefaultHost().attach("/scripts", new FileServingApp("./build/root/scripts"));
             component.getDefaultHost().attach("/style.css", new FileServingApp("./build/root/style.css"));
             component.getDefaultHost().attach("/favicon.ico", new FileServingApp("./build/root/favicon.ico"));
+            component.getDefaultHost().attach("/notfound.html", new FileServingApp("./build/root/notfound.html"));
+            component.getDefaultHost().attach("/error.html", new FileServingApp("./build/root/error.html"));
         } catch (IOException e) {
             LOG.error("Could not create directory for static resources: "
                     + e.getMessage(), e);
