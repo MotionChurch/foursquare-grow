@@ -208,7 +208,7 @@ public class SurveyResultsResource extends ServerResource {
                         continue;
                     }
 
-                    LOG.error("Scoring questionId: " + c.getName());
+                    LOG.debug("Scoring questionId: " + c.getName());
                     scoringDone = !question.scoreAnswer(score, userAnswer);
 
                 } catch (Exception e) {

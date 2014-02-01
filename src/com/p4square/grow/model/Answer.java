@@ -128,7 +128,7 @@ public class Answer {
                 return false; // Quit scoring.
 
             case AVERAGE:
-                LOG.error("ScoreType.AVERAGE: { delta: \"" + getScore() + "\" }");
+                LOG.debug("ScoreType.AVERAGE: { delta: \"" + getScore() + "\" }");
                 score.sum += getScore();
                 score.count++;
                 break;
