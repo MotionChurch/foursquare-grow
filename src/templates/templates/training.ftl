@@ -2,6 +2,18 @@
 <#include "/macros/common-page.ftl">
 <#include "/macros/hms.ftl">
 
+<#switch chapter>
+    <#case "believer">
+        <#assign deeperinclude="/templates/deeper-believer.ftl">
+        <#break>
+    <#case "disciple">
+        <#assign deeperinclude="/templates/deeper-disciple.ftl">
+        <#break>
+    <#case "teacher">
+        <#assign deeperinclude="/templates/deeper-teacher.ftl">
+        <#break>
+</#switch>
+
 <@commonpage>
     <@noticebox>
         The Grow Process focuses on the topic that you want to learn
@@ -32,7 +44,7 @@
             <div class="progresslabel" style="left:${chapterProgress}%">${chapterProgress}%</div>
         </div>
 
-        <#assign sidebar=showfeed>
+        <#assign sidebar=showfeed || deeperinclude?has_content>
 
         <div id="videos" <#if sidebar>style="width: 70%"</#if>>
         <#assign allowed = true>
@@ -51,8 +63,15 @@
         </#list>
         </div>
 
-        <#if showfeed>
+        <#if showfeed!false>
             <#include "/templates/communityfeed.ftl">
+        </#if>
+
+        <#if deeperinclude?has_content>
+            <div id="deeper">
+                <h2>Going Deeper</h2>
+                <#include deeperinclude>
+            </div>
         </#if>
     </div>
 
