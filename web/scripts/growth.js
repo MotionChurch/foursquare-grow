@@ -275,7 +275,6 @@ function submitClassForm()
         type: "POST",
         url: "http://www.myfoursquarechurch.com/grow-classes/#response",
         data: $("#classform").serialize(),
-        dataType: html,
     }).always(function() {
         location.href="/account/training/introduction";
     });
