@@ -19,12 +19,16 @@ import com.p4square.grow.config.Config;
 import com.p4square.grow.backend.db.CassandraDatabase;
 import com.p4square.grow.backend.db.CassandraKey;
 import com.p4square.grow.backend.db.CassandraProviderImpl;
+import com.p4square.grow.backend.db.CassandraCollectionProvider;
 import com.p4square.grow.backend.db.CassandraTrainingRecordProvider;
 
 import com.p4square.grow.model.Question;
 import com.p4square.grow.model.TrainingRecord;
 import com.p4square.grow.model.Playlist;
+import com.p4square.grow.model.MessageThread;
+import com.p4square.grow.model.Message;
 
+import com.p4square.grow.provider.CollectionProvider;
 import com.p4square.grow.provider.Provider;
 import com.p4square.grow.provider.ProvidesQuestions;
 import com.p4square.grow.provider.ProvidesTrainingRecords;
@@ -37,13 +41,17 @@ import com.p4square.grow.backend.resources.SurveyResultsResource;
 import com.p4square.grow.backend.resources.TrainingRecordResource;
 import com.p4square.grow.backend.resources.TrainingResource;
 
+import com.p4square.grow.backend.feed.FeedDataProvider;
+import com.p4square.grow.backend.feed.ThreadResource;
+import com.p4square.grow.backend.feed.TopicResource;
+
 /**
  * Main class for the backend application.
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class GrowBackend extends Application
-        implements ProvidesQuestions, ProvidesTrainingRecords {
+        implements ProvidesQuestions, ProvidesTrainingRecords, FeedDataProvider {
     private static final String DEFAULT_COLUMN = "value";
 
     private final static Logger LOG = Logger.getLogger(GrowBackend.class);
@@ -53,6 +61,9 @@ public class GrowBackend extends Application
 
     private final Provider<String, Question> mQuestionProvider;
     private final CassandraTrainingRecordProvider mTrainingRecordProvider;
+
+    private final CollectionProvider<String, String, MessageThread> mFeedThreadProvider;
+    private final CollectionProvider<String, String, Message> mFeedMessageProvider;
 
     public GrowBackend() {
         this(new Config());
@@ -68,6 +79,11 @@ public class GrowBackend extends Application
                 return new CassandraKey("strings", "/questions/" + questionId, DEFAULT_COLUMN);
             }
         };
+
+        mFeedThreadProvider = new CassandraCollectionProvider<MessageThread>(mDatabase,
+                "feedthreads", MessageThread.class);
+        mFeedMessageProvider = new CassandraCollectionProvider<Message>(mDatabase,
+                "feedmessages", Message.class);
 
         mTrainingRecordProvider = new CassandraTrainingRecordProvider(mDatabase);
     }
@@ -96,6 +112,11 @@ public class GrowBackend extends Application
 
         // Misc.
         router.attach("/banner", BannerResource.class);
+
+        // Feed
+        router.attach("/feed/{topic}", TopicResource.class);
+        router.attach("/feed/{topic}/{thread}", ThreadResource.class);
+        //router.attach("/feed/{topic/{thread}/{message}", MessageResource.class);
 
         return router;
     }
@@ -146,6 +167,16 @@ public class GrowBackend extends Application
      */
     public Playlist getDefaultPlaylist() throws IOException {
         return mTrainingRecordProvider.getDefaultPlaylist();
+    }
+
+    @Override
+    public CollectionProvider<String, String, MessageThread> getThreadProvider() {
+        return mFeedThreadProvider;
+    }
+
+    @Override
+    public CollectionProvider<String, String, Message> getMessageProvider() {
+        return mFeedMessageProvider;
     }
 
     /**

@@ -32,10 +32,12 @@
             <div class="progresslabel" style="left:${chapterProgress}%">${chapterProgress}%</div>
         </div>
 
-        <div id="videos">
+        <#assign sidebar=showfeed>
+
+        <div id="videos" <#if sidebar>style="width: 70%"</#if>>
         <#assign allowed = true>
         <#list videos as video>
-            <article>
+            <article <#if sidebar>style="margin-right: 30px"</#if>>
             <div class="image <#if video.completed>completed</#if> <#if allowed>allowed</#if>" id="${video.id}"><a href="#" onclick="playVideo('${video.id}'); return false"><img src="${video.image!staticRoot+"/images/videoimage.jpg"}" alt="${video.title}" /></a></div>
                 <h2><#if video.number != "0">${video.number}. </#if>${video.title}</h2>
                 <span class="duration"><@hms seconds=video.length /></span>
@@ -48,6 +50,10 @@
             </article>
         </#list>
         </div>
+
+        <#if showfeed>
+            <#include "/templates/communityfeed.ftl">
+        </#if>
     </div>
 
     <div id="videoplayer">
