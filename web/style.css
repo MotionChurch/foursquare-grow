@@ -28,6 +28,12 @@ label {
     display: inline-block;
 }
 
+label.check {
+    text-align: left;
+    width: 100%;
+    display: block;
+}
+
 blockquote {
     font-style: italic;
 }
