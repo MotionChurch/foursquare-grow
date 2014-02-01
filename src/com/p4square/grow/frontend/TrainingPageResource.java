@@ -209,6 +209,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             root.put("overallProgress", overallProgress);
             root.put("videos", videos);
             root.put("allowUserToSkip", allowUserToSkip);
+            root.put("showfeed", getQueryValue("showfeed") != null);
 
             return new TemplateRepresentation(mTrainingTemplate, root, MediaType.TEXT_HTML);
 
