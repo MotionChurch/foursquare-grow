@@ -158,8 +158,10 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
             return 3;
         } else if ("believer".equals(chapter)) {
             return 2;
-        } else {
+        } else if ("seeker".equals(chapter)) {
             return 1;
+        } else {
+            return Integer.MAX_VALUE;
         }
     }
 }

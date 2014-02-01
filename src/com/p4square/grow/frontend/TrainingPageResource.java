@@ -119,7 +119,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             // The user is not allowed to view chapters after his highest completed chapter.
             // In this loop we find which chapters are allowed and check if the user tried
             // to skip ahead.
-            boolean allowUserToSkip = mConfig.getBoolean("allowUserToSkip", true);
+            boolean allowUserToSkip = mConfig.getBoolean("allowUserToSkip", false) || getQueryValue("magicskip") != null;
             String defaultChapter = null;
             boolean userTriedToSkip = false;
             int overallProgress = 0;
