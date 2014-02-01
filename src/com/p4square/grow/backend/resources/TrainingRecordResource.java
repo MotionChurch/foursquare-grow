@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import com.p4square.grow.backend.GrowBackend;
 import com.p4square.grow.backend.db.CassandraDatabase;
 
+import com.p4square.grow.model.Chapter;
 import com.p4square.grow.model.Playlist;
 import com.p4square.grow.model.VideoRecord;
 import com.p4square.grow.model.TrainingRecord;
@@ -45,7 +46,7 @@ import com.p4square.grow.model.Score;
  */
 public class TrainingRecordResource extends ServerResource {
     private static final Logger LOG = Logger.getLogger(TrainingRecordResource.class);
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper MAPPER = JsonEncodedProvider.MAPPER;
 
     static enum RequestType {
         SUMMARY, VIDEO
@@ -76,6 +77,7 @@ public class TrainingRecordResource extends ServerResource {
             if (mRecord == null) {
                 mRecord = new TrainingRecord();
                 mRecord.setPlaylist(defaultPlaylist);
+                skipAssessedChapters(mUserId, mRecord);
             } else {
                 // Merge the playlist with the most recent version.
                 mRecord.getPlaylist().merge(defaultPlaylist);
@@ -174,4 +176,49 @@ public class TrainingRecordResource extends ServerResource {
         return null;
     }
 
+    /**
+     * Mark the chapters which the user assessed through as not required.
+     */
+    private void skipAssessedChapters(String userId, TrainingRecord record) {
+        // Get the user's score.
+        double assessedScore;
+
+        try {
+            String summaryString = mDb.getKey("assessments", userId, "summary");
+            if (summaryString == null) {
+                LOG.warn("Asked to create training record for unassessed user " + userId);
+                return;
+            }
+            Map<?,?> summary = MAPPER.readValue(summaryString, Map.class);
+            assessedScore = (Double) summary.get("score");
+
+        } catch (IOException e) {
+            LOG.error("IOException fetching assessment record for " + userId, e);
+            return;
+        }
+
+        // Mark the correct videos as not required.
+        Playlist playlist = record.getPlaylist();
+
+        for (Map.Entry<String, Chapter> entry : playlist.getChaptersMap().entrySet()) {
+            String chapterId = entry.getKey();
+            Chapter chapter = entry.getValue();
+            boolean required;
+
+            if ("introduction".equals(chapter)) {
+                // Introduction chapter is always required
+                required = true;
+
+            } else {
+                // Chapter required if the floor of the score is <= the chapter's numeric value.
+                required = Math.floor(assessedScore) <= Score.numericScore(chapterId);
+            }
+
+            if (!required) {
+                for (VideoRecord video : chapter.getVideos().values()) {
+                    video.setRequired(required);
+                }
+            }
+        }
+    }
 }

@@ -20,8 +20,10 @@ public class Score {
             return 3;
         } else if ("believer".equals(score)) {
             return 2;
-        } else {
+        } else if ("seeker".equals(score)) {
             return 1;
+        } else {
+            return Integer.MAX_VALUE;
         }
     }
 
