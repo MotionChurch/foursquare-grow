@@ -247,3 +247,38 @@ function chapterComplete()
     notice("You've completed this chapter!");
     location.href += "/completed";
 }
+
+function submitClassForm()
+{
+    notice("Submitting Class Form...");
+
+    var firstname = $("#firstname").val();
+    var lastname = $("#lastname").val();
+    var phone = $("#phone").val();
+    var email = $("#email").val();
+
+    if (firstname == "") {
+        alert("First name is required.");
+        return false;
+    } else if (lastname == "") {
+        alert("Last name is required.");
+        return false;
+    } else if (phone == "") {
+        alert("Phone is required.");
+        return false;
+    } else if (email == "") {
+        alert("Email is required.");
+        return false;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "http://www.myfoursquarechurch.com/grow-classes/#response",
+        data: $("#classform").serialize(),
+        dataType: html,
+    }).always(function() {
+        location.href="/account/training/introduction";
+    });
+
+    return false;
+}
