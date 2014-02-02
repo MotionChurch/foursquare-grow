@@ -3,6 +3,9 @@
 <#include "/macros/hms.ftl">
 
 <#switch chapter>
+    <#case "seeker">
+        <#assign deeperinclude="/templates/deeper-seeker.ftl">
+        <#break>
     <#case "believer">
         <#assign deeperinclude="/templates/deeper-believer.ftl">
         <#break>
@@ -70,6 +73,11 @@
         <#if deeperinclude?has_content>
             <div id="deeper">
                 <h2>Going Deeper</h2>
+                <p>
+                    This section is a list of resources provided to help you to go
+                    deeper in your faith. It includes reading material, links to
+                    helpful resources, etc.
+                </p>
                 <#include deeperinclude>
             </div>
         </#if>
