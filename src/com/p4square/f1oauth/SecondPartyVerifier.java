@@ -74,14 +74,20 @@ public class SecondPartyVerifier implements Verifier {
         request.setChallengeResponse(user.getChallengeResponse());
         Response response = mDispatcher.handle(request);
 
-        Status status = response.getStatus();
-        if (status.isSuccess()) {
-            JacksonRepresentation<Map> entity = new JacksonRepresentation<Map>(response.getEntity(), Map.class);
-            Map data = entity.getObject();
-            return new F1User(user, data);
+        try {
+            Status status = response.getStatus();
+            if (status.isSuccess()) {
+                JacksonRepresentation<Map> entity = new JacksonRepresentation<Map>(response.getEntity(), Map.class);
+                Map data = entity.getObject();
+                return new F1User(user, data);
 
-        } else {
-            throw new OAuthException(status);
+            } else {
+                throw new OAuthException(status);
+            }
+        } finally {
+            if (response.getEntity() != null) {
+                response.release();
+            }
         }
     }
 }
