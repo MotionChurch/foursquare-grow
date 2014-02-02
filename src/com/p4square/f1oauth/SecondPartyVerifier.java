@@ -4,6 +4,9 @@
 
 package com.p4square.f1oauth;
 
+import java.io.IOException;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 import com.p4square.restlet.oauth.OAuthException;
@@ -12,6 +15,10 @@ import com.p4square.restlet.oauth.OAuthUser;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
+import org.restlet.Restlet;
+import org.restlet.data.Method;
+import org.restlet.data.Status;
+import org.restlet.ext.jackson.JacksonRepresentation;
 import org.restlet.security.Verifier;
 
 /**
@@ -22,13 +29,15 @@ import org.restlet.security.Verifier;
 public class SecondPartyVerifier implements Verifier {
     private static final Logger LOG = Logger.getLogger(SecondPartyVerifier.class);
 
+    private final Restlet mDispatcher;
     private final F1OAuthHelper mHelper;
 
-    public SecondPartyVerifier(F1OAuthHelper helper) {
+    public SecondPartyVerifier(Context context, F1OAuthHelper helper) {
         if (helper == null) {
             throw new IllegalArgumentException("Helper can not be null.");
         }
 
+        mDispatcher = context.getClientDispatcher();
         mHelper = helper;
     }
 
@@ -42,8 +51,10 @@ public class SecondPartyVerifier implements Verifier {
         String password = new String(request.getChallengeResponse().getSecret());
 
         try {
-            OAuthUser user = mHelper.getAccessToken(username, password);
-            user.setIdentifier(username);
+            OAuthUser ouser = mHelper.getAccessToken(username, password);
+
+            // Once we have a user, fetch the people record to get the user id.
+            F1User user = getF1User(ouser);
             user.setEmail(username);
 
             // This seems like a hack... but it'll work
@@ -51,10 +62,26 @@ public class SecondPartyVerifier implements Verifier {
 
             return RESULT_VALID;
 
-        } catch (OAuthException e) {
+        } catch (Exception e) {
             LOG.info("OAuth Exception: " + e, e);
         }
 
         return RESULT_INVALID; // Invalid credentials
+    }
+
+    private F1User getF1User(OAuthUser user) throws OAuthException, IOException {
+        Request request = new Request(Method.GET, user.getLocation() + ".json");
+        request.setChallengeResponse(user.getChallengeResponse());
+        Response response = mDispatcher.handle(request);
+
+        Status status = response.getStatus();
+        if (status.isSuccess()) {
+            JacksonRepresentation<Map> entity = new JacksonRepresentation<Map>(response.getEntity(), Map.class);
+            Map data = entity.getObject();
+            return new F1User(user, data);
+
+        } else {
+            throw new OAuthException(status);
+        }
     }
 }

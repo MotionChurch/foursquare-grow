@@ -127,7 +127,7 @@ public class GrowFrontend extends FMFacade {
         SessionCheckingAuthenticator sessionChk = new SessionCheckingAuthenticator(context, true);
 
         // This is used to authenticate the user
-        SecondPartyVerifier f1Verifier = new SecondPartyVerifier(getHelper());
+        SecondPartyVerifier f1Verifier = new SecondPartyVerifier(context, getHelper());
         LoginFormAuthenticator loginAuth = new LoginFormAuthenticator(context, false, f1Verifier);
         loginAuth.setLoginFormUrl(loginPage);
         loginAuth.setLoginPostUrl(loginPost);
