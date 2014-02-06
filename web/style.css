@@ -542,3 +542,103 @@ footer a:hover {
     left: 126px;
     cursor: pointer;
 }
+
+#foursquarelogin {
+    background: url('/images/loginbg.png') repeat #666;
+    padding: 1em;
+    color: black;
+    font: 12px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+    text-align: left;
+    min-height: 380px;
+    width: 760px;
+    margin: 0 auto 0 auto;
+}
+
+#foursquarelogin .inside {
+    background: url('/images/faux_right_column.png') repeat-y 470px 0 white;
+    width: 750px;
+    min-height: 350px;
+    margin: 0 auto 0 auto;
+    -moz-box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+}
+
+#foursquarelogin .left {
+    margin: 20px;
+    padding: 20px;
+    background: #f3f3f3;
+    float: left;
+    width: 400px;
+    height: 270px;
+    -moz-box-shadow: 0 -1px 1px #fff;
+    -webkit-box-shadow: 0 -1px 1px #fff;
+    box-shadow: 0 -1px 1px #fff;
+    border: 1px solid;
+    border-color: #eee #ddd #ccc;
+}
+
+#foursquarelogin label a {
+    color: #888;
+}
+
+#foursquarelogin .right {
+    float: left;
+    width: 260px;
+    margin-top: 20px;
+}
+
+#foursquarelogin .submit {
+    float: left;
+}
+
+#foursquarelogin #noaccount {
+    text-align: right;
+}
+
+#foursquarelogin label {
+    width: 100%;
+    display: block;
+    text-align: left;
+    font-size: 20px;
+}
+
+#foursquarelogin input {
+    -webkit-appearance: none;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    background-color: #fff;
+    border: 1px solid;
+    border-color: #848484 #c1c1c1 #e1e1e1;
+    color: #000;
+    outline: 0;
+    padding: 2px 3px;
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+    height: 1.8em;
+    width: 100%;
+}
+
+#foursquarelogin input[type="submit"] {
+    -webkit-appearance: none;
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 25px;
+    border-radius: 25px;
+    background: #ddd url(../images/button.png) repeat-x;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), color-stop(1, #ddd));
+    background: -moz-linear-gradient(top center, #fff 0%, #ddd 100%);
+    border: 1px solid;
+    border-color: #ddd #bbb #999;
+    cursor: pointer;
+    color: #333;
+    font: bold 20px/1.2 Arial, sans-serif;
+    outline: 0;
+    overflow: visible;
+    padding: 3px 10px 4px;
+    text-shadow: #fff 0 1px 1px;
+    text-decoration: none;
+}
