@@ -220,11 +220,11 @@ function reportVideoComplete(data)
         data: {'completed':'true'}
     }).error(function(jqXHR, error) {
         notice('Could not record video completiton due to ' + error + '. If the problem persists, please contact us.');
+    }).always(function() {
+        if (completed == total && completedBefore != completed) {
+            chapterComplete();
+        }
     });
-
-    if (completed == total && completedBefore != completed) {
-        chapterComplete();
-    }
 }
 
 function closeVideo()
