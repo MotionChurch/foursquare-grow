@@ -15,11 +15,17 @@ public class SliderScoringEngine extends ScoringEngine {
 
     @Override
     public boolean scoreAnswer(Score score, Question question, RecordedAnswer userAnswer) {
-        float delta = Float.valueOf(userAnswer.getAnswerId()) * 3 + 1;
+        int numberOfAnswers = question.getAnswers().size();
+        if (numberOfAnswers == 0) {
+            throw new IllegalArgumentException("Question has no answers.");
+        }
 
-        if (delta < 0 || delta > 4) {
+        double answer = Double.valueOf(userAnswer.getAnswerId());
+        if (answer < 0 || answer > 1) {
             throw new IllegalArgumentException("Answer out of bounds.");
         }
+
+        double delta = Math.max(1, Math.ceil(answer * numberOfAnswers) / numberOfAnswers * 4);
 
         score.sum += delta;
         score.count++;
