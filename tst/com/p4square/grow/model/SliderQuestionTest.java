@@ -26,6 +26,12 @@ public class SliderQuestionTest {
     @Before
     public void setUp() {
         mQuestion = new SliderQuestion();
+
+        // Add some "answers" for the scoring engine.
+        mQuestion.getAnswers().put("1", new Answer());
+        mQuestion.getAnswers().put("2", new Answer());
+        mQuestion.getAnswers().put("3", new Answer());
+        mQuestion.getAnswers().put("4", new Answer());
     }
 
     /**
