@@ -4,6 +4,7 @@
 
 package com.p4square.grow.frontend;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.restlet.data.Status;
@@ -54,7 +55,8 @@ public class AccountRedirectResource extends ServerResource {
     @Override
     protected Representation get() {
         try {
-            Map<?, ?> account = null;
+            // Fetch account Map.
+            Map account = new HashMap();
             try {
                 JsonResponse response = backendGet("/accounts/" + mUserId);
                 if (response.getStatus().isSuccess()) {
@@ -64,12 +66,15 @@ public class AccountRedirectResource extends ServerResource {
 
             }
 
-            String landing = null;
-
-            if (account != null) {
-                landing = (String) account.get("landing");
+            // Check for the new believers cookie
+            String cookie = getRequest().getCookies().getFirstValue(NewBelieverResource.COOKIE_NAME);
+            if (cookie != null && cookie.length() != 0) {
+                account.put("landing", "training");
+                account.put("newbeliever", "true");
+                backendPut("/accounts/" + mUserId, account);
             }
 
+            String landing = (String) account.get("landing");
             if (landing == null) {
                 landing = "assessment";
             }
@@ -100,6 +105,18 @@ public class AccountRedirectResource extends ServerResource {
         LOG.debug("Sending backend GET " + uri);
 
         final JsonResponse response = mJsonClient.get(getBackendEndpoint() + uri);
+        final Status status = response.getStatus();
+        if (!status.isSuccess() && !Status.CLIENT_ERROR_NOT_FOUND.equals(status)) {
+            LOG.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
+        }
+
+        return response;
+    }
+
+    protected JsonResponse backendPut(final String uri, final Map data) {
+        LOG.debug("Sending backend PUT " + uri);
+
+        final JsonResponse response = mJsonClient.put(getBackendEndpoint() + uri, data);
         final Status status = response.getStatus();
         if (!status.isSuccess() && !Status.CLIENT_ERROR_NOT_FOUND.equals(status)) {
             LOG.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
