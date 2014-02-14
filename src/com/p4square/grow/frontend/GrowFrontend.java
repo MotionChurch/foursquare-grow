@@ -95,6 +95,7 @@ public class GrowFrontend extends FMFacade {
         router.attach("/", new Redirector(getContext(), "index.html", Redirector.MODE_CLIENT_PERMANENT));
         router.attach("/login.html", LoginPageResource.class);
         router.attach("/newaccount.html", NewAccountResource.class);
+        router.attach("/newbeliever", NewBelieverResource.class);
 
         final Router accountRouter = new Router(getContext());
         accountRouter.attach("/authenticate", AuthenticatedResource.class);

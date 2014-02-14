@@ -143,7 +143,7 @@ public class TrainingRecordResource extends ServerResource {
         switch (mRequestType) {
             case VIDEO:
                 try {
-                    JacksonRepresentation<VideoRecord> representation = 
+                    JacksonRepresentation<VideoRecord> representation =
                         new JacksonRepresentation<>(entity, VideoRecord.class);
                     representation.setObjectMapper(JsonEncodedProvider.MAPPER);
                     VideoRecord update = representation.getObject();
@@ -181,7 +181,7 @@ public class TrainingRecordResource extends ServerResource {
      */
     private void skipAssessedChapters(String userId, TrainingRecord record) {
         // Get the user's score.
-        double assessedScore;
+        double assessedScore = 0;
 
         try {
             String summaryString = mDb.getKey("assessments", userId, "summary");
@@ -190,7 +190,10 @@ public class TrainingRecordResource extends ServerResource {
                 return;
             }
             Map<?,?> summary = MAPPER.readValue(summaryString, Map.class);
-            assessedScore = (Double) summary.get("score");
+
+            if (summary.containsKey("score")) {
+                assessedScore = (Double) summary.get("score");
+            }
 
         } catch (IOException e) {
             LOG.error("IOException fetching assessment record for " + userId, e);
