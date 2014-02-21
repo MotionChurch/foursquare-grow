@@ -1,24 +1,21 @@
 <div id="thefeed">
     <h2>The Feed</h2>
-    <article>
-        <div class="question">
-            Q: How has God worked in your life...
-            <div><a class="reply" href="#">Answer</a></div>
-        </div>
-        <div class="answer">
-            A: God has worked in an amazing way in my own life. I constantly
-            <a class="readmore" href="#">(continue)</a>
-        </div>
-    </article>
-    <article>
-        <div class="question">
-            Q: How has God worked in your life...
-            <div><a class="reply" href="#">Answer</a></div>
-        </div>
-        <div class="answer">
-            A: God has worked in an amazing way in my own life. I constantly
-            <a class="readmore" href="#">(continue)</a>
-        </div>
-    </article>
+
+    <#assign threads = feeddata.getThreads(chapter)>
+    <#list threads as thread>
+        <#assign messages = feeddata.getMessages(chapter, thread.id)>
+        <article>
+            <div class="question" id="${thread.id}">
+                Q: ${thread.message.message!""}
+                <div><a class="reply" href="#">Answer</a></div>
+            </div>
+            <#list messages as msg>
+                <div class="answer" id="${msg.id}">
+                    A: ${msg.message!""}
+                    <a class="readmore" href="#">(continue)</a>
+                </div>
+            </#list>
+        </article>
+    </#list>
 </div>
 

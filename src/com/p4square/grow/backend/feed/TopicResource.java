@@ -6,7 +6,9 @@ package com.p4square.grow.backend.feed;
 
 import java.io.IOException;
 
+import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
@@ -16,6 +18,7 @@ import org.restlet.ext.jackson.JacksonRepresentation;
 
 import org.apache.log4j.Logger;
 
+import com.p4square.grow.model.Message;
 import com.p4square.grow.model.MessageThread;
 
 /**
@@ -72,12 +75,25 @@ public class TopicResource extends ServerResource {
         }
 
         try {
+            // Deserialize the incoming message.
+            JacksonRepresentation<Message> jsonRep = new JacksonRepresentation<Message>(entity, Message.class);
+            Message message = jsonRep.getObject();
+            if (message.getCreated() == null) {
+                message.setCreated(new Date());
+            }
+
+            // Create the new thread.
             MessageThread newThread = MessageThread.createNew();
+
+            // Force the thread id and message to be what we expect.
+            message.setId(String.format("%x-%s", System.currentTimeMillis(), UUID.randomUUID().toString()));
+            message.setThreadId(newThread.getId());
+            newThread.setMessage(message);
+
             mBackend.getThreadProvider().put(mTopic, newThread.getId(), newThread);
 
-            setStatus(Status.SUCCESS_NO_CONTENT);
             setLocationRef(mTopic + "/" + newThread.getId());
-            return null;
+            return new JacksonRepresentation(newThread);
 
         } catch (IOException e) {
             LOG.error("Unexpected exception: " + e.getMessage(), e);

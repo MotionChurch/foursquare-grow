@@ -70,6 +70,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
     private JsonRequestClient mJsonClient;
 
     private Provider<String, TrainingRecord> mTrainingRecordProvider;
+    private FeedData mFeedData;
 
     // Fields pertaining to this request.
     protected String mChapter;
@@ -94,6 +95,8 @@ public class TrainingPageResource extends FreeMarkerPageResource {
                 return getBackendEndpoint() + "/accounts/" + userid + "/training";
             }
         };
+
+        mFeedData = new FeedData(getContext(), mConfig);
 
         mChapter = getAttribute("chapter");
         mUserId = getRequest().getClientInfo().getUser().getIdentifier();
@@ -209,7 +212,12 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             root.put("overallProgress", overallProgress);
             root.put("videos", videos);
             root.put("allowUserToSkip", allowUserToSkip);
-            root.put("showfeed", getQueryValue("showfeed") != null);
+
+            boolean showfeed = getQueryValue("showfeed") != null;
+            root.put("showfeed", showfeed);
+            if (showfeed) {
+                root.put("feeddata", mFeedData);
+            }
 
             return new TemplateRepresentation(mTrainingTemplate, root, MediaType.TEXT_HTML);
 
