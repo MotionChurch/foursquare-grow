@@ -7,6 +7,7 @@ package com.p4square.grow.provider;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -25,9 +26,16 @@ public abstract class JsonEncodedProvider<K, V> implements Provider<K, V> {
     }
 
     private final Class<V> mClazz;
+    private final JavaType mType;
 
     public JsonEncodedProvider(Class<V> clazz) {
         mClazz = clazz;
+        mType = null;
+    }
+
+    public JsonEncodedProvider(JavaType type) {
+        mType = type;
+        mClazz = null;
     }
 
     /**
@@ -53,7 +61,14 @@ public abstract class JsonEncodedProvider<K, V> implements Provider<K, V> {
             return null;
         }
 
-        V obj = MAPPER.readValue(blob, mClazz);
+        V obj;
+        if (mClazz != null) {
+            obj = MAPPER.readValue(blob, mClazz);
+
+        } else {
+            obj = MAPPER.readValue(blob, mType);
+        }
+
         return obj;
     }
 }

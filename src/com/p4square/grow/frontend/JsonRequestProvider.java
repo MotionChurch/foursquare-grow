@@ -6,6 +6,8 @@ package com.p4square.grow.frontend;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.databind.JavaType;
+
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.Restlet;
@@ -27,6 +29,12 @@ public class JsonRequestProvider<V> extends JsonEncodedProvider<String, V> {
 
     public JsonRequestProvider(Restlet dispatcher, Class<V> clazz) {
         super(clazz);
+
+        mDispatcher = dispatcher;
+    }
+
+    public JsonRequestProvider(Restlet dispatcher, JavaType type) {
+        super(type);
 
         mDispatcher = dispatcher;
     }

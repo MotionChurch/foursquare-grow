@@ -12,6 +12,7 @@ import java.util.UUID;
  */
 public class MessageThread {
     private String mId;
+    private Message mMessage;
 
     /**
      * Create a new thread with a probably unique id.
@@ -40,4 +41,18 @@ public class MessageThread {
         mId = id;
     }
 
+    /**
+     * @return The original message.
+     */
+    public Message getMessage() {
+        return mMessage;
+    }
+
+    /**
+     * Set the original message.
+     * @param id The new message.
+     */
+    public void setMessage(Message message) {
+        mMessage = message;
+    }
 }

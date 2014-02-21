@@ -6,6 +6,7 @@ package com.p4square.grow.backend.feed;
 
 import java.io.IOException;
 
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -86,6 +87,10 @@ public class ThreadResource extends ServerResource {
             // Force the thread id and message to be what we expect.
             message.setThreadId(mThreadId);
             message.setId(String.format("%x-%s", System.currentTimeMillis(), UUID.randomUUID().toString()));
+
+            if (message.getCreated() == null) {
+                message.setCreated(new Date());
+            }
 
             String collectionKey = mTopic + "/" + mThreadId;
             mBackend.getMessageProvider().put(collectionKey, message.getId(), message);
