@@ -87,6 +87,24 @@ $(document).ready(function()
         video.removeAttribute("controls");
     }
 
+    $('textarea').bind({
+        focus: function () {
+            var self = $(this);
+
+            if (self.val() == self.attr('defaultValue')) {
+                self.val('').removeClass('default');
+            };
+        },
+        blur: function () {
+            var self = $(this),
+                val = jQuery.trim(self.val());
+
+            if (val == "" || val == self.attr('defaultValue')) {
+              self.val(self.attr('defaultValue')).addClass('default');
+            };
+        }
+    }).trigger('blur');
+
     $("#banner").slideDown();
 });
 
@@ -280,4 +298,8 @@ function submitClassForm()
     });
 
     return false;
+}
+
+function answerQuestion(id) {
+    $("#answer-" + id).slideDown();
 }

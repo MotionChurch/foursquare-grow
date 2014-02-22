@@ -5,6 +5,14 @@ html, body {
     height: 100%;
 }
 
+.hidden {
+    display: none;
+}
+
+.default {
+    color: #BDBDBD;
+}
+
 a {
     color: #BDBDBD;
     text-decoration: underline;
@@ -357,7 +365,7 @@ footer a:hover {
 
 #thefeed .question, #thefeed .answer {
     padding: 1.5em;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 #thefeed article .question {
@@ -369,8 +377,7 @@ footer a:hover {
     background: #f6f6f6;
 }
 
-#thefeed article .question div {
-    margin-top: 1em;
+#thefeed article div div {
     text-align: right;
 }
 
@@ -393,6 +400,25 @@ footer a:hover {
 
 #thefeed article a:hover {
     font-weight: bold;
+}
+
+#thefeed textarea {
+    background: #fff;
+    width: 100%;
+    margin: 0;
+    -webkit-appearance: none;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid;
+    border-color: #848484 #c1c1c1 #e1e1e1;
+    vertical-align: top;
+}
+
+#thefeed a.send {
+    color: #fc6200;
+    text-decoration: none;
+    font-size: 80%;
 }
 
 #videoplayer {
