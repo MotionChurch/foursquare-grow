@@ -368,6 +368,13 @@ footer a:hover {
     border-radius: 10px;
 }
 
+#thefeed .author {
+    float: left;
+    font-style: italic;
+    color: #999;
+    font-size: 80%;
+}
+
 #thefeed article .question {
     background: #eeeeee;
     padding-bottom: 0.5em;

@@ -52,7 +52,7 @@ public class GrowFrontend extends FMFacade {
     private F1OAuthHelper mHelper;
 
     public GrowFrontend() {
-        mConfig = new Config();
+        this(new Config());
     }
 
     public GrowFrontend(Config config) {

@@ -5,6 +5,9 @@
 package com.p4square.grow.frontend;
 
 import java.io.IOException;
+
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.restlet.Context;
@@ -24,6 +27,13 @@ import com.p4square.grow.provider.Provider;
  * Fetch feed data for a topic.
  */
 public class FeedData {
+
+    /**
+     * Allowed Topics.
+     */
+    public static final HashSet<String> TOPICS = new HashSet(Arrays.asList("seeker", "believer",
+            "disciple", "teacher", "leader"));
+
 
     private final Config mConfig;
     private final String mBackendURI;

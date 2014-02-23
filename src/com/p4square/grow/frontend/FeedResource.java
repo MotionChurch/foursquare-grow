@@ -6,9 +6,6 @@ package com.p4square.grow.frontend;
 
 import java.io.IOException;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 import org.restlet.data.Form;
 import org.restlet.data.Status;
 import org.restlet.representation.Representation;
@@ -25,9 +22,6 @@ import com.p4square.grow.model.UserRecord;
  */
 public class FeedResource extends ServerResource {
     private static final Logger LOG = Logger.getLogger(FeedResource.class);
-
-    private static final HashSet<String> TOPICS = new HashSet(Arrays.asList("introduction", "seeker", "believer",
-            "disciple", "teacher"));
 
     private Config mConfig;
 
@@ -63,7 +57,7 @@ public class FeedResource extends ServerResource {
     @Override
     protected Representation post(Representation entity) {
         try {
-            if (mTopic == null || mTopic.length() == 0 || !TOPICS.contains(mTopic)) {
+            if (mTopic == null || mTopic.length() == 0 || !FeedData.TOPICS.contains(mTopic)) {
                 setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                 return ErrorPage.NOT_FOUND;
             }
