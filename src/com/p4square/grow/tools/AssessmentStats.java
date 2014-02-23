@@ -20,6 +20,7 @@ import com.p4square.grow.model.Answer;
 import com.p4square.grow.model.Question;
 import com.p4square.grow.model.RecordedAnswer;
 import com.p4square.grow.model.Score;
+import com.p4square.grow.provider.Provider;
 import com.p4square.grow.provider.JsonEncodedProvider;
 
 /**
@@ -149,7 +150,7 @@ public class AssessmentStats {
         doFindHighestFromId(questions, q.getNextQuestion(), scores, path);
     }
 
-    private static class FileQuestionProvider extends JsonEncodedProvider<String, Question> {
+    private static class FileQuestionProvider extends JsonEncodedProvider<Question> implements Provider<String, Question> {
         private String mBaseDir;
 
         public FileQuestionProvider(String directory) {

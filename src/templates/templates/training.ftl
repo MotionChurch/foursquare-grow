@@ -66,10 +66,6 @@
         </#list>
         </div>
 
-        <#if showfeed!false>
-            <#include "/templates/communityfeed.ftl">
-        </#if>
-
         <#if deeperinclude?has_content>
             <div id="deeper">
                 <h2>Going Deeper</h2>
@@ -80,6 +76,10 @@
                 </p>
                 <#include deeperinclude>
             </div>
+        </#if>
+
+        <#if showfeed!false>
+            <#include "/templates/communityfeed.ftl">
         </#if>
     </div>
 

@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
-public abstract class JsonEncodedProvider<K, V> implements Provider<K, V> {
+public abstract class JsonEncodedProvider<V> {
     public static final ObjectMapper MAPPER = new ObjectMapper();
     static {
         MAPPER.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);

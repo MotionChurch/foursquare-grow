@@ -375,6 +375,7 @@ footer a:hover {
 
 #thefeed article .answer {
     background: #f6f6f6;
+    color: #999;
 }
 
 #thefeed article div div {
@@ -400,6 +401,10 @@ footer a:hover {
 
 #thefeed article a:hover {
     font-weight: bold;
+}
+
+#thefeed .answer.slider {
+    display: none;
 }
 
 #thefeed textarea {

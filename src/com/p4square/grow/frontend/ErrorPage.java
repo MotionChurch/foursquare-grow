@@ -36,6 +36,9 @@ public class ErrorPage extends WriterRepresentation {
     public static final ErrorPage BACKEND_ERROR =
         new ErrorPage("Error communicating with backend.");
 
+    public static final ErrorPage NOT_FOUND =
+        new ErrorPage("The requested URL could not be found.");
+
     private static Template cTemplate = null;
     private static Map<String, Object> cRoot = null;
 
