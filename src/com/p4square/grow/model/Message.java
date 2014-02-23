@@ -14,7 +14,7 @@ import java.util.Date;
 public class Message {
     private String mThreadId;
     private String mId;
-    private String mAuthor;
+    private UserRecord mAuthor;
     private Date mCreated;
     private String mMessage;
 
@@ -51,7 +51,7 @@ public class Message {
     /**
      * @return The author of the message.
      */
-    public String getAuthor() {
+    public UserRecord getAuthor() {
         return mAuthor;
     }
 
@@ -59,7 +59,7 @@ public class Message {
      * Set the author of the message.
      * @param author The new author.
      */
-    public void setAuthor(String author) {
+    public void setAuthor(UserRecord author) {
         mAuthor = author;
     }
 

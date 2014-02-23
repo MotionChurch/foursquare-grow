@@ -105,6 +105,8 @@ $(document).ready(function()
         }
     }).trigger('blur');
 
+    $("#thefeed article .answer:nth-child(3)").delay(300).slideDown();
+
     $("#banner").slideDown();
 });
 
@@ -300,6 +302,14 @@ function submitClassForm()
     return false;
 }
 
-function answerQuestion(id) {
-    $("#answer-" + id).slideDown();
+function answerQuestion(id)
+{
+    $("#answer-" + id).slideToggle();
 }
+
+function showAnswers(obj)
+{
+    $(obj).hide();
+    $(obj).parents(".answer").siblings(".slider").slideDown();
+}
+

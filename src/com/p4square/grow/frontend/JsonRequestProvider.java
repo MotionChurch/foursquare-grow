@@ -16,6 +16,7 @@ import org.restlet.data.Status;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 
+import com.p4square.grow.provider.Provider;
 import com.p4square.grow.provider.JsonEncodedProvider;
 
 /**
@@ -23,7 +24,7 @@ import com.p4square.grow.provider.JsonEncodedProvider;
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
-public class JsonRequestProvider<V> extends JsonEncodedProvider<String, V> {
+public class JsonRequestProvider<V> extends JsonEncodedProvider<V> implements Provider<String, V> {
 
     private final Restlet mDispatcher;
 
@@ -66,7 +67,26 @@ public class JsonRequestProvider<V> extends JsonEncodedProvider<String, V> {
         if (!response.getStatus().isSuccess()) {
             throw new IOException("Could not put object. " + response.getStatus());
         }
-
     }
 
+    /**
+     * Variant of put() which makes a POST request to the url.
+     *
+     * This method may eventually be incorporated into Provider for
+     * creating new objects with auto-generated IDs.
+     *
+     * @param url The url to make the request to.
+     * @param obj The post to post.
+     * @throws IOException on failure.
+     */
+    public void post(String url, V obj) throws IOException {
+        final Request request = new Request(Method.POST, url);
+        request.setEntity(new StringRepresentation(encode(obj)));
+
+        final Response response = mDispatcher.handle(request);
+
+        if (!response.getStatus().isSuccess()) {
+            throw new IOException("Could not put object. " + response.getStatus());
+        }
+    }
 }

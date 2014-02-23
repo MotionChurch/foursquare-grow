@@ -28,8 +28,12 @@ public class FeedData {
     private final Config mConfig;
     private final String mBackendURI;
 
-    private final Provider<String, List<MessageThread>> mThreadProvider;
-    private final Provider<String, List<Message>> mMessageProvider;
+    // TODO: Elegantly merge the List and individual providers.
+    private final JsonRequestProvider<List<MessageThread>> mThreadsProvider;
+    private final JsonRequestProvider<MessageThread> mThreadProvider;
+
+    private final JsonRequestProvider<List<Message>> mMessagesProvider;
+    private final JsonRequestProvider<Message> mMessageProvider;
 
     public FeedData(final Context context, final Config config) {
         mConfig = config;
@@ -40,18 +44,33 @@ public class FeedData {
         TypeFactory factory = JsonEncodedProvider.MAPPER.getTypeFactory();
 
         JavaType threadType = factory.constructCollectionType(List.class, MessageThread.class);
-        mThreadProvider = new JsonRequestProvider<List<MessageThread>>(clientDispatcher, threadType);
+        mThreadsProvider = new JsonRequestProvider<List<MessageThread>>(clientDispatcher, threadType);
+        mThreadProvider = new JsonRequestProvider<MessageThread>(clientDispatcher, MessageThread.class);
 
         JavaType messageType = factory.constructCollectionType(List.class, Message.class);
-        mMessageProvider = new JsonRequestProvider<List<Message>>(clientDispatcher, messageType);
+        mMessagesProvider = new JsonRequestProvider<List<Message>>(clientDispatcher, messageType);
+        mMessageProvider = new JsonRequestProvider<Message>(clientDispatcher, Message.class);
     }
 
     public List<MessageThread> getThreads(final String topic) throws IOException {
-        return mThreadProvider.get(makeUrl(topic));
+        return mThreadsProvider.get(makeUrl(topic));
     }
 
     public List<Message> getMessages(final String topic, final String threadId) throws IOException {
-        return mMessageProvider.get(makeUrl(topic, threadId));
+        return mMessagesProvider.get(makeUrl(topic, threadId));
+    }
+
+    public void createThread(final String topic, final Message message) throws IOException {
+        MessageThread thread = new MessageThread();
+        thread.setMessage(message);
+
+        mThreadProvider.post(makeUrl(topic), thread);
+    }
+
+    public void createResponse(final String topic, final String thread, final Message message)
+        throws IOException {
+
+        mMessageProvider.post(makeUrl(topic, thread), message);
     }
 
     private String makeUrl(String... parts) {

@@ -111,6 +111,8 @@ public class GrowFrontend extends FMFacade {
         accountRouter.attach("/training/leader", GroupLeaderTrainingPageResource.class);
         accountRouter.attach("/training/{chapter}", TrainingPageResource.class);
         accountRouter.attach("/training", TrainingPageResource.class);
+        accountRouter.attach("/feed/{topic}", FeedResource.class);
+        accountRouter.attach("/feed/{topic}/{thread}", FeedResource.class);
 
         final Authenticator accountGuard = createAuthenticatorChain(accountRouter);
         router.attach("/account", accountGuard);

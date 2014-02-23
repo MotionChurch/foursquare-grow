@@ -6,6 +6,7 @@ package com.p4square.grow.backend.db;
 
 import java.io.IOException;
 
+import com.p4square.grow.provider.Provider;
 import com.p4square.grow.provider.JsonEncodedProvider;
 
 /**
@@ -13,7 +14,7 @@ import com.p4square.grow.provider.JsonEncodedProvider;
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
-public class CassandraProviderImpl<V> extends JsonEncodedProvider<CassandraKey, V> {
+public class CassandraProviderImpl<V> extends JsonEncodedProvider<V> implements Provider<CassandraKey, V> {
     private final CassandraDatabase mDb;
 
     public CassandraProviderImpl(CassandraDatabase db, Class<V> clazz) {

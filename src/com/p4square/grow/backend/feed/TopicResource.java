@@ -76,8 +76,12 @@ public class TopicResource extends ServerResource {
 
         try {
             // Deserialize the incoming message.
-            JacksonRepresentation<Message> jsonRep = new JacksonRepresentation<Message>(entity, Message.class);
-            Message message = jsonRep.getObject();
+            JacksonRepresentation<MessageThread> jsonRep =
+                new JacksonRepresentation<MessageThread>(entity, MessageThread.class);
+
+            // Get the message from the request.
+            // Throw away the wrapping MessageThread because we'll create our own later.
+            Message message = jsonRep.getObject().getMessage();
             if (message.getCreated() == null) {
                 message.setCreated(new Date());
             }
