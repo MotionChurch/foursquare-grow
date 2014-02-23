@@ -1,3 +1,4 @@
+<#escape x as x?html>
 <div id="thefeed">
     <h2>The Feed</h2>
 
@@ -6,8 +7,9 @@
         <#assign messages = feeddata.getMessages(chapter, thread.id)>
         <article>
             <div class="question" id="${thread.id}">
-                Q: ${thread.message.message!""}
-                <div><a class="reply" href="#" onclick="answerQuestion('${thread.id}'); return false;">Answer</a></div>
+                <p>Q: ${thread.message.message!""}</p>
+                <div class="author">By ${thread.message.author.firstName}</div>
+                <div> <a class="reply" href="#" onclick="answerQuestion('${thread.id}'); return false;">Answer</a></div>
             </div>
             <div class="answer hidden" id="answer-${thread.id}">
                 <form action="${dynamicRoot}/account/feed/${chapter}/${thread.id}" method="post">
@@ -17,9 +19,10 @@
             </div>
             <#list messages as msg>
                 <div class="answer slider" id="${msg.id}">
-                    A: ${msg.message!""}
+                    <p>A: ${msg.message!""}</p>
+                    <div class="author">By ${thread.message.author.firstName}</div>
                     <#if msg_has_next && msg_index == 0>
-                        <div><a class="readmore" href="#" onclick="showAnswers(this); return false;">(show more)</a></div>
+                        <div><a class="readmore" href="#" onclick="showAnswers(this); return false;">(show more answers)</a></div>
                     </#if>
                 </div>
             </#list>
@@ -34,4 +37,4 @@
         </div>
     </article>
 </div>
-
+</#escape>

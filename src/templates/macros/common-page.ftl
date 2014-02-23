@@ -1,4 +1,5 @@
 <#macro commonpage>
+    <#compress>
     <!doctype html>
     <html>
     <head>
@@ -24,4 +25,5 @@
 
     </body>
     </html>
+    </#compress>
 </#macro>

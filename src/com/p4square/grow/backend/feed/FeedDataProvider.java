@@ -19,7 +19,7 @@ import com.p4square.grow.provider.CollectionProvider;
  */
 public interface FeedDataProvider {
     public static final Collection<String> TOPICS = Collections.unmodifiableCollection(
-            Arrays.asList(new String[] { "seeker", "believer", "disciple", "teacher" }));
+            Arrays.asList(new String[] { "seeker", "believer", "disciple", "teacher", "leader" }));
 
     /**
      * @return a CollectionProvider of Threads.

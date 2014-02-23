@@ -14,6 +14,7 @@ import java.util.Map;
 
 import freemarker.template.Template;
 
+import org.restlet.data.CookieSetting;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
@@ -213,7 +214,27 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             root.put("videos", videos);
             root.put("allowUserToSkip", allowUserToSkip);
 
-            boolean showfeed = getQueryValue("showfeed") != null;
+            // Optionally show the feed.
+            boolean showfeed = "true".equals(getRequest().getCookies().getFirstValue("showfeed"));
+            if (getQueryValue("showfeed") != null) {
+                CookieSetting cookie = new CookieSetting("showfeed", "true");
+                cookie.setPath("/");
+                if ("true".equals(getQueryValue("showfeed"))) {
+                    showfeed = true;
+                    getResponse().getCookieSettings().add(cookie);
+                } else {
+                    showfeed = false;
+                    cookie.setValue("false");
+                    cookie.setMaxAge(0);
+                    getResponse().getCookieSettings().add(cookie);
+                }
+            }
+
+            // Don't show the feed if the topic isn't allowed.
+            if (!FeedData.TOPICS.contains(mChapter)) {
+                showfeed = false;
+            }
+
             root.put("showfeed", showfeed);
             if (showfeed) {
                 root.put("feeddata", mFeedData);
