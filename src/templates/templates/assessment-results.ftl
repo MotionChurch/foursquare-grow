@@ -82,20 +82,13 @@
             </p>
 
             <div>
-                <label class="check"><input type="checkbox" name="r[10]" value="Midweek Morning - 6am">Midweek Morning - 6am</label>
-            </div>
-
-            <div>
-                <label class="check"><input type="checkbox" name="r[10]" value="Midweek Evening - 6pm">Midweek Evening - 6pm</label>
-            </div>
-
-            <div>
-                <label class="check"><input type="checkbox" name="r[10]" value="Midweek Evening - 7:30pm">Midweek Evening - 7:30pm</label>
+                <label class="check"><input type="checkbox" name="r[10]" value="Tuesday Evening - 7pm">Tuesday Evening - 7pm</label>
             </div>
 
             <div>
                 <label class="check"><input type="checkbox" name="r[10]" value="Saturday Morning - 9am">Saturday Morning - 9am</label>
             </div>
+
         </form>
     </@content>
 

@@ -1,6 +1,6 @@
 <#escape x as x?html>
 <div id="thefeed">
-    <h2>The Feed</h2>
+    <h2>Discussion Forum</h2>
 
     <#assign threads = feeddata.getThreads(chapter)>
     <#list threads as thread>
