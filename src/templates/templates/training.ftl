@@ -2,21 +2,6 @@
 <#include "/macros/common-page.ftl">
 <#include "/macros/hms.ftl">
 
-<#switch chapter>
-    <#case "seeker">
-        <#assign deeperinclude="/templates/deeper-seeker.ftl">
-        <#break>
-    <#case "believer">
-        <#assign deeperinclude="/templates/deeper-believer.ftl">
-        <#break>
-    <#case "disciple">
-        <#assign deeperinclude="/templates/deeper-disciple.ftl">
-        <#break>
-    <#case "teacher">
-        <#assign deeperinclude="/templates/deeper-teacher.ftl">
-        <#break>
-</#switch>
-
 <@commonpage>
     <@noticebox>
         The Grow Process focuses on the topic that you want to learn
@@ -66,15 +51,19 @@
         </#list>
         </div>
 
-        <#if deeperinclude?has_content>
+        <#assign hasDeeper = ["seeker", "believer", "disciple", "teacher"]>
+        <#if hasDeeper?seq_contains(chapter)>
             <div id="deeper">
                 <h2>Going Deeper</h2>
                 <p>
-                    This section is a list of resources provided to help you to go
+                    <a href="${dynamicRoot}/deeper/${chapter}.html">Click here</a>
+                    for additional and important resources specifically for ${chapter}s.
+                </p>
+                <p>
+                    This page contains a list of resources provided to help you to go
                     deeper in your faith. It includes reading material, links to
                     helpful resources, etc.
                 </p>
-                <#include deeperinclude>
             </div>
         </#if>
 
