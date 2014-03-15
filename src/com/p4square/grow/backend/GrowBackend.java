@@ -22,17 +22,19 @@ import com.p4square.grow.backend.db.CassandraProviderImpl;
 import com.p4square.grow.backend.db.CassandraCollectionProvider;
 import com.p4square.grow.backend.db.CassandraTrainingRecordProvider;
 
+import com.p4square.grow.model.Message;
+import com.p4square.grow.model.MessageThread;
+import com.p4square.grow.model.Playlist;
 import com.p4square.grow.model.Question;
 import com.p4square.grow.model.TrainingRecord;
-import com.p4square.grow.model.Playlist;
-import com.p4square.grow.model.MessageThread;
-import com.p4square.grow.model.Message;
+import com.p4square.grow.model.UserRecord;
 
 import com.p4square.grow.provider.CollectionProvider;
+import com.p4square.grow.provider.DelegateProvider;
 import com.p4square.grow.provider.Provider;
 import com.p4square.grow.provider.ProvidesQuestions;
 import com.p4square.grow.provider.ProvidesTrainingRecords;
-import com.p4square.grow.provider.QuestionProvider;
+import com.p4square.grow.provider.ProvidesUserRecords;
 
 import com.p4square.grow.backend.resources.AccountResource;
 import com.p4square.grow.backend.resources.BannerResource;
@@ -51,13 +53,16 @@ import com.p4square.grow.backend.feed.TopicResource;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class GrowBackend extends Application
-        implements ProvidesQuestions, ProvidesTrainingRecords, FeedDataProvider {
+        implements ProvidesQuestions, ProvidesTrainingRecords, FeedDataProvider,
+          ProvidesUserRecords {
     private static final String DEFAULT_COLUMN = "value";
 
     private final static Logger LOG = Logger.getLogger(GrowBackend.class);
 
     private final Config mConfig;
     private final CassandraDatabase mDatabase;
+
+    private final Provider<String, UserRecord> mUserRecordProvider;
 
     private final Provider<String, Question> mQuestionProvider;
     private final CassandraTrainingRecordProvider mTrainingRecordProvider;
@@ -73,7 +78,16 @@ public class GrowBackend extends Application
         mConfig = config;
         mDatabase = new CassandraDatabase();
 
-        mQuestionProvider = new QuestionProvider<CassandraKey>(new CassandraProviderImpl<Question>(mDatabase, Question.class)) {
+        mUserRecordProvider = new DelegateProvider<String, CassandraKey, UserRecord>(
+                new CassandraProviderImpl<UserRecord>(mDatabase, UserRecord.class)) {
+            @Override
+            public CassandraKey makeKey(String userid) {
+                return new CassandraKey("accounts", userid, DEFAULT_COLUMN);
+            }
+        };
+
+        mQuestionProvider = new DelegateProvider<String, CassandraKey, Question>(
+                new CassandraProviderImpl<Question>(mDatabase, Question.class)) {
             @Override
             public CassandraKey makeKey(String questionId) {
                 return new CassandraKey("strings", "/questions/" + questionId, DEFAULT_COLUMN);
@@ -93,6 +107,7 @@ public class GrowBackend extends Application
         Router router = new Router(getContext());
 
         // Account API
+        router.attach("/accounts", AccountResource.class);
         router.attach("/accounts/{userId}", AccountResource.class);
 
         // Survey API
@@ -150,6 +165,11 @@ public class GrowBackend extends Application
      */
     public CassandraDatabase getDatabase() {
         return mDatabase;
+    }
+
+    @Override
+    public Provider<String, UserRecord> getUserRecordProvider() {
+        return mUserRecordProvider;
     }
 
     @Override

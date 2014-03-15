@@ -14,6 +14,14 @@
     <!-- Targets to get this project ready -->
     <target name="bootstrap" depends="setup-tomcat" />
 
+    <target name="server" depends="compile">
+        <java classname="com.p4square.grow.GrowProcessComponent"
+            classpathref="classpath.run" fork="true">
+
+            <arg file="devfiles/grow-server.properties" />
+        </java>
+    </target>
+
     <target name="frontend" depends="compile">
         <java classname="com.p4square.grow.frontend.GrowFrontend"
             classpathref="classpath.run" fork="true">

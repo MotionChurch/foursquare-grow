@@ -9,12 +9,15 @@ import java.io.IOException;
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
 import org.restlet.representation.Representation;
-import org.restlet.representation.StringRepresentation;
+
+import org.restlet.ext.jackson.JacksonRepresentation;
 
 import org.apache.log4j.Logger;
 
-import com.p4square.grow.backend.GrowBackend;
-import com.p4square.grow.backend.db.CassandraDatabase;
+import com.p4square.grow.model.UserRecord;
+import com.p4square.grow.provider.Provider;
+import com.p4square.grow.provider.ProvidesUserRecords;
+import com.p4square.grow.provider.JsonEncodedProvider;
 
 /**
  * Stores a document about a user.
@@ -24,7 +27,7 @@ import com.p4square.grow.backend.db.CassandraDatabase;
 public class AccountResource extends ServerResource {
     private static final Logger LOG = Logger.getLogger(AccountResource.class);
 
-    private CassandraDatabase mDb;
+    private Provider<String, UserRecord> mUserRecordProvider;
 
     private String mUserId;
 
@@ -32,8 +35,8 @@ public class AccountResource extends ServerResource {
     public void doInit() {
         super.doInit();
 
-        final GrowBackend backend = (GrowBackend) getApplication();
-        mDb = backend.getDatabase();
+        final ProvidesUserRecords backend = (ProvidesUserRecords) getApplication();
+        mUserRecordProvider = backend.getUserRecordProvider();
 
         mUserId = getAttribute("userId");
     }
@@ -43,14 +46,22 @@ public class AccountResource extends ServerResource {
      */
     @Override
     protected Representation get() {
-        String result = mDb.getKey("accounts", mUserId);
+        try {
+            UserRecord result = mUserRecordProvider.get(mUserId);
 
-        if (result == null) {
-            setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            if (result == null) {
+                setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                return null;
+            }
+
+            JacksonRepresentation<UserRecord> rep = new JacksonRepresentation<UserRecord>(result);
+            rep.setObjectMapper(JsonEncodedProvider.MAPPER);
+            return rep;
+
+        } catch (IOException e) {
+            setStatus(Status.SERVER_ERROR_INTERNAL);
             return null;
         }
-
-        return new StringRepresentation(result);
     }
 
     /**
@@ -59,7 +70,12 @@ public class AccountResource extends ServerResource {
     @Override
     protected Representation put(Representation entity) {
         try {
-            mDb.putKey("accounts", mUserId, entity.getText());
+            JacksonRepresentation<UserRecord> representation =
+                new JacksonRepresentation<>(entity, UserRecord.class);
+            representation.setObjectMapper(JsonEncodedProvider.MAPPER);
+            UserRecord record = representation.getObject();
+
+            mUserRecordProvider.put(mUserId, record);
             setStatus(Status.SUCCESS_NO_CONTENT);
 
         } catch (IOException e) {
