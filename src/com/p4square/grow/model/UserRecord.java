@@ -4,6 +4,12 @@
 
 package com.p4square.grow.model;
 
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import org.apache.commons.codec.binary.Hex;
+
 import org.restlet.security.User;
 
 /**
@@ -14,6 +20,10 @@ public class UserRecord {
     private String mFirstName;
     private String mLastName;
     private String mEmail;
+    private String mLanding;
+
+    // Backend Access
+    private String mBackendPasswordHash;
 
     /**
      * Create an empty UserRecord.
@@ -42,7 +52,7 @@ public class UserRecord {
      * Set the user's identifier.
      * @param value The new id.
      */
-    public void setId (final String value) {
+    public void setId(final String value) {
         mId = value;
     }
 
@@ -57,7 +67,7 @@ public class UserRecord {
      * Set the user's email.
      * @param value The new email.
      */
-    public void setEmail (final String value) {
+    public void setEmail(final String value) {
         mEmail = value;
     }
 
@@ -72,7 +82,7 @@ public class UserRecord {
      * Set the user's first name.
      * @param value The new first name.
      */
-    public void setFirstName (final String value) {
+    public void setFirstName(final String value) {
         mFirstName = value;
     }
 
@@ -87,7 +97,71 @@ public class UserRecord {
      * Set the user's last name.
      * @param value The new last name.
      */
-    public void setLastName (final String value) {
+    public void setLastName(final String value) {
         mLastName = value;
+    }
+
+    /**
+     * @return The user's landing page.
+     */
+    public String getLanding() {
+        return mLanding;
+    }
+
+    /**
+     * Set the user's landing page.
+     * @param value The new landing page.
+     */
+    public void setLanding(final String value) {
+        mLanding = value;
+    }
+
+    /**
+     * @return The user's backend password hash, null if he doesn't have
+     * access.
+     */
+    public String getBackendPasswordHash() {
+        return mBackendPasswordHash;
+    }
+
+    /**
+     * Set the user's backend password hash.
+     * @param value The new backend password hash or null to remove
+     * access.
+     */
+    public void setBackendPasswordHash(final String value) {
+        mBackendPasswordHash = value;
+    }
+
+    /**
+     * Set the user's backend password to the clear-text value given.
+     * @param value The new backend password.
+     */
+    public void setBackendPassword(final String value) {
+        try {
+            mBackendPasswordHash = hashPassword(value);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Hash the given secret.
+     */
+    public static String hashPassword(final String secret) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-1");
+
+        // Convert the char[] to byte[]
+        // FIXME This approach is incorrectly truncating multibyte
+        // characters.
+        byte[] b = new byte[secret.length()];
+        for (int i = 0; i < secret.length(); i++) {
+            b[i] = (byte) secret.charAt(i);
+        }
+
+        md.update(b);
+
+        byte[] hash = md.digest();
+        return new String(Hex.encodeHex(hash));
     }
 }
