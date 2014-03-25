@@ -10,8 +10,10 @@ import org.apache.log4j.Logger;
 
 import org.restlet.Application;
 import org.restlet.Component;
-import org.restlet.data.Protocol;
 import org.restlet.Restlet;
+import org.restlet.data.Protocol;
+import org.restlet.data.Reference;
+import org.restlet.resource.Directory;
 import org.restlet.routing.Router;
 
 import com.p4square.grow.config.Config;
@@ -107,7 +109,6 @@ public class GrowBackend extends Application
         Router router = new Router(getContext());
 
         // Account API
-        router.attach("/accounts", AccountResource.class);
         router.attach("/accounts/{userId}", AccountResource.class);
 
         // Survey API
@@ -132,6 +133,8 @@ public class GrowBackend extends Application
         router.attach("/feed/{topic}", TopicResource.class);
         router.attach("/feed/{topic}/{thread}", ThreadResource.class);
         //router.attach("/feed/{topic/{thread}/{message}", MessageResource.class);
+
+        router.attachDefault(new Directory(getContext(), new Reference(getClass().getResource("apiinfo.html"))));
 
         return router;
     }

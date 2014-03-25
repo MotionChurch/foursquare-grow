@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>API Info</title>
+</head>
+<body>
+<dl>
+<dt>/backend/accounts/{userId}</dt>
+<dd>GET information about <em>userId</em> or PUT new information.</dd>
+
+<dt>/backend/assessment/question/{questionId}</dt>
+<dd>GET information about <em>questionId</em>. Special <em>questionId</em>s: first identifies first question. count returns total number of questions.</dd>
+
+<dt>/backend/accounts/{userId}/assessment</dt>
+<dd>GET the assessment summary for <em>userId</em> or DELETE <em>userId</em>'s assessment.</dd>
+
+<dt>/backend/accounts/{userId}/assessment/answers/{questionId}</dt>
+<dd>GET <em>userId</em>'s answer to <em>questionId</em>, PUT a new answer, or DELETE an answer.</dd>
+
+<dt>/backend/training/{level}</dt>
+<dd>GET all video information for <em>level</em>.</dd>
+
+<dt>/backend/training/{level}/videos/{videoId}</dt>
+<dd>GET video information for <em>videoId</em> in <em>level</em>.</dd>
+
+<dt>/backend/accounts/{userId}/training</dt>
+<dd>GET training record summary for <em>userId</em>.</dd>
+
+<dt>/backend/accounts/{userId}/training/videos/{videoId}</dt>
+<dd>GET training record for <em>userId</em> and <em>videoId</em> or PUT a new record.</dd>
+
+<dt>/backend/banner</dt>
+<dd>GET the info banner or PUT new banner info.</dd>
+
+<dt>/backend/feed/{topic}</dt>
+<dd>Get all threads for forum <em>topic</em>.</dd>
+
+<dt>/backend/feed/{topic}/{thread}</dt>
+<dd>Get all responses to question <em>thread</em> on forum <em>topic</em>.</dd>
+</dl>
+</body>
+</html>

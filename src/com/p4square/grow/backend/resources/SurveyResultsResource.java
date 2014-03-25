@@ -26,6 +26,7 @@ import com.p4square.grow.model.Answer;
 import com.p4square.grow.model.Question;
 import com.p4square.grow.model.RecordedAnswer;
 import com.p4square.grow.model.Score;
+import com.p4square.grow.model.UserRecord;
 import com.p4square.grow.provider.Provider;
 
 
@@ -45,6 +46,7 @@ public class SurveyResultsResource extends ServerResource {
 
     private CassandraDatabase mDb;
     private Provider<String, Question> mQuestionProvider;
+    private Provider<String, UserRecord> mUserRecordProvider;
 
     private RequestType mRequestType;
     private String mUserId;
@@ -57,6 +59,7 @@ public class SurveyResultsResource extends ServerResource {
         final GrowBackend backend = (GrowBackend) getApplication();
         mDb = backend.getDatabase();
         mQuestionProvider = backend.getQuestionProvider();
+        mUserRecordProvider = backend.getUserRecordProvider();
 
         mUserId = getAttribute("userId");
         mQuestionId = getAttribute("questionId");
@@ -152,7 +155,13 @@ public class SurveyResultsResource extends ServerResource {
             case ASSESSMENT:
                 try {
                     mDb.deleteRow("assessments", mUserId);
-                    mDb.deleteKey("accounts", mUserId, "value"); // TODO: IMPORTANT! This needs to be narrower.
+
+                    UserRecord record = mUserRecordProvider.get(mUserId);
+                    if (record != null) {
+                        record.setLanding("assessment");
+                        mUserRecordProvider.put(mUserId, record);
+                    }
+
                     success = true;
 
                 } catch (Exception e) {
