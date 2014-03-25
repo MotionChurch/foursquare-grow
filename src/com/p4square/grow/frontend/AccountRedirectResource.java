@@ -14,13 +14,13 @@ import org.restlet.resource.ServerResource;
 
 import org.apache.log4j.Logger;
 
-import com.p4square.fmfacade.json.JsonRequestClient;
-import com.p4square.fmfacade.json.JsonResponse;
-import com.p4square.fmfacade.json.ClientException;
-
 import com.p4square.fmfacade.FreeMarkerPageResource;
 
 import com.p4square.grow.config.Config;
+import com.p4square.grow.model.UserRecord;
+import com.p4square.grow.provider.Provider;
+import com.p4square.grow.provider.DelegateProvider;
+import com.p4square.grow.provider.JsonEncodedProvider;
 
 /**
  * This resource simply redirects the user to either the assessment
@@ -32,7 +32,7 @@ public class AccountRedirectResource extends ServerResource {
     private static final Logger LOG = Logger.getLogger(AccountRedirectResource.class);
 
     private Config mConfig;
-    private JsonRequestClient mJsonClient;
+    private Provider<String, UserRecord> mUserRecordProvider;
 
     // Fields pertaining to this request.
     private String mUserId;
@@ -44,7 +44,14 @@ public class AccountRedirectResource extends ServerResource {
         GrowFrontend growFrontend = (GrowFrontend) getApplication();
         mConfig = growFrontend.getConfig();
 
-        mJsonClient = new JsonRequestClient(getContext().getClientDispatcher());
+        mUserRecordProvider = new DelegateProvider<String, String, UserRecord>(
+                new JsonRequestProvider<UserRecord>(getContext().getClientDispatcher(),
+                    UserRecord.class)) {
+            @Override
+            public String makeKey(String userid) {
+                return getBackendEndpoint() + "/accounts/" + userid;
+            }
+        };
 
         mUserId = getRequest().getClientInfo().getUser().getIdentifier();
     }
@@ -56,25 +63,17 @@ public class AccountRedirectResource extends ServerResource {
     protected Representation get() {
         try {
             // Fetch account Map.
-            Map account = new HashMap();
-            try {
-                JsonResponse response = backendGet("/accounts/" + mUserId);
-                if (response.getStatus().isSuccess()) {
-                    account = response.getMap();
-                }
-            } catch (ClientException e) {
-
-            }
+            UserRecord user = mUserRecordProvider.get(mUserId);
 
             // Check for the new believers cookie
             String cookie = getRequest().getCookies().getFirstValue(NewBelieverResource.COOKIE_NAME);
             if (cookie != null && cookie.length() != 0) {
-                account.put("landing", "training");
-                account.put("newbeliever", "true");
-                backendPut("/accounts/" + mUserId, account);
+                user.setLanding("training");
+                user.setNewBeliever(true);
+                mUserRecordProvider.put(mUserId, user);
             }
 
-            String landing = (String) account.get("landing");
+            String landing = user.getLanding();
             if (landing == null) {
                 landing = "assessment";
             }
@@ -96,32 +95,5 @@ public class AccountRedirectResource extends ServerResource {
      */
     private String getBackendEndpoint() {
         return mConfig.getString("backendUri", "riap://component/backend");
-    }
-
-    /**
-     * Helper method to send a GET to the backend.
-     */
-    private JsonResponse backendGet(final String uri) {
-        LOG.debug("Sending backend GET " + uri);
-
-        final JsonResponse response = mJsonClient.get(getBackendEndpoint() + uri);
-        final Status status = response.getStatus();
-        if (!status.isSuccess() && !Status.CLIENT_ERROR_NOT_FOUND.equals(status)) {
-            LOG.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
-        }
-
-        return response;
-    }
-
-    protected JsonResponse backendPut(final String uri, final Map data) {
-        LOG.debug("Sending backend PUT " + uri);
-
-        final JsonResponse response = mJsonClient.put(getBackendEndpoint() + uri, data);
-        final Status status = response.getStatus();
-        if (!status.isSuccess() && !Status.CLIENT_ERROR_NOT_FOUND.equals(status)) {
-            LOG.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
-        }
-
-        return response;
     }
 }

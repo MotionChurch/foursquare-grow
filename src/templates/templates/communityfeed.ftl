@@ -2,7 +2,8 @@
 <div id="thefeed">
     <h2>Discussion Forum</h2>
 
-    <#assign threads = feeddata.getThreads(chapter)>
+    <#assign max_threads = 5>
+    <#assign threads = feeddata.getThreads(chapter, max_threads)>
     <#list threads as thread>
         <#assign messages = feeddata.getMessages(chapter, thread.id)>
         <article>

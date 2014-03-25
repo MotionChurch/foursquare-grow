@@ -214,21 +214,8 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             root.put("videos", videos);
             root.put("allowUserToSkip", allowUserToSkip);
 
-            // Optionally show the feed.
-            boolean showfeed = "true".equals(getRequest().getCookies().getFirstValue("showfeed"));
-            if (getQueryValue("showfeed") != null) {
-                CookieSetting cookie = new CookieSetting("showfeed", "true");
-                cookie.setPath("/");
-                if ("true".equals(getQueryValue("showfeed"))) {
-                    showfeed = true;
-                    getResponse().getCookieSettings().add(cookie);
-                } else {
-                    showfeed = false;
-                    cookie.setValue("false");
-                    cookie.setMaxAge(0);
-                    getResponse().getCookieSettings().add(cookie);
-                }
-            }
+            // Determine if we should show the feed.
+            boolean showfeed = true;
 
             // Don't show the feed if the topic isn't allowed.
             if (!FeedData.TOPICS.contains(mChapter)) {

@@ -8,7 +8,6 @@ import java.io.IOException;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
 
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
@@ -50,10 +49,20 @@ public class TopicResource extends ServerResource {
             return new JacksonRepresentation(FeedDataProvider.TOPICS);
         }
 
-        // TODO: Support limit query parameter.
+        // Parse limit query parameter.
+        int limit = -1;
+        String limitString = getQueryValue("limit");
+        if (limitString != null) {
+           try {
+               limit = Integer.parseInt(limitString);
+           } catch (NumberFormatException e) {
+               setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+               return null;
+           }
+        }
 
         try {
-            Map<String, MessageThread> threads = mBackend.getThreadProvider().query(mTopic);
+            Map<String, MessageThread> threads = mBackend.getThreadProvider().query(mTopic, limit);
             return new JacksonRepresentation(threads.values());
 
         } catch (IOException e) {
@@ -90,7 +99,7 @@ public class TopicResource extends ServerResource {
             MessageThread newThread = MessageThread.createNew();
 
             // Force the thread id and message to be what we expect.
-            message.setId(String.format("%x-%s", System.currentTimeMillis(), UUID.randomUUID().toString()));
+            message.setId(Message.generateId());
             message.setThreadId(newThread.getId());
             newThread.setMessage(message);
 
