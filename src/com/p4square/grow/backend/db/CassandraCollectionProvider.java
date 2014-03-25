@@ -7,7 +7,7 @@ package com.p4square.grow.backend.db;
 import java.io.IOException;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.netflix.astyanax.model.Column;
@@ -45,21 +45,21 @@ public class CassandraCollectionProvider<V> implements CollectionProvider<String
 
     @Override
     public Map<String, V> query(String collection, int limit) throws IOException {
-        Map<String, V> result = new HashMap<>();
+        Map<String, V> result = new LinkedHashMap<>();
 
         ColumnList<String> row = mDb.getRow(mCF, collection);
         if (!row.isEmpty()) {
             int count = 0;
             for (Column<String> c : row) {
+                if (limit >= 0 && ++count > limit) {
+                    break; // Limit reached.
+                }
+
                 String key = c.getName();
                 String blob = c.getStringValue();
                 V obj = decode(blob);
 
                 result.put(key, obj);
-
-                if (limit >= 0 && ++count > limit) {
-                    break; // Limit reached.
-                }
             }
         }
 

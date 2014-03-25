@@ -21,7 +21,9 @@ public class MessageThread {
      */
     public static MessageThread createNew() {
         MessageThread t = new MessageThread();
-        t.setId(String.format("%x-%s", System.currentTimeMillis(), UUID.randomUUID().toString()));
+        // IDs are keyed to sort lexicographically from latest to oldest.
+        t.setId(String.format("%016x-%s", Long.MAX_VALUE - System.currentTimeMillis(),
+                    UUID.randomUUID().toString()));
 
         return t;
     }

@@ -21,6 +21,7 @@ public class UserRecord {
     private String mLastName;
     private String mEmail;
     private String mLanding;
+    private boolean mNewBeliever;
 
     // Backend Access
     private String mBackendPasswordHash;
@@ -114,6 +115,21 @@ public class UserRecord {
      */
     public void setLanding(final String value) {
         mLanding = value;
+    }
+
+    /**
+     * @return true if the user came from the New Believer's landing.
+     */
+    public boolean getNewBeliever() {
+        return mNewBeliever;
+    }
+
+    /**
+     * Set the user's new believer flag.
+     * @param value The new flag.
+     */
+    public void setNewBeliever(final boolean value) {
+        mNewBeliever = value;
     }
 
     /**

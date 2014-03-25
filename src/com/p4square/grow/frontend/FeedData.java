@@ -62,8 +62,15 @@ public class FeedData {
         mMessageProvider = new JsonRequestProvider<Message>(clientDispatcher, Message.class);
     }
 
-    public List<MessageThread> getThreads(final String topic) throws IOException {
-        return mThreadsProvider.get(makeUrl(topic));
+    /**
+     * Get the threads for a topic.
+     *
+     * @param topic The topic to request threads for.
+     * @param limit The maximum number of threads.
+     * @return A list of MessageThread objects.
+     */
+    public List<MessageThread> getThreads(final String topic, final int limit) throws IOException {
+        return mThreadsProvider.get(makeUrl(limit, topic));
     }
 
     public List<Message> getMessages(final String topic, final String threadId) throws IOException {
@@ -90,5 +97,9 @@ public class FeedData {
         }
 
         return url;
+    }
+
+    private String makeUrl(int limit, String... parts) {
+        return makeUrl(parts) + "?limit=" + limit;
     }
 }

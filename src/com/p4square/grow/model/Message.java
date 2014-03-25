@@ -5,6 +5,7 @@
 package com.p4square.grow.model;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * A feed message.
@@ -17,6 +18,13 @@ public class Message {
     private UserRecord mAuthor;
     private Date mCreated;
     private String mMessage;
+
+    /**
+     * @return a new message id.
+     */
+    public static String generateId() {
+        return String.format("%x-%s", System.currentTimeMillis(), UUID.randomUUID().toString());
+    }
 
     /**
      * @return The id of the thread that the message belongs to.

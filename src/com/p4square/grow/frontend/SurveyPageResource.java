@@ -29,8 +29,11 @@ import net.jesterpm.fmfacade.FreeMarkerPageResource;
 
 import com.p4square.grow.config.Config;
 import com.p4square.grow.model.Question;
-import com.p4square.grow.provider.QuestionProvider;
+import com.p4square.grow.model.UserRecord;
+import com.p4square.grow.provider.DelegateProvider;
+import com.p4square.grow.provider.JsonEncodedProvider;
 import com.p4square.grow.provider.Provider;
+import com.p4square.grow.provider.QuestionProvider;
 
 /**
  * SurveyPageResource handles rendering the survey and processing user's answers.
@@ -49,6 +52,7 @@ public class SurveyPageResource extends FreeMarkerPageResource {
     private Template mSurveyTemplate;
     private JsonRequestClient mJsonClient;
     private Provider<String, Question> mQuestionProvider;
+    private Provider<String, UserRecord> mUserRecordProvider;
 
     // Fields pertaining to this request.
     private String mQuestionId;
@@ -71,6 +75,15 @@ public class SurveyPageResource extends FreeMarkerPageResource {
             @Override
             public String makeKey(String questionId) {
                 return getBackendEndpoint() + "/assessment/question/" + questionId;
+            }
+        };
+
+        mUserRecordProvider = new DelegateProvider<String, String, UserRecord>(
+                new JsonRequestProvider<UserRecord>(getContext().getClientDispatcher(),
+                    UserRecord.class)) {
+            @Override
+            public String makeKey(String userid) {
+                return getBackendEndpoint() + "/accounts/" + userid;
             }
         };
 
@@ -205,24 +218,6 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         }
     }
 
-    private Map<?, ?> getAccount(String id) {
-        try {
-            Map<?, ?> account = null;
-
-            JsonResponse response = backendGet("/accounts/" + id);
-            if (!response.getStatus().isSuccess()) {
-                return null;
-            }
-            account = response.getMap();
-
-            return account;
-
-        } catch (ClientException e) {
-            LOG.warn("Error fetching account.", e);
-            return null;
-        }
-    }
-
     private Question getQuestion(String id) {
         try {
             return mQuestionProvider.get(id);
@@ -252,12 +247,16 @@ public class SurveyPageResource extends FreeMarkerPageResource {
 
         if (nextQuestionId == null) {
             // Just finished the last question. Update the user's account
-            Map account = getAccount(mUserId);
-            if (account == null) {
-                account = new HashMap();
+            try {
+                UserRecord account = mUserRecordProvider.get(mUserId);
+                if (account == null) {
+                    account = new UserRecord();
+                }
+                account.setLanding("training");
+                mUserRecordProvider.put(mUserId, account);
+            } catch (IOException e) {
+                LOG.warn("IOException updating landing for " + mUserId, e);
             }
-            account.put("landing", "training");
-            backendPut("/accounts/" + mUserId, account);
 
             String nextPage = mConfig.getString("dynamicRoot", "");
             nextPage += "/account/assessment/results";

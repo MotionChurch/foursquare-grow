@@ -8,7 +8,6 @@ import java.io.IOException;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.UUID;
 
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
@@ -68,7 +67,7 @@ public class ThreadResource extends ServerResource {
     }
 
     /**
-     * POST a new thread to the topic.
+     * POST a new message to the thread.
      */
     @Override
     protected Representation post(Representation entity) {
@@ -86,7 +85,7 @@ public class ThreadResource extends ServerResource {
 
             // Force the thread id and message to be what we expect.
             message.setThreadId(mThreadId);
-            message.setId(String.format("%x-%s", System.currentTimeMillis(), UUID.randomUUID().toString()));
+            message.setId(Message.generateId());
 
             if (message.getCreated() == null) {
                 message.setCreated(new Date());
