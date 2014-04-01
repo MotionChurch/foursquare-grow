@@ -56,8 +56,8 @@ public class GrowProcessComponent extends Component {
 
         // Authenticated access to the backend
         BackendVerifier verifier = new BackendVerifier(backend.getUserRecordProvider());
-        ChallengeAuthenticator auth = new ChallengeAuthenticator(getContext(), false,
-                ChallengeScheme.HTTP_BASIC, BACKEND_REALM, verifier);
+        ChallengeAuthenticator auth = new ChallengeAuthenticator(getContext().createChildContext(),
+                false, ChallengeScheme.HTTP_BASIC, BACKEND_REALM, verifier);
         auth.setNext(backend);
         getDefaultHost().attach("/backend", auth);
     }
@@ -87,9 +87,6 @@ public class GrowProcessComponent extends Component {
         // Start the HTTP Server
         final GrowProcessComponent component = new GrowProcessComponent();
         component.getServers().add(Protocol.HTTP, 8085);
-        component.getClients().add(Protocol.HTTP);
-        component.getClients().add(Protocol.HTTPS);
-        component.getClients().add(Protocol.FILE);
         //component.getClients().add(new Client(null, Arrays.asList(Protocol.HTTPS), "org.restlet.ext.httpclient.HttpClientHelper"));
 
         // Static content

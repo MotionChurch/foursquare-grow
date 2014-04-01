@@ -33,7 +33,6 @@ import com.p4square.grow.model.UserRecord;
 import com.p4square.grow.provider.DelegateProvider;
 import com.p4square.grow.provider.JsonEncodedProvider;
 import com.p4square.grow.provider.Provider;
-import com.p4square.grow.provider.QuestionProvider;
 
 /**
  * SurveyPageResource handles rendering the survey and processing user's answers.
@@ -71,7 +70,9 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         }
 
         mJsonClient = new JsonRequestClient(getContext().getClientDispatcher());
-        mQuestionProvider = new QuestionProvider<String>(new JsonRequestProvider<Question>(getContext().getClientDispatcher(), Question.class)) {
+        mQuestionProvider = new DelegateProvider<String, String, Question>(
+                new JsonRequestProvider<Question>(getContext().getClientDispatcher(),
+                    Question.class)) {
             @Override
             public String makeKey(String questionId) {
                 return getBackendEndpoint() + "/assessment/question/" + questionId;
