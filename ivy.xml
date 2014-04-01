@@ -16,12 +16,16 @@
     </publications>
 
     <dependencies defaultconfmapping="*->default">
+        <dependency org="org.restlet.jee" name="org.restlet" rev="[2.2-M5]" conf="default" />
+        <dependency org="org.restlet.jee" name="org.restlet.ext.servlet" rev="[2.2-M5]" conf="default" />
+        <dependency org="org.restlet.jee" name="org.restlet.ext.jackson" rev="[2.2-M5]" conf="default" />
+        <dependency org="org.restlet.jee" name="org.restlet.ext.freemarker" rev="[2.2-M5]" conf="default" />
+        <dependency org="org.restlet.jee" name="org.restlet.ext.httpclient" rev="[2.2-M5]" conf="default" />
+
+        <dependency org="log4j" name="log4j" rev="[1.2,)" conf="default" />
+
         <dependency org="junit" name="junit" rev="4.7" conf="test" />
         <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9rc1" conf="test" />
-
-        <dependency org="net.jesterpm" name="fmfacade" rev="[1.0-SNAPSHOT,)" conf="default" />
-        <dependency org="org.restlet.jee" name="org.restlet.ext.httpclient" rev="[2.1,)" conf="default" />
-        <dependency org="org.restlet.jee" name="org.restlet.ext.wadl" rev="[2.1,)" conf="default" />
 
         <!-- Backend Dependencies -->
         <dependency org="com.netflix.astyanax" name="astyanax-core" rev="[1.0,)" conf="default" />
