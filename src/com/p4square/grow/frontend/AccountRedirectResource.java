@@ -4,6 +4,7 @@
 
 package com.p4square.grow.frontend;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,9 +62,22 @@ public class AccountRedirectResource extends ServerResource {
      */
     @Override
     protected Representation get() {
+        if (mUserId == null || mUserId.length() == 0) {
+            // This shouldn't happen, but I want to be safe because of the DB insert below.
+            setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+            return new ErrorPage("Not Authenticated!");
+        }
+
         try {
             // Fetch account Map.
-            UserRecord user = mUserRecordProvider.get(mUserId);
+            UserRecord user = null;
+            try {
+                user = mUserRecordProvider.get(mUserId);
+            } catch (NotFoundException e) {
+                // User record doesn't exist, so create a new one.
+                user = new UserRecord(getRequest().getClientInfo().getUser());
+                mUserRecordProvider.put(mUserId, user);
+            }
 
             // Check for the new believers cookie
             String cookie = getRequest().getCookies().getFirstValue(NewBelieverResource.COOKIE_NAME);
