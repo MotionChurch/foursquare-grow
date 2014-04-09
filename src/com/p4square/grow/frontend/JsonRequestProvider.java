@@ -51,7 +51,11 @@ public class JsonRequestProvider<V> extends JsonEncodedProvider<V> implements Pr
                 representation.release();
             }
 
-            throw new IOException("Could not get object. " + response.getStatus());
+            if (Status.CLIENT_ERROR_NOT_FOUND.equals(response.getStatus())) {
+                throw new NotFoundException("Could not get object. " + response.getStatus());
+            } else {
+                throw new IOException("Could not get object. " + response.getStatus());
+            }
         }
 
         return decode(representation.getText());
