@@ -27,7 +27,7 @@
     </@content>
 
     <div id="getstarted">
-        <a class="greenbutton" onclick="return submitClassForm()" href="${dynamicRoot}/account/training/introduction">Begin GROWing &#x2799;</a>
+        <a class="greenbutton" href="${dynamicRoot}/account/training/introduction">Begin GROWing &#x2799;</a>
     </div>
 </@commonpage>
 
