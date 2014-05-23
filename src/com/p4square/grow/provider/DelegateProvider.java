@@ -31,10 +31,10 @@ public abstract class DelegateProvider<K, D, V> implements Provider<K, V> {
     }
 
     /**
-     * Make a Key for questionId.
+     * Make a Key for the delegated provider.
      *
-     * @param questionId The question id.
-     * @return a key for questionId.
+     * @param input The pre-transform key.
+     * @return the post-transform key.
      */
     protected abstract D makeKey(final K input);
 }

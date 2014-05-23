@@ -17,9 +17,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 
 import com.p4square.grow.backend.GrowBackend;
-import com.p4square.grow.backend.db.CassandraDatabase;
 import com.p4square.grow.model.Banner;
 import com.p4square.grow.provider.JsonEncodedProvider;
+import com.p4square.grow.provider.Provider;
 
 /**
  * Fetches or sets the banner string.
@@ -31,14 +31,14 @@ public class BannerResource extends ServerResource {
 
     public static final ObjectMapper MAPPER = JsonEncodedProvider.MAPPER;
 
-    private CassandraDatabase mDb;
+    private Provider<String, String> mStringProvider;
 
     @Override
     public void doInit() {
         super.doInit();
 
         final GrowBackend backend = (GrowBackend) getApplication();
-        mDb = backend.getDatabase();
+        mStringProvider = backend.getStringProvider();
     }
 
     /**
@@ -46,7 +46,13 @@ public class BannerResource extends ServerResource {
      */
     @Override
     protected Representation get() {
-        String result = mDb.getKey("strings", "banner");
+        String result = null;
+        try {
+            result = mStringProvider.get("banner");
+
+        } catch (IOException e) {
+            LOG.warn("Exception loading banner: " + e);
+        }
 
         if (result == null || result.length() == 0) {
             result = "{\"html\":null}";
@@ -67,7 +73,7 @@ public class BannerResource extends ServerResource {
 
             Banner banner = representation.getObject();
 
-            mDb.putKey("strings", "banner", MAPPER.writeValueAsString(banner));
+            mStringProvider.put("banner", MAPPER.writeValueAsString(banner));
             setStatus(Status.SUCCESS_NO_CONTENT);
 
         } catch (IOException e) {
