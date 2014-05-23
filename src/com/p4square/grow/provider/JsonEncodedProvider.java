@@ -25,8 +25,8 @@ public abstract class JsonEncodedProvider<V> {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    private final Class<V> mClazz;
-    private final JavaType mType;
+    protected final Class<V> mClazz;
+    protected final JavaType mType;
 
     public JsonEncodedProvider(Class<V> clazz) {
         mClazz = clazz;

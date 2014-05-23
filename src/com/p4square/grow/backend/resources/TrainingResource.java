@@ -4,8 +4,8 @@
 
 package com.p4square.grow.backend.resources;
 
-import com.netflix.astyanax.model.Column;
-import com.netflix.astyanax.model.ColumnList;
+import java.io.IOException;
+import java.util.Map;
 
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
@@ -17,16 +17,16 @@ import org.apache.log4j.Logger;
 import com.p4square.grow.backend.GrowBackend;
 import com.p4square.grow.backend.db.CassandraDatabase;
 
+import com.p4square.grow.provider.CollectionProvider;
 /**
  * This resource returns a listing of training items for a particular level.
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class TrainingResource extends ServerResource {
-    private final static Logger cLog = Logger.getLogger(TrainingResource.class);
+    private final static Logger LOG = Logger.getLogger(TrainingResource.class);
 
-    private GrowBackend mBackend;
-    private CassandraDatabase mDb;
+    private CollectionProvider<String, String, String> mVideoProvider;
 
     private String mLevel;
     private String mVideoId;
@@ -35,8 +35,8 @@ public class TrainingResource extends ServerResource {
     public void doInit() {
         super.doInit();
 
-        mBackend = (GrowBackend) getApplication();
-        mDb = mBackend.getDatabase();
+        GrowBackend backend = (GrowBackend) getApplication();
+        mVideoProvider = backend.getVideoProvider();
 
         mLevel = getAttribute("level");
         mVideoId = getAttribute("videoId");
@@ -54,35 +54,44 @@ public class TrainingResource extends ServerResource {
             return null;
         }
 
-        if (mVideoId == null) {
-            // Get all videos
-            ColumnList<String> row = mDb.getRow("strings", "/training/" + mLevel);
-            if (!row.isEmpty()) {
-                StringBuilder sb = new StringBuilder("{ \"level\": \"" + mLevel + "\"");
-                sb.append(", \"videos\": [");
-                boolean first = true;
-                for (Column<String> c : row) {
-                    if (!first) {
-                        sb.append(", ");
+        try {
+            if (mVideoId == null) {
+                // Get all videos
+                // TODO: This could be improved, but this is the quickest way to get
+                // providers working.
+                Map<String, String> videos = mVideoProvider.query(mLevel);
+                if (videos.size() > 0) {
+                    StringBuilder sb = new StringBuilder("{ \"level\": \"" + mLevel + "\"");
+                    sb.append(", \"videos\": [");
+                    boolean first = true;
+                    for (String value : videos.values()) {
+                        if (!first) {
+                            sb.append(", ");
+                        }
+                        sb.append(value);
+                        first = false;
                     }
-                    sb.append(c.getStringValue());
-                    first = false;
+                    sb.append("] }");
+                    result = sb.toString();
                 }
-                sb.append("] }");
-                result = sb.toString();
+
+            } else {
+                // Get single video
+                result = mVideoProvider.get(mLevel, mVideoId);
             }
 
-        } else {
-            // Get single video
-            result = mDb.getKey("strings", "/training/" + mLevel, mVideoId);
-        }
+            if (result == null) {
+                // 404
+                setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                return null;
+            }
 
-        if (result == null) {
-            // 404
-            setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            return new StringRepresentation(result);
+
+        } catch (IOException e) {
+            LOG.error("IOException fetch video: " + e.getMessage(), e);
+            setStatus(Status.SERVER_ERROR_INTERNAL);
             return null;
         }
-
-        return new StringRepresentation(result);
     }
 }

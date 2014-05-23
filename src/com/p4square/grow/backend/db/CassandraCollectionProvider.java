@@ -80,7 +80,11 @@ public class CassandraCollectionProvider<V> implements CollectionProvider<String
      * @throws IOException if the object cannot be encoded.
      */
     protected String encode(V obj) throws IOException {
-        return JsonEncodedProvider.MAPPER.writeValueAsString(obj);
+        if (mClazz == String.class) {
+            return (String) obj;
+        } else {
+            return JsonEncodedProvider.MAPPER.writeValueAsString(obj);
+        }
     }
 
     /**
@@ -93,6 +97,10 @@ public class CassandraCollectionProvider<V> implements CollectionProvider<String
     protected V decode(String blob) throws IOException {
         if (blob == null) {
             return null;
+        }
+
+        if (mClazz == String.class) {
+            return (V) blob;
         }
 
         V obj = JsonEncodedProvider.MAPPER.readValue(blob, mClazz);

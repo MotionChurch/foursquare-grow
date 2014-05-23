@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.netflix.astyanax.model.Column;
-import com.netflix.astyanax.model.ColumnList;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.restlet.data.MediaType;
@@ -27,16 +24,17 @@ import org.restlet.ext.jackson.JacksonRepresentation;
 import org.apache.log4j.Logger;
 
 import com.p4square.grow.backend.GrowBackend;
-import com.p4square.grow.backend.db.CassandraDatabase;
 
 import com.p4square.grow.model.Chapter;
 import com.p4square.grow.model.Playlist;
 import com.p4square.grow.model.VideoRecord;
 import com.p4square.grow.model.TrainingRecord;
 
-import com.p4square.grow.provider.Provider;
-import com.p4square.grow.provider.ProvidesTrainingRecords;
+import com.p4square.grow.provider.CollectionProvider;
 import com.p4square.grow.provider.JsonEncodedProvider;
+import com.p4square.grow.provider.Provider;
+import com.p4square.grow.provider.ProvidesAssessments;
+import com.p4square.grow.provider.ProvidesTrainingRecords;
 
 import com.p4square.grow.model.Score;
 
@@ -52,8 +50,8 @@ public class TrainingRecordResource extends ServerResource {
         SUMMARY, VIDEO
     }
 
-    private CassandraDatabase mDb;
     private Provider<String, TrainingRecord> mTrainingRecordProvider;
+    private CollectionProvider<String, String, String> mAnswerProvider;
 
     private RequestType mRequestType;
     private String mUserId;
@@ -64,8 +62,8 @@ public class TrainingRecordResource extends ServerResource {
     public void doInit() {
         super.doInit();
 
-        mDb = ((GrowBackend) getApplication()).getDatabase();
         mTrainingRecordProvider = ((ProvidesTrainingRecords) getApplication()).getTrainingRecordProvider();
+        mAnswerProvider = ((ProvidesAssessments) getApplication()).getAnswerProvider();
 
         mUserId = getAttribute("userId");
         mVideoId = getAttribute("videoId");
@@ -184,7 +182,7 @@ public class TrainingRecordResource extends ServerResource {
         double assessedScore = 0;
 
         try {
-            String summaryString = mDb.getKey("assessments", userId, "summary");
+            String summaryString = mAnswerProvider.get(userId, "summary");
             if (summaryString == null) {
                 LOG.warn("Asked to create training record for unassessed user " + userId);
                 return;

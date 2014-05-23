@@ -4,11 +4,9 @@
 
 package com.p4square.grow.backend.resources;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
-
-import com.netflix.astyanax.model.Column;
-import com.netflix.astyanax.model.ColumnList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -21,12 +19,12 @@ import org.restlet.resource.ServerResource;
 import org.apache.log4j.Logger;
 
 import com.p4square.grow.backend.GrowBackend;
-import com.p4square.grow.backend.db.CassandraDatabase;
 import com.p4square.grow.model.Answer;
 import com.p4square.grow.model.Question;
 import com.p4square.grow.model.RecordedAnswer;
 import com.p4square.grow.model.Score;
 import com.p4square.grow.model.UserRecord;
+import com.p4square.grow.provider.CollectionProvider;
 import com.p4square.grow.provider.Provider;
 
 
@@ -44,7 +42,7 @@ public class SurveyResultsResource extends ServerResource {
         ASSESSMENT, ANSWER
     }
 
-    private CassandraDatabase mDb;
+    private CollectionProvider<String, String, String> mAnswerProvider;
     private Provider<String, Question> mQuestionProvider;
     private Provider<String, UserRecord> mUserRecordProvider;
 
@@ -57,7 +55,7 @@ public class SurveyResultsResource extends ServerResource {
         super.doInit();
 
         final GrowBackend backend = (GrowBackend) getApplication();
-        mDb = backend.getDatabase();
+        mAnswerProvider = backend.getAnswerProvider();
         mQuestionProvider = backend.getQuestionProvider();
         mUserRecordProvider = backend.getUserRecordProvider();
 
@@ -75,27 +73,33 @@ public class SurveyResultsResource extends ServerResource {
      */
     @Override
     protected Representation get() {
-        String result = null;
+        try {
+            String result = null;
 
-        switch (mRequestType) {
-            case ANSWER:
-                result = mDb.getKey("assessments", mUserId, mQuestionId);
-                break;
+            switch (mRequestType) {
+                case ANSWER:
+                    result = mAnswerProvider.get(mUserId, mQuestionId);
+                    break;
 
-            case ASSESSMENT:
-                result = mDb.getKey("assessments", mUserId, "summary");
-                if (result == null) {
-                    result = buildAssessment();
-                }
-                break;
-        }
+                case ASSESSMENT:
+                    result = mAnswerProvider.get(mUserId, "summary");
+                    if (result == null || result.length() == 0) {
+                        result = buildAssessment();
+                    }
+                    break;
+            }
 
-        if (result == null) {
-            setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            if (result == null) {
+                setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                return null;
+            }
+
+            return new StringRepresentation(result);
+        } catch (IOException e) {
+            LOG.error("IOException getting answer: ", e);
+            setStatus(Status.SERVER_ERROR_INTERNAL);
             return null;
         }
-
-        return new StringRepresentation(result);
     }
 
     /**
@@ -108,9 +112,9 @@ public class SurveyResultsResource extends ServerResource {
         switch (mRequestType) {
             case ANSWER:
                 try {
-                    mDb.putKey("assessments", mUserId, mQuestionId, entity.getText());
-                    mDb.putKey("assessments", mUserId, "lastAnswered", mQuestionId);
-                    mDb.deleteKey("assessments", mUserId, "summary");
+                    mAnswerProvider.put(mUserId, mQuestionId, entity.getText());
+                    mAnswerProvider.put(mUserId, "lastAnswered", mQuestionId);
+                    mAnswerProvider.put(mUserId, "summary", null);
                     success = true;
 
                 } catch (Exception e) {
@@ -143,8 +147,8 @@ public class SurveyResultsResource extends ServerResource {
         switch (mRequestType) {
             case ANSWER:
                 try {
-                    mDb.deleteKey("assessments", mUserId, mQuestionId);
-                    mDb.deleteKey("assessments", mUserId, "summary");
+                    mAnswerProvider.put(mUserId, mQuestionId, null);
+                    mAnswerProvider.put(mUserId, "summary", null);
                     success = true;
 
                 } catch (Exception e) {
@@ -154,7 +158,9 @@ public class SurveyResultsResource extends ServerResource {
 
             case ASSESSMENT:
                 try {
-                    mDb.deleteRow("assessments", mUserId);
+                    mAnswerProvider.put(mUserId, "summary", null);
+                    mAnswerProvider.put(mUserId, "lastAnswered", null);
+                    // TODO Delete answers
 
                     UserRecord record = mUserRecordProvider.get(mUserId);
                     if (record != null) {
@@ -188,48 +194,48 @@ public class SurveyResultsResource extends ServerResource {
     /**
      * This method compiles assessment results.
      */
-    private String buildAssessment() {
+    private String buildAssessment() throws IOException {
         StringBuilder sb = new StringBuilder("{ ");
 
         // Last question answered
-        final String lastAnswered = mDb.getKey("assessments", mUserId, "lastAnswered");
-        if (lastAnswered != null) {
-            sb.append("\"lastAnswered\": \"" + lastAnswered + "\"");
+        final String lastAnswered = mAnswerProvider.get(mUserId, "lastAnswered");
+        if (lastAnswered != null && lastAnswered.length() > 0) {
+            sb.append("\"lastAnswered\": \"" + lastAnswered + "\", ");
         }
 
         // Compute score
-        ColumnList<String> row = mDb.getRow("assessments", mUserId);
-        if (!row.isEmpty()) {
+        Map<String, String> row = mAnswerProvider.query(mUserId);
+        if (row.size() > 0) {
             Score score = new Score();
             boolean scoringDone = false;
             int totalAnswers = 0;
-            for (Column<String> c : row) {
-                if (c.getName().equals("lastAnswered") || c.getName().equals("summary")) {
+            for (Map.Entry<String, String> c : row.entrySet()) {
+                if (c.getKey().equals("lastAnswered") || c.getKey().equals("summary")) {
                     continue;
                 }
 
                 try {
-                    Question question = mQuestionProvider.get(c.getName());
-                    RecordedAnswer userAnswer = MAPPER.readValue(c.getStringValue(), RecordedAnswer.class);
+                    Question question = mQuestionProvider.get(c.getKey());
+                    RecordedAnswer userAnswer = MAPPER.readValue(c.getValue(), RecordedAnswer.class);
 
                     if (question == null) {
-                        LOG.warn("Answer for unknown question: " + c.getName());
+                        LOG.warn("Answer for unknown question: " + c.getKey());
                         continue;
                     }
 
-                    LOG.debug("Scoring questionId: " + c.getName());
+                    LOG.debug("Scoring questionId: " + c.getKey());
                     scoringDone = !question.scoreAnswer(score, userAnswer);
 
                 } catch (Exception e) {
                     LOG.error("Failed to score question: {userid: \"" + mUserId +
-                            "\", questionid:\"" + c.getName() +
-                            "\", userAnswer:\"" + c.getStringValue() + "\"}", e);
+                            "\", questionid:\"" + c.getKey() +
+                            "\", userAnswer:\"" + c.getValue() + "\"}", e);
                 }
 
                 totalAnswers++;
             }
 
-            sb.append(", \"score\":" + score.getScore());
+            sb.append("\"score\":" + score.getScore());
             sb.append(", \"sum\":" + score.getSum());
             sb.append(", \"count\":" + score.getCount());
             sb.append(", \"totalAnswers\":" + totalAnswers);
@@ -240,7 +246,7 @@ public class SurveyResultsResource extends ServerResource {
         String summary = sb.toString();
 
         // Persist summary
-        mDb.putKey("assessments", mUserId, "summary", summary);
+        mAnswerProvider.put(mUserId, "summary", summary);
 
         return summary;
     }

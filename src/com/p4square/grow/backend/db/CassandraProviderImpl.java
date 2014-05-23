@@ -26,12 +26,20 @@ public class CassandraProviderImpl<V> extends JsonEncodedProvider<V> implements 
     @Override
     public V get(CassandraKey key) throws IOException {
         String blob = mDb.getKey(key.getColumnFamily(), key.getId(), key.getColumn());
+        if (mClazz == String.class) {
+            return (V) blob;
+        }
         return decode(blob);
     }
 
     @Override
     public void put(CassandraKey key, V obj) throws IOException {
-        String blob = encode(obj);
+        String blob;
+        if (mClazz == String.class) {
+            blob = (String) obj;
+        } else {
+            blob = encode(obj);
+        }
         mDb.putKey(key.getColumnFamily(), key.getId(), key.getColumn(), blob);
     }
 }

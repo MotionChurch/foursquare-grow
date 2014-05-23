@@ -18,12 +18,6 @@ import org.restlet.routing.Router;
 
 import com.p4square.grow.config.Config;
 
-import com.p4square.grow.backend.db.CassandraDatabase;
-import com.p4square.grow.backend.db.CassandraKey;
-import com.p4square.grow.backend.db.CassandraProviderImpl;
-import com.p4square.grow.backend.db.CassandraCollectionProvider;
-import com.p4square.grow.backend.db.CassandraTrainingRecordProvider;
-
 import com.p4square.grow.model.Message;
 import com.p4square.grow.model.MessageThread;
 import com.p4square.grow.model.Playlist;
@@ -32,7 +26,6 @@ import com.p4square.grow.model.TrainingRecord;
 import com.p4square.grow.model.UserRecord;
 
 import com.p4square.grow.provider.CollectionProvider;
-import com.p4square.grow.provider.DelegateProvider;
 import com.p4square.grow.provider.Provider;
 import com.p4square.grow.provider.ProvidesQuestions;
 import com.p4square.grow.provider.ProvidesTrainingRecords;
@@ -54,23 +47,12 @@ import com.p4square.grow.backend.feed.TopicResource;
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
-public class GrowBackend extends Application
-        implements ProvidesQuestions, ProvidesTrainingRecords, FeedDataProvider,
-          ProvidesUserRecords {
-    private static final String DEFAULT_COLUMN = "value";
+public class GrowBackend extends Application implements GrowData {
 
     private final static Logger LOG = Logger.getLogger(GrowBackend.class);
 
     private final Config mConfig;
-    private final CassandraDatabase mDatabase;
-
-    private final Provider<String, UserRecord> mUserRecordProvider;
-
-    private final Provider<String, Question> mQuestionProvider;
-    private final CassandraTrainingRecordProvider mTrainingRecordProvider;
-
-    private final CollectionProvider<String, String, MessageThread> mFeedThreadProvider;
-    private final CollectionProvider<String, String, Message> mFeedMessageProvider;
+    private final GrowData mGrowData;
 
     public GrowBackend() {
         this(new Config());
@@ -78,30 +60,8 @@ public class GrowBackend extends Application
 
     public GrowBackend(Config config) {
         mConfig = config;
-        mDatabase = new CassandraDatabase();
 
-        mUserRecordProvider = new DelegateProvider<String, CassandraKey, UserRecord>(
-                new CassandraProviderImpl<UserRecord>(mDatabase, UserRecord.class)) {
-            @Override
-            public CassandraKey makeKey(String userid) {
-                return new CassandraKey("accounts", userid, DEFAULT_COLUMN);
-            }
-        };
-
-        mQuestionProvider = new DelegateProvider<String, CassandraKey, Question>(
-                new CassandraProviderImpl<Question>(mDatabase, Question.class)) {
-            @Override
-            public CassandraKey makeKey(String questionId) {
-                return new CassandraKey("strings", "/questions/" + questionId, DEFAULT_COLUMN);
-            }
-        };
-
-        mFeedThreadProvider = new CassandraCollectionProvider<MessageThread>(mDatabase,
-                "feedthreads", MessageThread.class);
-        mFeedMessageProvider = new CassandraCollectionProvider<Message>(mDatabase,
-                "feedmessages", Message.class);
-
-        mTrainingRecordProvider = new CassandraTrainingRecordProvider(mDatabase);
+        mGrowData = new CassandraGrowData(config);
     }
 
     @Override
@@ -146,10 +106,7 @@ public class GrowBackend extends Application
     public void start() throws Exception {
         super.start();
 
-        // Setup database
-        mDatabase.setClusterName(mConfig.getString("clusterName", "Dev Cluster"));
-        mDatabase.setKeyspaceName(mConfig.getString("keyspace", "GROW"));
-        mDatabase.init();
+        mGrowData.start();
     }
 
     /**
@@ -158,48 +115,56 @@ public class GrowBackend extends Application
     @Override
     public void stop() throws Exception {
         LOG.info("Shutting down...");
-        mDatabase.close();
+        mGrowData.stop();
 
         super.stop();
     }
 
-    /**
-     * @return the current database.
-     */
-    public CassandraDatabase getDatabase() {
-        return mDatabase;
-    }
-
     @Override
     public Provider<String, UserRecord> getUserRecordProvider() {
-        return mUserRecordProvider;
+        return mGrowData.getUserRecordProvider();
     }
 
     @Override
     public Provider<String, Question> getQuestionProvider() {
-        return mQuestionProvider;
+        return mGrowData.getQuestionProvider();
+    }
+
+    @Override
+    public CollectionProvider<String, String, String> getVideoProvider() {
+        return mGrowData.getVideoProvider();
     }
 
     @Override
     public Provider<String, TrainingRecord> getTrainingRecordProvider() {
-        return mTrainingRecordProvider;
+        return mGrowData.getTrainingRecordProvider();
     }
 
     /**
      * @return the Default Playlist.
      */
     public Playlist getDefaultPlaylist() throws IOException {
-        return mTrainingRecordProvider.getDefaultPlaylist();
+        return mGrowData.getDefaultPlaylist();
     }
 
     @Override
     public CollectionProvider<String, String, MessageThread> getThreadProvider() {
-        return mFeedThreadProvider;
+        return mGrowData.getThreadProvider();
     }
 
     @Override
     public CollectionProvider<String, String, Message> getMessageProvider() {
-        return mFeedMessageProvider;
+        return mGrowData.getMessageProvider();
+    }
+
+    @Override
+    public Provider<String, String> getStringProvider() {
+        return mGrowData.getStringProvider();
+    }
+
+    @Override
+    public CollectionProvider<String, String, String> getAnswerProvider() {
+        return mGrowData.getAnswerProvider();
     }
 
     /**
