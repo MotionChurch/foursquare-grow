@@ -22,6 +22,15 @@
         </java>
     </target>
 
+    <target name="server-prod" depends="compile">
+        <java classname="com.p4square.grow.GrowProcessComponent"
+            classpathref="classpath.run" fork="true">
+
+            <arg file="devfiles/grow-server.properties" />
+            <arg value="serverprod" />
+        </java>
+    </target>
+
     <target name="frontend" depends="compile">
         <java classname="com.p4square.grow.frontend.GrowFrontend"
             classpathref="classpath.run" fork="true">
