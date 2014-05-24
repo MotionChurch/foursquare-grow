@@ -38,13 +38,17 @@ public class GrowProcessComponent extends Component {
      * Create a new Grow Process website component combining a frontend and backend.
      */
     public GrowProcessComponent() throws Exception {
+        this(new Config());
+    }
+
+    public GrowProcessComponent(Config config) {
         // Clients
         getClients().add(Protocol.FILE);
         getClients().add(Protocol.HTTP);
         getClients().add(Protocol.HTTPS);
 
         // Prepare mConfig
-        mConfig = new Config();
+        mConfig = config;
 
         // Frontend
         GrowFrontend frontend = new GrowFrontend(mConfig);
@@ -61,6 +65,7 @@ public class GrowProcessComponent extends Component {
         auth.setNext(backend);
         getDefaultHost().attach("/backend", auth);
     }
+
 
     @Override
     public void start() throws Exception {
@@ -84,10 +89,16 @@ public class GrowProcessComponent extends Component {
      * Stand-alone main for testing.
      */
     public static void main(String[] args) throws Exception {
+        // Load an optional config file from the first argument.
+        Config config = new Config();
+        config.setDomain("dev");
+        if (args.length == 1) {
+            config.updateConfig(args[0]);
+        }
+
         // Start the HTTP Server
-        final GrowProcessComponent component = new GrowProcessComponent();
+        final GrowProcessComponent component = new GrowProcessComponent(config);
         component.getServers().add(Protocol.HTTP, 8085);
-        //component.getClients().add(new Client(null, Arrays.asList(Protocol.HTTPS), "org.restlet.ext.httpclient.HttpClientHelper"));
 
         // Static content
         try {
@@ -100,12 +111,6 @@ public class GrowProcessComponent extends Component {
         } catch (IOException e) {
             LOG.error("Could not create directory for static resources: "
                     + e.getMessage(), e);
-        }
-
-        // Load an optional config file from the first argument.
-        component.mConfig.setDomain("dev");
-        if (args.length == 1) {
-            component.mConfig.updateConfig(args[0]);
         }
 
         // Setup shutdown hook

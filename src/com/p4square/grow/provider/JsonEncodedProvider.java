@@ -46,6 +46,10 @@ public abstract class JsonEncodedProvider<V> {
      * @throws IOException if the object cannot be encoded.
      */
     protected String encode(V obj) throws IOException {
+        if (mClazz == String.class) {
+            return (String) obj;
+        }
+
         return MAPPER.writeValueAsString(obj);
     }
 
@@ -59,6 +63,10 @@ public abstract class JsonEncodedProvider<V> {
     protected V decode(String blob) throws IOException {
         if (blob == null) {
             return null;
+        }
+
+        if (mClazz == String.class) {
+            return (V) blob;
         }
 
         V obj;
