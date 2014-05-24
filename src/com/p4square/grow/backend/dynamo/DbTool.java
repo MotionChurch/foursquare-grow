@@ -5,6 +5,9 @@
 package com.p4square.grow.backend.dynamo;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -47,6 +50,7 @@ public class DbTool {
         System.out.println("\t--loadStrings <data>        Load all videos and questions");
         System.out.println("\t--destroy                   Drop all tables");
         System.out.println("\t--addadmin <user> <pass>    Add a backend account");
+        System.out.println("\t--import   <table> <file>   Backfill a table");
     }
 
     public static void main(String... args) {
@@ -106,6 +110,9 @@ public class DbTool {
 
                 } else if ("--addadmin".equals(args[offset])) {
                     offset = addAdmin(args, ++offset);
+
+                } else if ("--import".equals(args[offset])) {
+                    offset = importTable(args, ++offset);
 
                 } else {
                     throw new IllegalArgumentException("Unknown command " + args[offset]);
@@ -266,6 +273,57 @@ public class DbTool {
 
         Provider<DynamoKey, UserRecord> provider = new DynamoProviderImpl(db, UserRecord.class);
         provider.put(DynamoKey.newAttributeKey("accounts", user, "value"), record);
+
+        return offset;
+    }
+
+    private static int importTable(String[] args, int offset) throws IOException {
+        String table = args[offset++];
+        String filename = args[offset++];
+
+        DynamoDatabase db = getDatabase();
+
+        List<String> lines = Files.readAllLines(new File(filename).toPath(),
+                StandardCharsets.UTF_8);
+
+        int count = 0;
+
+        String key = null;
+        Map<String, String> attributes = new HashMap<>();
+        for (String line : lines) {
+            if (line.length() == 0) {
+                if (attributes.size() > 0) {
+                    db.putKey(DynamoKey.newKey(table, key), attributes);
+                    count++;
+
+                    if (count % 50 == 0) {
+                        System.out.printf("Imported %d records into %s...\n", count, table);
+                    }
+                }
+                key = null;
+                attributes = new HashMap<>();
+                continue;
+            }
+
+            if (key == null) {
+                key = line;
+                continue;
+            }
+
+            int space = line.indexOf(' ');
+            String attribute = line.substring(0, space);
+            String value = line.substring(space + 1);
+
+            attributes.put(attribute, value);
+        }
+
+        // Finish up the remaining attributes.
+        if (key != null && attributes.size() > 0) {
+            db.putKey(DynamoKey.newKey(table, key), attributes);
+            count++;
+        }
+
+        System.out.printf("Imported %d records into %s.\n", count, table);
 
         return offset;
     }

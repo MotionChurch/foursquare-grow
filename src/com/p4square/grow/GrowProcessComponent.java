@@ -92,8 +92,13 @@ public class GrowProcessComponent extends Component {
         // Load an optional config file from the first argument.
         Config config = new Config();
         config.setDomain("dev");
-        if (args.length == 1) {
+        if (args.length >= 1) {
             config.updateConfig(args[0]);
+        }
+
+        // Override domain
+        if (args.length == 2) {
+            config.setDomain(args[1]);
         }
 
         // Start the HTTP Server
