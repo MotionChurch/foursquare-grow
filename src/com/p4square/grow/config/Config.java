@@ -100,6 +100,13 @@ public class Config {
     public String getString(final String key, final String defaultValue) {
         String result;
 
+        // Command line properties trump all.
+        result = System.getProperty(key);
+        if (result != null) {
+            LOG.debug("Reading System.getProperty(" + key + "). Got result = { " + result + " }");
+            return result;
+        }
+
         final String domainKey = mDomain + "." + key;
         result = mProperties.getProperty(domainKey);
         if (result != null) {
