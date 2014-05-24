@@ -10,6 +10,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.AttributeAction;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
@@ -33,19 +36,47 @@ import com.amazonaws.services.dynamodbv2.model.UpdateItemResult;
 import com.amazonaws.services.dynamodbv2.model.UpdateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.UpdateTableResult;
 
+import com.p4square.grow.config.Config;
+
 /**
  * A wrapper around the Dynamo API.
  */
 public class DynamoDatabase {
     private final AmazonDynamoDBClient mClient;
+    private final String mTablePrefix;
 
-    public DynamoDatabase(AWSCredentials awsCreds) {
-        mClient = new AmazonDynamoDBClient(awsCreds);
-    }
+    public DynamoDatabase(final Config config) {
+        AWSCredentials creds;
 
-    public DynamoDatabase(AWSCredentials awsCreds, String endpoint) {
-        this(awsCreds);
-        mClient.setEndpoint(endpoint);
+        String awsAccessKey = config.getString("awsAccessKey");
+        if (awsAccessKey != null) {
+            creds = new AWSCredentials() {
+                @Override
+                public String getAWSAccessKeyId() {
+                    return config.getString("awsAccessKey");
+                }
+                @Override
+                public String getAWSSecretKey() {
+                    return config.getString("awsSecretKey");
+                }
+            };
+        } else {
+            creds = new DefaultAWSCredentialsProviderChain().getCredentials();
+        }
+
+        mClient = new AmazonDynamoDBClient(creds);
+
+        String endpoint = config.getString("dynamoEndpoint");
+        if (endpoint != null) {
+            mClient.setEndpoint(endpoint);
+        }
+
+        String region = config.getString("awsRegion");
+        if (region != null) {
+            mClient.setRegion(Region.getRegion(Regions.fromName(region)));
+        }
+
+        mTablePrefix = config.getString("dynamoTablePrefix", "");
     }
 
     public void createTable(String name, long reads, long writes) {
@@ -62,7 +93,7 @@ public class DynamoDatabase {
             .withWriteCapacityUnits(writes);
 
         CreateTableRequest request = new CreateTableRequest()
-            .withTableName(name)
+            .withTableName(mTablePrefix + name)
             .withAttributeDefinitions(attributeDefinitions)
             .withKeySchema(ks)
             .withProvisionedThroughput(provisionedThroughput);
@@ -76,7 +107,7 @@ public class DynamoDatabase {
             .withWriteCapacityUnits(writes);
 
         UpdateTableRequest request = new UpdateTableRequest()
-            .withTableName(name)
+            .withTableName(mTablePrefix + name)
             .withProvisionedThroughput(provisionedThroughput);
 
         UpdateTableResult result = mClient.updateTable(request);
@@ -84,14 +115,14 @@ public class DynamoDatabase {
 
     public void deleteTable(String name) {
         DeleteTableRequest deleteTableRequest = new DeleteTableRequest()
-            .withTableName(name);
+            .withTableName(mTablePrefix + name);
 
         DeleteTableResult result = mClient.deleteTable(deleteTableRequest);
     }
 
     public Map<String, String> getKey(final DynamoKey key) {
         GetItemRequest getItemRequest = new GetItemRequest()
-            .withTableName(key.getTable())
+            .withTableName(mTablePrefix + key.getTable())
             .withKey(generateKey(key));
 
         GetItemResult getItemResult = mClient.getItem(getItemRequest);
@@ -113,7 +144,7 @@ public class DynamoDatabase {
         checkAttributeKey(key);
 
         GetItemRequest getItemRequest = new GetItemRequest()
-            .withTableName(key.getTable())
+            .withTableName(mTablePrefix + key.getTable())
             .withKey(generateKey(key))
             .withAttributesToGet(key.getAttribute());
 
@@ -149,7 +180,7 @@ public class DynamoDatabase {
         item.putAll(generateKey(key));
 
         PutItemRequest putItemRequest = new PutItemRequest()
-            .withTableName(key.getTable())
+            .withTableName(mTablePrefix + key.getTable())
             .withItem(item);
 
         PutItemResult result = mClient.putItem(putItemRequest);
@@ -171,7 +202,7 @@ public class DynamoDatabase {
                 .withValue(new AttributeValue().withS(value)));
 
         UpdateItemRequest updateItemRequest = new UpdateItemRequest()
-            .withTableName(key.getTable())
+            .withTableName(mTablePrefix + key.getTable())
             .withKey(generateKey(key))
             .withAttributeUpdates(updateItem);
         // TODO: Check conditions.
@@ -186,7 +217,7 @@ public class DynamoDatabase {
      */
     public void deleteKey(final DynamoKey key) {
         DeleteItemRequest deleteItemRequest = new DeleteItemRequest()
-            .withTableName(key.getTable())
+            .withTableName(mTablePrefix + key.getTable())
             .withKey(generateKey(key));
 
         DeleteItemResult result = mClient.deleteItem(deleteItemRequest);
@@ -205,7 +236,7 @@ public class DynamoDatabase {
                 new AttributeValueUpdate().withAction(AttributeAction.DELETE));
 
         UpdateItemRequest updateItemRequest = new UpdateItemRequest()
-            .withTableName(key.getTable())
+            .withTableName(mTablePrefix + key.getTable())
             .withKey(generateKey(key))
             .withAttributeUpdates(updateItem);
 
