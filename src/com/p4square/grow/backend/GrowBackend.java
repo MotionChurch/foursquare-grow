@@ -61,7 +61,7 @@ public class GrowBackend extends Application implements GrowData {
     public GrowBackend(Config config) {
         mConfig = config;
 
-        mGrowData = new CassandraGrowData(config);
+        mGrowData = new DynamoGrowData(config);
     }
 
     @Override

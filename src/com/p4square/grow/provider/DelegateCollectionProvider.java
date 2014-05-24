@@ -5,7 +5,7 @@
 package com.p4square.grow.provider;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -31,7 +31,7 @@ public abstract class DelegateCollectionProvider<C, DC, K, DK, V>
 
     public Map<K, V> query(C collection, int limit) throws IOException {
         Map<DK, V> delegateResult =  mProvider.query(makeCollectionKey(collection), limit);
-        Map<K, V> result = new HashMap<>();
+        Map<K, V> result = new LinkedHashMap<>();
         for (Map.Entry<DK, V> entry : delegateResult.entrySet()) {
             result.put(unmakeKey(entry.getKey()), entry.getValue());
         }

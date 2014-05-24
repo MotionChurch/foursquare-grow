@@ -249,9 +249,12 @@ public class SurveyPageResource extends FreeMarkerPageResource {
         if (nextQuestionId == null) {
             // Just finished the last question. Update the user's account
             try {
-                UserRecord account = mUserRecordProvider.get(mUserId);
-                if (account == null) {
-                    account = new UserRecord();
+                UserRecord account = null;
+                try {
+                    account = mUserRecordProvider.get(mUserId);
+                } catch (NotFoundException e) {
+                    // User record doesn't exist, so create a new one.
+                    account = new UserRecord(getRequest().getClientInfo().getUser());
                 }
                 account.setLanding("training");
                 mUserRecordProvider.put(mUserId, account);

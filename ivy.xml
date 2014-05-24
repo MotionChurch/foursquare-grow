@@ -31,5 +31,6 @@
         <dependency org="com.netflix.astyanax" name="astyanax-core" rev="[1.0,)" conf="default" />
         <dependency org="com.netflix.astyanax" name="astyanax-thrift" rev="[1.0,)" conf="default" />
         <dependency org="com.netflix.astyanax" name="astyanax-cassandra" rev="[1.0,)" conf="default" />
+        <dependency org="com.amazonaws" name="aws-java-sdk" rev="[1.7.8,)" conf="default" />
     </dependencies>
 </ivy-module>
