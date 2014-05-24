@@ -62,6 +62,8 @@ public class DbTool {
         mConfig = new Config();
 
         try {
+            mConfig.updateConfig(DbTool.class.getResourceAsStream("/grow.properties"));
+
             int offset = 0;
             while (offset < args.length) {
                 if ("--domain".equals(args[offset])) {
@@ -126,23 +128,7 @@ public class DbTool {
 
     private static DynamoDatabase getDatabase() {
         if (mDatabase == null) {
-            AWSCredentials creds = new AWSCredentials() {
-                @Override
-                public String getAWSAccessKeyId() {
-                    return mConfig.getString("awsAccessKey");
-                }
-                @Override
-                public String getAWSSecretKey() {
-                    return mConfig.getString("awsSecretKey");
-                }
-            };
-
-            String endpoint = mConfig.getString("dynamoEndpoint");
-            if (endpoint != null) {
-                mDatabase = new DynamoDatabase(creds, endpoint);
-            } else {
-                mDatabase = new DynamoDatabase(creds);
-            }
+            mDatabase = new DynamoDatabase(mConfig);
         }
 
         return mDatabase;

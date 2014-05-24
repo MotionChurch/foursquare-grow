@@ -55,23 +55,7 @@ class DynamoGrowData implements GrowData {
     public DynamoGrowData(final Config config) {
         mConfig = config;
 
-        AWSCredentials creds = new AWSCredentials() {
-            @Override
-            public String getAWSAccessKeyId() {
-                return config.getString("awsAccessKey");
-            }
-            @Override
-            public String getAWSSecretKey() {
-                return config.getString("awsSecretKey");
-            }
-        };
-
-        String endpoint = config.getString("dynamoEndpoint");
-        if (endpoint != null) {
-            mDatabase = new DynamoDatabase(creds, endpoint);
-        } else {
-            mDatabase = new DynamoDatabase(creds);
-        }
+        mDatabase = new DynamoDatabase(config);
 
         mUserRecordProvider = new DelegateProvider<String, DynamoKey, UserRecord>(
                 new DynamoProviderImpl<UserRecord>(mDatabase, UserRecord.class)) {
