@@ -41,7 +41,7 @@ public class GrowProcessComponent extends Component {
         this(new Config());
     }
 
-    public GrowProcessComponent(Config config) {
+    public GrowProcessComponent(Config config) throws Exception {
         // Clients
         getClients().add(Protocol.FILE);
         getClients().add(Protocol.HTTP);
@@ -49,6 +49,7 @@ public class GrowProcessComponent extends Component {
 
         // Prepare mConfig
         mConfig = config;
+        mConfig.updateConfig(this.getClass().getResourceAsStream("/grow.properties"));
 
         // Frontend
         GrowFrontend frontend = new GrowFrontend(mConfig);
@@ -69,9 +70,6 @@ public class GrowProcessComponent extends Component {
 
     @Override
     public void start() throws Exception {
-        // Load mConfigs
-        mConfig.updateConfig(this.getClass().getResourceAsStream("/grow.properties"));
-
         String configDomain = getContext().getParameters().getFirstValue("com.p4square.grow.configDomain");
         if (configDomain != null) {
             mConfig.setDomain(configDomain);
