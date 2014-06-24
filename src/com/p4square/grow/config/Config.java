@@ -54,6 +54,13 @@ public class Config {
     }
 
     /**
+     * @return the current domain.
+     */
+    public String getDomain() {
+        return mDomain;
+    }
+
+    /**
      * Load properties from a file.
      * Any exceptions are logged and suppressed.
      */

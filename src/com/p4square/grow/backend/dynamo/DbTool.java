@@ -101,7 +101,11 @@ public class DbTool {
 
                 /* Bootstrap Commands */
                 } else if ("--bootstrap".equals(args[offset])) {
-                    offset = bootstrapTables(args, ++offset);
+                    if ("dev".equals(mConfig.getDomain())) {
+                        offset = bootstrapDevTables(args, ++offset);
+                    } else {
+                        offset = bootstrapTables(args, ++offset);
+                    }
                     offset = loadStrings(args, offset);
 
                 } else if ("--loadStrings".equals(args[offset])) {
@@ -202,12 +206,25 @@ public class DbTool {
     private static int bootstrapTables(String[] args, int offset) {
         DynamoDatabase db = getDatabase();
 
-        db.createTable("strings",      10,  1);
-        db.createTable("accounts",     10,  1);
-        db.createTable("assessments",  10,  5);
-        db.createTable("training",     10,  5);
-        db.createTable("feedthreads",  10,  1);
-        db.createTable("feedmessages", 10,  1);
+        db.createTable("strings",      5,  1);
+        db.createTable("accounts",     5,  1);
+        db.createTable("assessments",  5,  5);
+        db.createTable("training",     5,  5);
+        db.createTable("feedthreads",  5,  1);
+        db.createTable("feedmessages", 5,  1);
+
+        return offset;
+    }
+
+    private static int bootstrapDevTables(String[] args, int offset) {
+        DynamoDatabase db = getDatabase();
+
+        db.createTable("strings",      1,  1);
+        db.createTable("accounts",     1,  1);
+        db.createTable("assessments",  1,  1);
+        db.createTable("training",     1,  1);
+        db.createTable("feedthreads",  1,  1);
+        db.createTable("feedmessages", 1,  1);
 
         return offset;
     }
