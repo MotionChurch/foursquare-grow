@@ -76,6 +76,7 @@ public class FreeMarkerPageResource extends ServerResource {
 
         root.put("attributes", getRequestAttributes());
         root.put("query", getQuery().getValuesMap());
+        root.put("config", mFMF.getConfig());
         
         if (getClientInfo().isAuthenticated()) {
             final User user = getClientInfo().getUser();
