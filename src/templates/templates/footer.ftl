@@ -7,6 +7,9 @@
 
     <div class="right">
         &copy;2013 <a href="http://myfoursquarechurch.com">Foursquare Church</a>
+        <#if config.getDomain() != "prod">
+        - <#include "/templates/gitversion.ftl">
+        </#if>
     </div>
 
 </footer>
