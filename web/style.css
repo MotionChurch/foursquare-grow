@@ -5,6 +5,11 @@ html, body {
     height: 100%;
 }
 
+.versiontag {
+    font-size: 150%;
+    font-style: italic;
+}
+
 .hidden {
     display: none;
 }

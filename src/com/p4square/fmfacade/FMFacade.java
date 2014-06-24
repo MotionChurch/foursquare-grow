@@ -18,8 +18,10 @@ import freemarker.template.Template;
 
 import org.apache.log4j.Logger;
 
+import com.p4square.grow.config.Config;
+
 /**
- * 
+ *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class FMFacade extends Application {
@@ -32,11 +34,18 @@ public class FMFacade extends Application {
         mFMConfig.setObjectWrapper(new DefaultObjectWrapper());
     }
 
+    /**
+     * @return a Config object.
+     */
+    public Config getConfig() {
+        return null;
+    }
+
     @Override
     public synchronized Restlet createInboundRoot() {
         return createRouter();
     }
-    
+
     /**
      * Retrieve a template.
      *
@@ -75,7 +84,7 @@ public class FMFacade extends Application {
         component.getServers().add(Protocol.HTTP, 8085);
         component.getClients().add(Protocol.HTTP);
         component.getDefaultHost().attach(new FMFacade());
-        
+
         // Setup shutdown hook
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {

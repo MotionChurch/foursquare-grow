@@ -16,6 +16,9 @@
     <header>
         <h1>
             <a href="http://myfoursquarechurch.com"><img src="${staticRoot}/images/foursquarelg.png"></a>
+        <#if config.getDomain() != "prod">
+            <span class="versiontag">${config.getDomain()}</span>
+        </#if>
         </h1>
 
         <#include "/templates/nav.ftl">
