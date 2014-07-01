@@ -49,6 +49,22 @@ public class Playlist {
     }
 
     /**
+     * @param videoId The video to search for.
+     * @return the Chapter containing videoId.
+     */
+    private Chapter findChapter(String videoId) {
+        for (Chapter chapter : mPlaylist.values()) {
+            VideoRecord r = chapter.getVideoRecord(videoId);
+
+            if (r != null) {
+                return chapter;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return The last modified date of the source playlist.
      */
     public Date getLastUpdated() {
@@ -141,26 +157,30 @@ public class Playlist {
             Chapter myChapter = mPlaylist.get(entry.getKey());
 
             if (myChapter == null) {
-                // Add entire chapter
-                try {
-                    mPlaylist.put(chapterName, theirChapter.clone());
-                } catch (CloneNotSupportedException e) {
-                    throw new RuntimeException(e); // Unexpected...
-                }
+                // Add new chapter
+                myChapter = new Chapter();
+                addChapter(chapterName, myChapter);
+            }
 
-            } else {
-                // Check chapter for missing videos
-                for (Map.Entry<String, VideoRecord> videoEntry : theirChapter.getVideos().entrySet()) {
-                    String videoId = videoEntry.getKey();
-                    VideoRecord myVideo = myChapter.getVideoRecord(videoId);
+            // Check chapter for missing videos
+            for (Map.Entry<String, VideoRecord> videoEntry : theirChapter.getVideos().entrySet()) {
+                String videoId = videoEntry.getKey();
+                VideoRecord myVideo = myChapter.getVideoRecord(videoId);
 
+                if (myVideo == null) {
+                    myVideo = find(videoId);
                     if (myVideo == null) {
+                        // New Video
                         try {
                             myVideo = videoEntry.getValue().clone();
                             myChapter.setVideoRecord(videoId, myVideo);
                         } catch (CloneNotSupportedException e) {
                             throw new RuntimeException(e); // Unexpected...
                         }
+                    } else {
+                        // Video moved
+                        findChapter(videoId).removeVideoRecord(videoId);
+                        myChapter.setVideoRecord(videoId, myVideo);
                     }
                 }
             }

@@ -49,6 +49,14 @@ public class Chapter implements Cloneable {
     }
 
     /**
+     * Remove the VideoRecord for a video id.
+     * @param videoId The id to remove.
+     */
+    public void removeVideoRecord(String videoId) {
+        mVideos.remove(videoId);
+    }
+
+    /**
      * @return true if every required video has been completed.
      */
     @JsonIgnore
