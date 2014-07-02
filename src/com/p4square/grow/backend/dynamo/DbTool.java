@@ -368,6 +368,7 @@ public class DbTool {
 
             String topicName = topic.getName();
 
+            Map<String, String> attributes = new HashMap<>();
             File[] files = topic.listFiles(JSON_FILTER);
             for (File file : files) {
                 String filename = file.getName();
@@ -375,10 +376,14 @@ public class DbTool {
 
                 byte[] encoded = Files.readAllBytes(file.toPath());
                 String value = new String(encoded, StandardCharsets.UTF_8);
-                db.putAttribute(DynamoKey.newAttributeKey("strings",
-                            "/training/" + topicName, videoId), value);
-                System.out.println("Inserted /training/" + topicName + ":" + videoId);
+
+                attributes.put(videoId, value);
+                System.out.println("Found /training/" + topicName + ":" + videoId);
             }
+
+            db.putKey(DynamoKey.newKey("strings",
+                        "/training/" + topicName), attributes);
+            System.out.println("Inserted /training/" + topicName);
         }
     }
 
