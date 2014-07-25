@@ -1,0 +1,7 @@
+*.awsAccessKey = ACCESS_KEY
+*.awsSecretKey = SECRET_KEY
+
+*.f1ConsumerKey = CONSUMER_KEY
+*.f1ConsumerSecret = CONSUMER_SECRET
+*.f1BaseUrl = fellowshiponeapi.com
+*.f1ChurchCode = pfseawa
