@@ -51,7 +51,10 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
         mConfig = mGrowFrontend.getConfig();
 
         mJsonClient = new JsonRequestClient(getContext().getClientDispatcher());
-        mTrainingRecordProvider = new TrainingRecordProvider<String>(new JsonRequestProvider<TrainingRecord>(getContext().getClientDispatcher(), TrainingRecord.class)) {
+        mTrainingRecordProvider = new TrainingRecordProvider<String>(
+                new JsonRequestProvider<TrainingRecord>(
+                    getContext().getClientDispatcher(),
+                    TrainingRecord.class)) {
             @Override
             public String makeKey(String userid) {
                 return getBackendEndpoint() + "/accounts/" + userid + "/training";
@@ -68,14 +71,7 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
      */
     @Override
     protected Representation get() {
-        Template t = mGrowFrontend.getTemplate("templates/stage-complete.ftl");
-
         try {
-            if (t == null) {
-                setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-                return ErrorPage.TEMPLATE_NOT_FOUND;
-            }
-
             Map<String, Object> root = getRootObject();
 
             // Get the training summary
@@ -110,16 +106,35 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
                 }
             }
 
-            // Skip the chapter complete message for "Introduction"
-            if ("introduction".equals(mChapter)) {
-                String nextPage = mConfig.getString("dynamicRoot", "");
-                nextPage += "/account/training/" + nextChapter;
-                getResponse().redirectSeeOther(nextPage);
-                return new StringRepresentation("Redirecting to " + nextPage);
-            }
-
             root.put("stage", mChapter);
             root.put("nextstage", nextChapter);
+
+            /*
+             * We will display one of two transitional pages:
+             * 
+             * If the next chapter has a forward page, display the forward page.
+             * Else, if this chapter is not "Introduction", display the chapter
+             * complete message.
+             */
+            Template t = mGrowFrontend.getTemplate("templates/stage-"
+                    + nextChapter + "-forward.ftl");
+
+            if (t == null) {
+                // Skip the chapter complete message for "Introduction"
+                if ("introduction".equals(mChapter)) {
+                    String nextPage = mConfig.getString("dynamicRoot", "");
+                    nextPage += "/account/training/" + nextChapter;
+                    getResponse().redirectSeeOther(nextPage);
+                    return new StringRepresentation("Redirecting to " + nextPage);
+                }
+
+                t = mGrowFrontend.getTemplate("templates/stage-complete.ftl");
+                if (t == null) {
+                    setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                    return ErrorPage.TEMPLATE_NOT_FOUND;
+                }
+            }
+
             return new TemplateRepresentation(t, root, MediaType.TEXT_HTML);
 
         } catch (Exception e) {
@@ -145,14 +160,17 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
         final JsonResponse response = mJsonClient.get(getBackendEndpoint() + uri);
         final Status status = response.getStatus();
         if (!status.isSuccess() && !Status.CLIENT_ERROR_NOT_FOUND.equals(status)) {
-            LOG.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
+            LOG.warn("Error making backend request for '" + uri
+                    + "'. status = " + response.getStatus().toString());
         }
 
         return response;
     }
 
     int chapterIndex(String chapter) {
-        if ("teacher".equals(chapter)) {
+        if ("leader".equals(chapter)) {
+            return 5;
+        } else if ("teacher".equals(chapter)) {
             return 4;
         } else if ("disciple".equals(chapter)) {
             return 3;

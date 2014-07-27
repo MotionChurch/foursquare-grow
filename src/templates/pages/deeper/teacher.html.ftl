@@ -35,7 +35,6 @@
             </ul>
             <h3>Other</h3>
             <ul>
-                <li><a href="/account/training/leader">Group Leader Orientation</a></li>
                 <li><a href="http://www.myfoursquarechurch.com/connect/community-groups/">Join a Community Group</a></li>
             </ul>
         </article>

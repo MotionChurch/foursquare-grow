@@ -48,7 +48,7 @@ import com.p4square.grow.provider.Provider;
 public class TrainingPageResource extends FreeMarkerPageResource {
     private static final Logger LOG = Logger.getLogger(TrainingPageResource.class);
 
-    private static final String[] CHAPTERS = { "introduction", "seeker", "believer", "disciple", "teacher" };
+    private static final String[] CHAPTERS = { "introduction", "seeker", "believer", "disciple", "teacher", "leader" };
     private static final Comparator<Map<String, Object>> VIDEO_COMPARATOR = new Comparator<Map<String, Object>>() {
         @Override
         public int compare(Map<String, Object> left, Map<String, Object> right) {
