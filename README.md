@@ -18,7 +18,8 @@ Usage
 1. Download and bootstrap jesterpm-build-tools from http://github.com/jesterpm/jesterpm-build-tools
 2. Copy devfiles/grow-server.properties.default to devfiles/grow-server.properties and insert your
    AWS and F1 credentials.
-3. Run `ant server` to start the website on http://localhost:8085
+3. Run `ant resolve` to download the dependencies.
+4. Run `ant server` to start the website on http://localhost:8085
 
 The website defaults to running in dev mode which will only modify the dev Dynamo tables. You can
 also run `ant server-prod` to cause the local website to access the production site's Dyanmo
