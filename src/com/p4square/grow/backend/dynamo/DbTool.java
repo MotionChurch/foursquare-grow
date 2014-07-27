@@ -44,6 +44,7 @@ public class DbTool {
         System.out.println("\t--drop   <table>                            Delete a table");
         System.out.println("\t--get    <table> <key> <attribute>          Get a value");
         System.out.println("\t--put    <table> <key> <attribute> <value>  Put a value");
+        System.out.println("\t--delete <table> <key> <attribute>          Delete a value");
         System.out.println();
         System.out.println("Bootstrap Commands:");
         System.out.println("\t--bootstrap <data>          Create all tables and import all data");
@@ -98,6 +99,9 @@ public class DbTool {
 
                 } else if ("--put".equals(args[offset])) {
                     offset = put(args, ++offset);
+
+                } else if ("--delete".equals(args[offset])) {
+                    offset = delete(args, ++offset);
 
                 /* Bootstrap Commands */
                 } else if ("--bootstrap".equals(args[offset])) {
@@ -199,6 +203,20 @@ public class DbTool {
         DynamoDatabase db = getDatabase();
 
         db.putAttribute(DynamoKey.newAttributeKey(table, key, attribute), value);
+
+        return offset;
+    }
+
+    private static int delete(String[] args, int offset) {
+        String table     = args[offset++];
+        String key       = args[offset++];
+        String attribute = args[offset++];
+
+        DynamoDatabase db = getDatabase();
+
+        db.deleteAttribute(DynamoKey.newAttributeKey(table, key, attribute));
+
+        System.out.printf("Deleted %s %s:%s\n\n", table, key, attribute);
 
         return offset;
     }
