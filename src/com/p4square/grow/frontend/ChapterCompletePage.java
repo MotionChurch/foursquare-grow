@@ -106,6 +106,11 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
                 }
             }
 
+            String nextOverride = getQueryValue("next");
+            if (nextOverride != null) {
+                nextChapter = nextOverride;
+            }
+
             root.put("stage", mChapter);
             root.put("nextstage", nextChapter);
 
