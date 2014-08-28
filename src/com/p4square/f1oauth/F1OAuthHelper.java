@@ -66,6 +66,13 @@ public class F1OAuthHelper extends OAuthHelper {
     }
 
     /**
+     * @return The base url for the F1 API, ending with a slash.
+     */
+    public String getBaseUrl() {
+        return mBaseUrl;
+    }
+
+    /**
      * @return the URL for the initial RequestToken request.
      */
     protected String getRequestTokenUrl() {

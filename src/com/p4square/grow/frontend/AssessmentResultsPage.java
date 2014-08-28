@@ -82,6 +82,9 @@ public class AssessmentResultsPage extends FreeMarkerPageResource {
                 return new StringRepresentation("Redirecting to " + nextPage);
             }
 
+            // Publish results in F1
+            publishScoreInF1(response.getMap());
+
             root.put("stage", score);
             return new TemplateRepresentation(t, root, MediaType.TEXT_HTML);
 
@@ -90,6 +93,17 @@ public class AssessmentResultsPage extends FreeMarkerPageResource {
             setStatus(Status.SERVER_ERROR_INTERNAL);
             return ErrorPage.RENDER_ERROR;
         }
+    }
+
+    private void publishScoreInF1(Map results) {
+        if (!(getRequest().getClientInfo().getUser() instanceof F1User)) {
+            // Only useful if the user is from F1.
+            return;
+        }
+
+        F1User user = (F1User) getRequest().getClientInfo().getUser();
+
+        // TODO: Update the attribute.
     }
 
     /**
