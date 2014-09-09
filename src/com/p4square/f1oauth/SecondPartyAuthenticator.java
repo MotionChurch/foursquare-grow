@@ -21,9 +21,9 @@ import org.restlet.security.Authenticator;
 public class SecondPartyAuthenticator extends Authenticator {
     private static final Logger LOG = Logger.getLogger(SecondPartyAuthenticator.class);
 
-    private final F1OAuthHelper mHelper;
+    private final F1Access mHelper;
 
-    public SecondPartyAuthenticator(Context context, boolean optional, F1OAuthHelper helper) {
+    public SecondPartyAuthenticator(Context context, boolean optional, F1Access helper) {
         super(context, optional);
 
         mHelper = helper;

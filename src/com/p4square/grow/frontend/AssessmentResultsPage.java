@@ -22,6 +22,8 @@ import com.p4square.fmfacade.json.JsonRequestClient;
 import com.p4square.fmfacade.json.JsonResponse;
 import com.p4square.fmfacade.json.ClientException;
 
+import com.p4square.f1oauth.F1User;
+
 import com.p4square.grow.config.Config;
 
 /**

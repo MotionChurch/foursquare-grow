@@ -30,7 +30,7 @@ import com.p4square.fmfacade.FreeMarkerPageResource;
 
 import com.p4square.grow.config.Config;
 
-import com.p4square.f1oauth.F1OAuthHelper;
+import com.p4square.f1oauth.F1Access;
 import com.p4square.f1oauth.SecondPartyVerifier;
 
 import com.p4square.session.SessionCheckingAuthenticator;
@@ -49,7 +49,7 @@ public class GrowFrontend extends FMFacade {
 
     private Config mConfig;
 
-    private F1OAuthHelper mHelper;
+    private F1Access mHelper;
 
     public GrowFrontend() {
         this(new Config());
@@ -73,13 +73,13 @@ public class GrowFrontend extends FMFacade {
         super.start();
     }
 
-    synchronized F1OAuthHelper getHelper() {
+    synchronized F1Access getF1Access() {
         if (mHelper == null) {
-            mHelper = new F1OAuthHelper(getContext(), mConfig.getString("f1ConsumerKey", ""),
+            mHelper = new F1Access(getContext(), mConfig.getString("f1ConsumerKey", ""),
                     mConfig.getString("f1ConsumerSecret", ""),
                     mConfig.getString("f1BaseUrl", "staging.fellowshiponeapi.com"),
                     mConfig.getString("f1ChurchCode", "pfseawa"),
-                    F1OAuthHelper.UserType.WEBLINK);
+                    F1Access.UserType.WEBLINK);
         }
 
         return mHelper;
@@ -129,7 +129,7 @@ public class GrowFrontend extends FMFacade {
         SessionCheckingAuthenticator sessionChk = new SessionCheckingAuthenticator(context, true);
 
         // This is used to authenticate the user
-        SecondPartyVerifier f1Verifier = new SecondPartyVerifier(context, getHelper());
+        SecondPartyVerifier f1Verifier = new SecondPartyVerifier(context, getF1Access());
         LoginFormAuthenticator loginAuth = new LoginFormAuthenticator(context, false, f1Verifier);
         loginAuth.setLoginFormUrl(loginPage);
         loginAuth.setLoginPostUrl(loginPost);

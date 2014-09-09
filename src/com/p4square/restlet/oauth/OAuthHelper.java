@@ -127,7 +127,7 @@ public abstract class OAuthHelper {
      * @return An OAuthUser object wrapping the AccessToken.
      * @throws OAuthException if the request failed.
      */
-    protected OAuthUser processAccessTokenRequest(Request request) throws OAuthException {
+    public OAuthUser processAccessTokenRequest(Request request) throws OAuthException {
         Response response = getResponse(request);
         Token accessToken = processTokenRequest(response);
 
@@ -143,7 +143,7 @@ public abstract class OAuthHelper {
     /**
      * Helper method to get a Response for a Request.
      */
-    protected Response getResponse(Request request) {
+    public Response getResponse(Request request) {
         return mDispatcher.handle(request);
     }
 }

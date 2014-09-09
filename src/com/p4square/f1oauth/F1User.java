@@ -19,7 +19,6 @@ public class F1User extends OAuthUser {
     public static final String LAST_NAME = "lastName";
     public static final String ICODE = "@iCode";
 
-    private final String mBaseUrl;
     private final Map mData;
 
     /**
@@ -29,10 +28,9 @@ public class F1User extends OAuthUser {
      * @param data F1 Person Record.
      * @throws IllegalStateException if data.get("person") is null.
      */
-    public F1User(String baseUrl, OAuthUser user, Map data) {
+    public F1User(OAuthUser user, Map data) {
         super(user.getLocation(), user.getToken());
 
-        mBaseUrl = baseUrl;
         mData = (Map) data.get("person");
         if (mData == null) {
             throw new IllegalStateException("Bad data");
@@ -69,72 +67,4 @@ public class F1User extends OAuthUser {
     public Object get(String key) {
         return mData.get(key);
     }
-
-    /**
-     * @return the F1 API base url.
-     */
-    public String getBaseUrl() {
-        return mBaseUrl;
-    }
-
-    /*
-    public addAttribute(Attribute attribute, String comment) {
-        String baseUrl = getBaseUrl();
-        Map newAttributeTemplate = null;
-
-        // Get Attribute Template
-        Request request = new Request(Method.GET,
-                baseUrl + "People/" + getIdentifier() + "/Attributes/new.json");
-        request.setChallengeResponse(getChallengeResponse());
-        Response response = getContext().getClientDispatcher().handle(request);
-
-        Representation representation = response.getEntity();
-        try {
-            Status status = response.getStatus();
-            if (status.isSuccess()) {
-                JacksonRepresentation<Map> entity = new JacksonRepresentation<Map>(response.getEntity(), Map.class);
-                newAttributeTemplate = entity.getObject();
-            }
-
-        } finally {
-            if (representation != null) {
-                representation.release();
-            }
-        }
-
-        if (newAttributeTemplate == null) {
-            LOG.error("Could not retrieve attribute template!");
-            return;
-        }
-
-        // Populate Attribute Template
-
-
-        // POST new attribute
-        Request request = new Request(Method.POST,
-                baseUrl + "People/" + getIdentifier() + "/Attributes.json");
-        request.setChallengeResponse(getChallengeResponse());
-        Response response = getContext().getClientDispatcher().handle(request);
-
-        Representation representation = response.getEntity();
-        try {
-            Status status = response.getStatus();
-            if (status.isSuccess()) {
-                JacksonRepresentation<Map> entity = new JacksonRepresentation<Map>(response.getEntity(), Map.class);
-                newAttributeTemplate = entity.getObject();
-            }
-
-        } finally {
-            if (representation != null) {
-                representation.release();
-            }
-        }
-
-        if (newAttributeTemplate == null) {
-            LOG.error("Could retrieve attribute template!");
-            return;
-        }
-
-    }
-    */
 }
