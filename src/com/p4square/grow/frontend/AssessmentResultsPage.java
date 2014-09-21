@@ -4,6 +4,7 @@
 
 package com.p4square.grow.frontend;
 
+import java.util.Date;
 import java.util.Map;
 
 import freemarker.template.Template;
@@ -22,9 +23,12 @@ import com.p4square.fmfacade.json.JsonRequestClient;
 import com.p4square.fmfacade.json.JsonResponse;
 import com.p4square.fmfacade.json.ClientException;
 
+import com.p4square.f1oauth.Attribute;
+import com.p4square.f1oauth.F1API;
 import com.p4square.f1oauth.F1User;
 
 import com.p4square.grow.config.Config;
+import com.p4square.grow.provider.JsonEncodedProvider;
 
 /**
  * This page fetches the user's final score and displays the transitional page between
@@ -105,7 +109,23 @@ public class AssessmentResultsPage extends FreeMarkerPageResource {
 
         F1User user = (F1User) getRequest().getClientInfo().getUser();
 
-        // TODO: Update the attribute.
+        // Update the attribute.
+        String attributeName = "Assessment Complete - " + results.get("result");
+
+        try {
+            Attribute attribute = new Attribute();
+            attribute.setStartDate(new Date());
+            attribute.setComment(JsonEncodedProvider.MAPPER.writeValueAsString(results));
+
+            F1API f1 = mGrowFrontend.getF1Access().getAuthenticatedApi(user);
+            if (!f1.addAttribute(user.getIdentifier(), attributeName, attribute)) {
+                LOG.error("addAttribute failed for " + user.getIdentifier() 
+                        + " with attribute " + attributeName);
+            }
+        } catch (Exception e) {
+            LOG.error("addAttribute failed for " + user.getIdentifier() 
+                    + " with attribute " + attributeName, e);
+        }
     }
 
     /**
@@ -124,7 +144,8 @@ public class AssessmentResultsPage extends FreeMarkerPageResource {
         final JsonResponse response = mJsonClient.get(getBackendEndpoint() + uri);
         final Status status = response.getStatus();
         if (!status.isSuccess() && !Status.CLIENT_ERROR_NOT_FOUND.equals(status)) {
-            LOG.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
+            LOG.warn("Error making backend request for '" + uri + "'. status = "
+                    + response.getStatus().toString());
         }
 
         return response;

@@ -4,19 +4,26 @@
 
 package com.p4square.f1oauth;
 
+import java.io.IOException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import org.restlet.Context;
-import org.restlet.Response;
 import org.restlet.Request;
+import org.restlet.Response;
 import org.restlet.data.ChallengeResponse;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Status;
 import org.restlet.engine.util.Base64;
+import org.restlet.ext.jackson.JacksonRepresentation;
+import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 
 import com.p4square.restlet.oauth.OAuthException;
@@ -42,10 +49,15 @@ public class F1Access {
     private static final String ACCESSTOKEN_URL= "Tokens/AccessToken";
     private static final String TRUSTED_ACCESSTOKEN_URL = "/AccessToken";
 
+    private static final SimpleDateFormat DATE_FORMAT =
+        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
     private final String mBaseUrl;
     private final String mMethod;
 
     private final OAuthHelper mOAuthHelper;
+
+    private final Map<String, String> mAttributeIdByName;
 
     /**
      */
@@ -91,6 +103,7 @@ public class F1Access {
             }
         };
 
+        mAttributeIdByName = new HashMap<>();
     }
 
     /**
@@ -144,64 +157,205 @@ public class F1Access {
         }
     }
 
-    /*
-    public addAttribute(Attribute attribute, String comment) {
-        String baseUrl = getBaseUrl();
-        Map newAttributeTemplate = null;
+    /**
+     * @return An F1API authenticated by the given user.
+     */
+    public F1API getAuthenticatedApi(OAuthUser user) {
+        return new AuthenticatedApi(user);
+    }
 
-        // Get Attribute Template
-        Request request = new Request(Method.GET,
-                baseUrl + "People/" + getIdentifier() + "/Attributes/new.json");
-        request.setChallengeResponse(getChallengeResponse());
-        Response response = getContext().getClientDispatcher().handle(request);
+    private class AuthenticatedApi implements F1API {
+        private final OAuthUser mUser;
 
-        Representation representation = response.getEntity();
-        try {
-            Status status = response.getStatus();
-            if (status.isSuccess()) {
-                JacksonRepresentation<Map> entity = new JacksonRepresentation<Map>(response.getEntity(), Map.class);
-                newAttributeTemplate = entity.getObject();
-            }
+        public AuthenticatedApi(OAuthUser user) {
+            mUser = user;
+        }
 
-        } finally {
-            if (representation != null) {
-                representation.release();
+        /**
+         * Fetch information about a user.
+         *
+         * @param user The user to fetch information about.
+         * @return An F1User object.
+         */
+        @Override
+        public F1User getF1User(OAuthUser user) throws OAuthException, IOException {
+            Request request = new Request(Method.GET, user.getLocation() + ".json");
+            request.setChallengeResponse(mUser.getChallengeResponse());
+            Response response = mOAuthHelper.getResponse(request);
+
+            try {
+                Status status = response.getStatus();
+                if (status.isSuccess()) {
+                    JacksonRepresentation<Map> entity =
+                        new JacksonRepresentation<Map>(response.getEntity(), Map.class);
+                    Map data = entity.getObject();
+                    return new F1User(user, data);
+
+                } else {
+                    throw new OAuthException(status);
+                }
+            } finally {
+                if (response.getEntity() != null) {
+                    response.release();
+                }
             }
         }
 
-        if (newAttributeTemplate == null) {
-            LOG.error("Could not retrieve attribute template!");
-            return;
+        @Override
+        public Map<String, String> getAttributeList() throws F1Exception {
+            // Note: this list is shared by all F1 users.
+            synchronized (mAttributeIdByName) {
+                if (mAttributeIdByName.size() == 0) {
+                    // Reload attributes. Maybe it will be there now...
+                    Request request = new Request(Method.GET,
+                            mBaseUrl + "People/AttributeGroups.json");
+                    request.setChallengeResponse(mUser.getChallengeResponse());
+                    Response response = mOAuthHelper.getResponse(request);
+
+                    Representation representation = response.getEntity();
+                    try {
+                        Status status = response.getStatus();
+                        if (status.isSuccess()) {
+                            JacksonRepresentation<Map> entity =
+                                new JacksonRepresentation<Map>(response.getEntity(), Map.class);
+
+                            Map attributeGroups = (Map) entity.getObject().get("attributeGroups");
+                            List<Map> groups = (List<Map>) attributeGroups.get("attributeGroup");
+
+                            for (Map group : groups) {
+                                List<Map> attributes = (List<Map>) group.get("attribute");
+                                if (attributes != null) {
+                                    for (Map attribute : attributes) {
+                                        String id = (String) attribute.get("@id");
+                                        String name = ((String) attribute.get("name"));
+                                        mAttributeIdByName.put(name.toLowerCase(), id);
+                                        LOG.debug("Caching attribute '" + name
+                                                + "' with id '" + id + "'");
+                                    }
+                                }
+                            }
+                        }
+
+                    } catch (IOException e) {
+                        throw new F1Exception("Could not parse AttributeGroups.", e);
+
+                    } finally {
+                        if (representation != null) {
+                            representation.release();
+                        }
+                    }
+                }
+
+                return mAttributeIdByName;
+            }
         }
 
-        // Populate Attribute Template
+        /**
+         * Add an attribute to the user.
+         *
+         * @param user The user to add the attribute to.
+         * @param attributeName The attribute to add.
+         * @param attribute The attribute to add.
+         */
+        public boolean addAttribute(String userId, String attributeName, Attribute attribute)
+                throws F1Exception {
 
-
-        // POST new attribute
-        Request request = new Request(Method.POST,
-                baseUrl + "People/" + getIdentifier() + "/Attributes.json");
-        request.setChallengeResponse(getChallengeResponse());
-        Response response = getContext().getClientDispatcher().handle(request);
-
-        Representation representation = response.getEntity();
-        try {
-            Status status = response.getStatus();
-            if (status.isSuccess()) {
-                JacksonRepresentation<Map> entity = new JacksonRepresentation<Map>(response.getEntity(), Map.class);
-                newAttributeTemplate = entity.getObject();
+            // Get the attribute id.
+            String attributeId = getAttributeId(attributeName);
+            if (attributeId == null) {
+                throw new F1Exception("Could not find id for " + attributeName);
             }
 
-        } finally {
-            if (representation != null) {
-                representation.release();
+            // Get Attribute Template
+            Map attributeTemplate = null;
+
+            {
+                Request request = new Request(Method.GET,
+                        mBaseUrl + "People/" + userId + "/Attributes/new.json");
+                request.setChallengeResponse(mUser.getChallengeResponse());
+                Response response = mOAuthHelper.getResponse(request);
+
+                Representation representation = response.getEntity();
+                try {
+                    Status status = response.getStatus();
+                    if (status.isSuccess()) {
+                        JacksonRepresentation<Map> entity =
+                            new JacksonRepresentation<Map>(response.getEntity(), Map.class);
+                        attributeTemplate = entity.getObject();
+
+                    } else {
+                        throw new F1Exception("Failed to retrieve attribute template: "
+                                + status);
+                    }
+
+                } catch (IOException e) {
+                    throw new F1Exception("Could not parse attribute template.", e);
+
+                } finally {
+                    if (representation != null) {
+                        representation.release();
+                    }
+                }
             }
+
+            if (attributeTemplate == null) {
+                throw new F1Exception("Could not retrieve attribute template.");
+            }
+
+            // Populate Attribute Template
+            Map attributeMap = (Map) attributeTemplate.get("attribute");
+            Map attributeGroup = (Map) attributeMap.get("attributeGroup");
+
+            Map<String, String> attributeIdMap = new HashMap<>();
+            attributeIdMap.put("@id", attributeId);
+            attributeGroup.put("attribute", attributeIdMap);
+
+            if (attribute.getStartDate() != null) {
+                attributeMap.put("startDate", DATE_FORMAT.format(attribute.getStartDate()));
+            }
+
+            if (attribute.getStartDate() != null) {
+                attributeMap.put("endDate", DATE_FORMAT.format(attribute.getStartDate()));
+            }
+
+            attributeMap.put("comment", attribute.getComment());
+
+            // POST new attribute
+            Status status;
+            {
+                Request request = new Request(Method.POST,
+                        mBaseUrl + "People/" + userId + "/Attributes.json");
+                request.setChallengeResponse(mUser.getChallengeResponse());
+                request.setEntity(new JacksonRepresentation<Map>(attributeTemplate));
+                Response response = mOAuthHelper.getResponse(request);
+
+                Representation representation = response.getEntity();
+                try {
+                    status = response.getStatus();
+
+                    if (status.isSuccess()) {
+                        return true;
+                    }
+
+                } finally {
+                    if (representation != null) {
+                        representation.release();
+                    }
+                }
+            }
+
+            LOG.debug("addAttribute failed POST: " + status);
+            return false;
         }
 
-        if (newAttributeTemplate == null) {
-            LOG.error("Could retrieve attribute template!");
-            return;
+        /**
+         * @return an attribute id for the given attribute name.
+         */
+        private String getAttributeId(String attributeName) throws F1Exception {
+            Map<String, String> attributeMap = getAttributeList();
+
+            return attributeMap.get(attributeName.toLowerCase());
         }
 
     }
-    */
 }
