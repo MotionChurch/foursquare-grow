@@ -10,7 +10,6 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 
 import org.restlet.Application;
-import org.restlet.Client;
 import org.restlet.Component;
 import org.restlet.Restlet;
 import org.restlet.data.ChallengeScheme;

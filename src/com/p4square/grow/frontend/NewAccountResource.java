@@ -18,7 +18,7 @@ import org.restlet.ext.freemarker.TemplateRepresentation;
 
 import org.apache.log4j.Logger;
 
-import com.p4square.f1oauth.F1OAuthHelper;
+import com.p4square.f1oauth.F1Access;
 import com.p4square.restlet.oauth.OAuthException;
 
 import com.p4square.fmfacade.FreeMarkerPageResource;
@@ -32,7 +32,7 @@ public class NewAccountResource extends FreeMarkerPageResource {
     private static Logger LOG = Logger.getLogger(NewAccountResource.class);
 
     private GrowFrontend mGrowFrontend;
-    private F1OAuthHelper mHelper;
+    private F1Access mHelper;
 
     private String mErrorMessage;
 
@@ -44,7 +44,7 @@ public class NewAccountResource extends FreeMarkerPageResource {
         super.doInit();
 
         mGrowFrontend = (GrowFrontend) getApplication();
-        mHelper = mGrowFrontend.getHelper();
+        mHelper = mGrowFrontend.getF1Access();
 
         mErrorMessage = "";
 

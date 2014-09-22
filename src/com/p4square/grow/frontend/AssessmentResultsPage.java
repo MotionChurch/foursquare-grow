@@ -4,6 +4,7 @@
 
 package com.p4square.grow.frontend;
 
+import java.util.Date;
 import java.util.Map;
 
 import freemarker.template.Template;
@@ -22,7 +23,12 @@ import com.p4square.fmfacade.json.JsonRequestClient;
 import com.p4square.fmfacade.json.JsonResponse;
 import com.p4square.fmfacade.json.ClientException;
 
+import com.p4square.f1oauth.Attribute;
+import com.p4square.f1oauth.F1API;
+import com.p4square.f1oauth.F1User;
+
 import com.p4square.grow.config.Config;
+import com.p4square.grow.provider.JsonEncodedProvider;
 
 /**
  * This page fetches the user's final score and displays the transitional page between
@@ -82,6 +88,9 @@ public class AssessmentResultsPage extends FreeMarkerPageResource {
                 return new StringRepresentation("Redirecting to " + nextPage);
             }
 
+            // Publish results in F1
+            publishScoreInF1(response.getMap());
+
             root.put("stage", score);
             return new TemplateRepresentation(t, root, MediaType.TEXT_HTML);
 
@@ -89,6 +98,33 @@ public class AssessmentResultsPage extends FreeMarkerPageResource {
             LOG.fatal("Could not render page: " + e.getMessage(), e);
             setStatus(Status.SERVER_ERROR_INTERNAL);
             return ErrorPage.RENDER_ERROR;
+        }
+    }
+
+    private void publishScoreInF1(Map results) {
+        if (!(getRequest().getClientInfo().getUser() instanceof F1User)) {
+            // Only useful if the user is from F1.
+            return;
+        }
+
+        F1User user = (F1User) getRequest().getClientInfo().getUser();
+
+        // Update the attribute.
+        String attributeName = "Assessment Complete - " + results.get("result");
+
+        try {
+            Attribute attribute = new Attribute();
+            attribute.setStartDate(new Date());
+            attribute.setComment(JsonEncodedProvider.MAPPER.writeValueAsString(results));
+
+            F1API f1 = mGrowFrontend.getF1Access().getAuthenticatedApi(user);
+            if (!f1.addAttribute(user.getIdentifier(), attributeName, attribute)) {
+                LOG.error("addAttribute failed for " + user.getIdentifier() 
+                        + " with attribute " + attributeName);
+            }
+        } catch (Exception e) {
+            LOG.error("addAttribute failed for " + user.getIdentifier() 
+                    + " with attribute " + attributeName, e);
         }
     }
 
@@ -108,7 +144,8 @@ public class AssessmentResultsPage extends FreeMarkerPageResource {
         final JsonResponse response = mJsonClient.get(getBackendEndpoint() + uri);
         final Status status = response.getStatus();
         if (!status.isSuccess() && !Status.CLIENT_ERROR_NOT_FOUND.equals(status)) {
-            LOG.warn("Error making backend request for '" + uri + "'. status = " + response.getStatus().toString());
+            LOG.warn("Error making backend request for '" + uri + "'. status = "
+                    + response.getStatus().toString());
         }
 
         return response;

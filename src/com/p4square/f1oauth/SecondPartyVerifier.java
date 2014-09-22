@@ -30,9 +30,9 @@ public class SecondPartyVerifier implements Verifier {
     private static final Logger LOG = Logger.getLogger(SecondPartyVerifier.class);
 
     private final Restlet mDispatcher;
-    private final F1OAuthHelper mHelper;
+    private final F1Access mHelper;
 
-    public SecondPartyVerifier(Context context, F1OAuthHelper helper) {
+    public SecondPartyVerifier(Context context, F1Access helper) {
         if (helper == null) {
             throw new IllegalArgumentException("Helper can not be null.");
         }
@@ -54,7 +54,7 @@ public class SecondPartyVerifier implements Verifier {
             OAuthUser ouser = mHelper.getAccessToken(username, password);
 
             // Once we have a user, fetch the people record to get the user id.
-            F1User user = getF1User(ouser);
+            F1User user = mHelper.getAuthenticatedApi(ouser).getF1User(ouser);
             user.setEmail(username);
 
             // This seems like a hack... but it'll work
@@ -69,25 +69,4 @@ public class SecondPartyVerifier implements Verifier {
         return RESULT_INVALID; // Invalid credentials
     }
 
-    private F1User getF1User(OAuthUser user) throws OAuthException, IOException {
-        Request request = new Request(Method.GET, user.getLocation() + ".json");
-        request.setChallengeResponse(user.getChallengeResponse());
-        Response response = mDispatcher.handle(request);
-
-        try {
-            Status status = response.getStatus();
-            if (status.isSuccess()) {
-                JacksonRepresentation<Map> entity = new JacksonRepresentation<Map>(response.getEntity(), Map.class);
-                Map data = entity.getObject();
-                return new F1User(user, data);
-
-            } else {
-                throw new OAuthException(status);
-            }
-        } finally {
-            if (response.getEntity() != null) {
-                response.release();
-            }
-        }
-    }
 }
