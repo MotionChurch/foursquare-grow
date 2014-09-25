@@ -45,6 +45,8 @@ public class DbTool {
         System.out.println("\t--get    <table> <key> <attribute>          Get a value");
         System.out.println("\t--put    <table> <key> <attribute> <value>  Put a value");
         System.out.println("\t--delete <table> <key> <attribute>          Delete a value");
+        System.out.println("\t--scan   <table>                            List all rows");
+        System.out.println("\t--scanf  <table> <attribute>                List all rows");
         System.out.println();
         System.out.println("Bootstrap Commands:");
         System.out.println("\t--bootstrap <data>          Create all tables and import all data");
@@ -102,6 +104,12 @@ public class DbTool {
 
                 } else if ("--delete".equals(args[offset])) {
                     offset = delete(args, ++offset);
+
+                } else if ("--scan".equals(args[offset])) {
+                    offset = scan(args, ++offset);
+
+                } else if ("--scanf".equals(args[offset])) {
+                    offset = scanf(args, ++offset);
 
                 /* Bootstrap Commands */
                 } else if ("--bootstrap".equals(args[offset])) {
@@ -220,6 +228,56 @@ public class DbTool {
 
         return offset;
     }
+
+    private static int scan(String[] args, int offset) {
+        String table     = args[offset++];
+
+        DynamoKey key = DynamoKey.newKey(table, null);
+
+        doScan(key);
+
+        return offset;
+    }
+
+    private static int scanf(String[] args, int offset) {
+        String table     = args[offset++];
+        String attribute = args[offset++];
+
+        DynamoKey key = DynamoKey.newAttributeKey(table, null, attribute);
+
+        doScan(key);
+
+        return offset;
+    }
+
+    private static void doScan(DynamoKey key) {
+        DynamoDatabase db = getDatabase();
+
+        String attributeFilter = key.getAttribute();
+
+        while (key != null) {
+            Map<DynamoKey, Map<String, String>> result = db.getAll(key);
+
+            key = null; // If there are no results, exit
+
+            for (Map.Entry<DynamoKey, Map<String, String>> entry : result.entrySet()) {
+                key = entry.getKey(); // Save the last key
+
+                for (Map.Entry<String, String> attribute : entry.getValue().entrySet()) {
+                    if (attributeFilter == null || attributeFilter.equals(attribute.getKey())) {
+                        String keyString = key.getHashKey();
+                        if (key.getRangeKey() != null) {
+                            keyString += "(" + key.getRangeKey() + ")";
+                        }
+                        System.out.printf("%s %s:%s\n%s\n\n",
+                                key.getTable(), keyString, attribute.getKey(),
+                                attribute.getValue());
+                    }
+                }
+            }
+        }
+    }
+
 
     private static int bootstrapTables(String[] args, int offset) {
         DynamoDatabase db = getDatabase();

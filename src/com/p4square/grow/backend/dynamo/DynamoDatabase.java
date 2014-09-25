@@ -4,6 +4,7 @@
 
 package com.p4square.grow.backend.dynamo;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -31,6 +32,8 @@ import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
 import com.amazonaws.services.dynamodbv2.model.PutItemResult;
+import com.amazonaws.services.dynamodbv2.model.ScanRequest;
+import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
 import com.amazonaws.services.dynamodbv2.model.UpdateItemResult;
 import com.amazonaws.services.dynamodbv2.model.UpdateTableRequest;
@@ -118,6 +121,44 @@ public class DynamoDatabase {
             .withTableName(mTablePrefix + name);
 
         DeleteTableResult result = mClient.deleteTable(deleteTableRequest);
+    }
+
+    /**
+     * Get all rows from a table.
+     *
+     * The key parameter must specify a table. If hash/range key is specified,
+     * the scan will begin after that key.
+     *
+     * @param key Previous key to start with.
+     * @return An ordered map of all results.
+     */
+    public Map<DynamoKey, Map<String, String>> getAll(final DynamoKey key) {
+        ScanRequest scanRequest = new ScanRequest().withTableName(mTablePrefix + key.getTable());
+
+        if (key.getHashKey() != null) {
+            scanRequest.setExclusiveStartKey(generateKey(key));
+        }
+
+        ScanResult scanResult = mClient.scan(scanRequest);
+
+        Map<DynamoKey, Map<String, String>> result = new LinkedHashMap<>();
+        for (Map<String, AttributeValue> map : scanResult.getItems()) {
+            String id = null;
+            String range = null;
+            Map<String, String> row = new LinkedHashMap<>();
+            for (Map.Entry<String, AttributeValue> entry : map.entrySet()) {
+                if ("id".equals(entry.getKey())) {
+                    id = entry.getValue().getS();
+                } else if ("range".equals(entry.getKey())) {
+                    range = entry.getValue().getS();
+                } else {
+                    row.put(entry.getKey(), entry.getValue().getS());
+                }
+            }
+            result.put(DynamoKey.newRangeKey(key.getTable(), id, range), row);
+        }
+
+        return result;
     }
 
     public Map<String, String> getKey(final DynamoKey key) {
