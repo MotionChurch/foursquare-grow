@@ -169,11 +169,11 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
         String attributeName = "Training Complete - " + mChapter;
 
         try {
-            Attribute attribute = new Attribute();
+            Attribute attribute = new Attribute(attributeName);
             attribute.setStartDate(new Date());
 
             F1API f1 = mGrowFrontend.getF1Access().getAuthenticatedApi(user);
-            if (!f1.addAttribute(user.getIdentifier(), attributeName, attribute)) {
+            if (!f1.addAttribute(user.getIdentifier(), attribute)) {
                 LOG.error("addAttribute failed for " + user.getIdentifier() 
                         + " with attribute " + attributeName);
             }

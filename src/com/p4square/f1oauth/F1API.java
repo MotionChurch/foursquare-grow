@@ -5,6 +5,7 @@
 package com.p4square.f1oauth;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import com.p4square.restlet.oauth.OAuthException;
@@ -38,7 +39,18 @@ public interface F1API {
      * @param attributeName The attribute to add.
      * @param attribute The attribute to add.
      */
-    boolean addAttribute(String userId, String attributeName, Attribute attribute)
-            throws F1Exception;
+    boolean addAttribute(String userId, Attribute attribute) throws F1Exception;
+
+    /**
+     * Return attributes assigned to user.
+     *
+     * A user may be assigned multiple attributes with the same name, thus even if
+     * attributeName is specified, multiple attributes may be returned.
+     *
+     * @param userId The user to query.
+     * @param attributeName A specific attribute to return, null for all.
+     * @return A list of Attributes
+     */
+    List<Attribute> getAttribute(String userId, String attributeName) throws F1Exception;
 
 }

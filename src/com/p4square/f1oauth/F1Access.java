@@ -7,6 +7,7 @@ package com.p4square.f1oauth;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -257,13 +258,13 @@ public class F1Access {
          * @param attributeName The attribute to add.
          * @param attribute The attribute to add.
          */
-        public boolean addAttribute(String userId, String attributeName, Attribute attribute)
+        public boolean addAttribute(String userId, Attribute attribute)
                 throws F1Exception {
 
             // Get the attribute id.
-            String attributeId = getAttributeId(attributeName);
+            String attributeId = getAttributeId(attribute.getAttributeName());
             if (attributeId == null) {
-                throw new F1Exception("Could not find id for " + attributeName);
+                throw new F1Exception("Could not find id for " + attribute.getAttributeName());
             }
 
             // Get Attribute Template
@@ -346,6 +347,83 @@ public class F1Access {
 
             LOG.debug("addAttribute failed POST: " + status);
             return false;
+        }
+
+        @Override
+        public List<Attribute> getAttribute(String userId, String attributeNameFilter)
+                throws F1Exception {
+
+            Map attributesResponse;
+
+            // Get Attributes
+            {
+                Request request = new Request(Method.GET,
+                        mBaseUrl + "People/" + userId + "/Attributes.json");
+                request.setChallengeResponse(mUser.getChallengeResponse());
+                Response response = mOAuthHelper.getResponse(request);
+
+                Representation representation = response.getEntity();
+                try {
+                    Status status = response.getStatus();
+                    if (status.isSuccess()) {
+                        JacksonRepresentation<Map> entity =
+                            new JacksonRepresentation<Map>(response.getEntity(), Map.class);
+                        attributesResponse = entity.getObject();
+
+                    } else {
+                        throw new F1Exception("Failed to retrieve attributes: "
+                                + status);
+                    }
+
+                } catch (IOException e) {
+                    throw new F1Exception("Could not parse attributes.", e);
+
+                } finally {
+                    if (representation != null) {
+                        representation.release();
+                    }
+                }
+            }
+
+            // Parse Response
+            List<Attribute> result = new ArrayList<>();
+
+            try {
+                // I feel like I'm writing lisp here...
+                Map attributesMap = (Map) attributesResponse.get("attributes");
+                if (attributesMap == null) {
+                    return result;
+                }
+
+                List<Map> attributes = (List<Map>) (attributesMap).get("attribute");
+                for (Map attributeMap : attributes) {
+                    String id = (String) attributeMap.get("@id");
+                    String startDate = (String) attributeMap.get("startDate");
+                    String endDate = (String) attributeMap.get("endDate");
+                    String comment = (String) attributeMap.get("comment");
+
+                    Map attributeIdMap = (Map) ((Map) attributeMap.get("attributeGroup"))
+                        .get("attribute");
+                    String attributeName = (String) attributeIdMap.get("name");
+
+                    if (attributeNameFilter == null || attributeNameFilter.equals(attributeName)) {
+                        Attribute attribute = new Attribute(attributeName);
+                        attribute.setId(id);
+                        if (startDate != null) {
+                            attribute.setStartDate(DATE_FORMAT.parse(startDate));
+                        }
+                        if (endDate != null) {
+                            attribute.setEndDate(DATE_FORMAT.parse(endDate));
+                        }
+                        attribute.setComment(comment);
+                        result.add(attribute);
+                    }
+                }
+            } catch (Exception e) {
+                throw new F1Exception("Failed to parse attributes response.", e);
+            }
+
+            return result;
         }
 
         /**

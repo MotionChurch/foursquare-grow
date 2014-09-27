@@ -12,9 +12,39 @@ import java.util.Date;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class Attribute {
+    private final String mAttributeName;
+    private String mId;
     private Date mStartDate;
     private Date mEndDate;
     private String mComment;
+
+    /**
+     * @param name The attribute name.
+     */
+    public Attribute(final String name) {
+        mAttributeName = name;
+    }
+
+    /**
+     * @return the Attribute name.
+     */
+    public String getAttributeName() {
+        return mAttributeName;
+    }
+
+    /**
+     * @return the id of this specific attribute instance.
+     */
+    public String getId() {
+        return mId;
+    }
+
+    /**
+     * Set the attribute id to id.
+     */
+    public void setId(final String id) {
+        mId = id;
+    }
 
     /**
      * @return the start date for the attribute.
@@ -26,7 +56,7 @@ public class Attribute {
     /**
      * Set the start date for the attribute.
      */
-    public void setStartDate(Date date) {
+    public void setStartDate(final Date date) {
         mStartDate = date;
     }
 
@@ -40,7 +70,7 @@ public class Attribute {
     /**
      * Set the end date for the attribute.
      */
-    public void setEndDate(Date date) {
+    public void setEndDate(final Date date) {
         mEndDate = date;
     }
 
@@ -54,7 +84,7 @@ public class Attribute {
     /**
      * Set the comment on the attribute.
      */
-    public void setComment(String comment) {
+    public void setComment(final String comment) {
         mComment = comment;
     }
 }

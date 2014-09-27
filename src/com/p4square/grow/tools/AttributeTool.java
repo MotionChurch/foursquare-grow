@@ -6,6 +6,7 @@ package com.p4square.grow.tools;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.restlet.Client;
@@ -32,11 +33,13 @@ public class AttributeTool {
     public static void usage() {
         System.out.println("java com.p4square.grow.tools.AttributeTool <command>...\n");
         System.out.println("Commands:");
-        System.out.println("\t--domain <domain>                           Set config domain");
-        System.out.println("\t--dev                                       Set config domain to dev");
-        System.out.println("\t--config <file>                             Merge in config file");
-        System.out.println("\t--list                                      List all attributes");
-        System.out.println("\t--assign <user> <attribute> <comment>       Assign an attribute");
+        System.out.println("\t--domain <domain>                          Set config domain");
+        System.out.println("\t--dev                                      Set config domain to dev");
+        System.out.println("\t--config <file>                            Merge in config file");
+        System.out.println("\t--list                                     List all attributes");
+        System.out.println("\t--assign <userId> <attribute> <comment>    Assign an attribute");
+        System.out.println("\t--getall <userId>                          Get an attribute");
+        System.out.println("\t--get <userId> <attribute>                 Get an attribute");
     }
 
     public static void main(String... args) {
@@ -72,6 +75,12 @@ public class AttributeTool {
 
                 } else if ("--assign".equals(args[offset])) {
                     offset = assign(args, ++offset);
+
+                } else if ("--getall".equals(args[offset])) {
+                    offset = getall(args, ++offset);
+
+                } else if ("--get".equals(args[offset])) {
+                    offset = get(args, ++offset);
 
                 } else {
                     throw new IllegalArgumentException("Unknown command " + args[offset]);
@@ -128,16 +137,48 @@ public class AttributeTool {
 
         final F1API f1 = getF1API();
 
-        Attribute attribute = new Attribute();
+        Attribute attribute = new Attribute(attributeName);
         attribute.setStartDate(new Date());
         attribute.setComment(comment);
 
-        if (f1.addAttribute(userId, attributeName, attribute)) {
+        if (f1.addAttribute(userId, attribute)) {
             System.out.println("Added attribute " + attributeName + " for " + userId);
         } else {
             System.out.println("Failed to add attribute " + attributeName + " for " + userId);
         }
 
         return offset;
+    }
+
+    private static int getall(String[] args, int offset) throws Exception {
+        final String userId = args[offset++];
+
+        doGet(userId, null);
+
+        return offset;
+    }
+
+    private static int get(String[] args, int offset) throws Exception {
+        final String userId = args[offset++];
+        final String attributeName = args[offset++];
+
+        doGet(userId, attributeName);
+
+        return offset;
+    }
+
+    private static void doGet(final String userId, final String attributeName) throws Exception {
+        final F1API f1 = getF1API();
+
+        List<Attribute> attributes = f1.getAttribute(userId, attributeName);
+        for (Attribute attribute : attributes) {
+            System.out.printf("%s %s %s %s %s\n%s\n\n",
+                    userId,
+                    attribute.getAttributeName(),
+                    attribute.getId(),
+                    attribute.getStartDate(),
+                    attribute.getEndDate(),
+                    attribute.getComment());
+        }
     }
 }
