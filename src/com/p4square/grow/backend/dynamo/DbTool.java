@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-import com.amazonaws.auth.AWSCredentials;
-
 import com.p4square.grow.backend.dynamo.DynamoDatabase;
 import com.p4square.grow.backend.dynamo.DynamoKey;
 import com.p4square.grow.config.Config;

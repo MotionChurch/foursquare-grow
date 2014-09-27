@@ -406,7 +406,9 @@ public class F1Access {
                         .get("attribute");
                     String attributeName = (String) attributeIdMap.get("name");
 
-                    if (attributeNameFilter == null || attributeNameFilter.equals(attributeName)) {
+                    if (attributeNameFilter == null
+                            || attributeNameFilter.equalsIgnoreCase(attributeName)) {
+
                         Attribute attribute = new Attribute(attributeName);
                         attribute.setId(id);
                         if (startDate != null) {
