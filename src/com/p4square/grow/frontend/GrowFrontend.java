@@ -23,6 +23,8 @@ import org.restlet.routing.Redirector;
 import org.restlet.routing.Router;
 import org.restlet.security.Authenticator;
 
+import com.codahale.metrics.MetricRegistry;
+
 import org.apache.log4j.Logger;
 
 import com.p4square.fmfacade.FMFacade;
@@ -32,6 +34,8 @@ import com.p4square.grow.config.Config;
 
 import com.p4square.f1oauth.F1Access;
 import com.p4square.f1oauth.SecondPartyVerifier;
+
+import com.p4square.restlet.metrics.MetricRouter;
 
 import com.p4square.session.SessionCheckingAuthenticator;
 import com.p4square.session.SessionCreatingAuthenticator;
@@ -47,20 +51,26 @@ import com.p4square.session.SessionCreatingAuthenticator;
 public class GrowFrontend extends FMFacade {
     private static Logger LOG = Logger.getLogger(GrowFrontend.class);
 
-    private Config mConfig;
+    private final Config mConfig;
+    private final MetricRegistry mMetricRegistry;
 
     private F1Access mHelper;
 
     public GrowFrontend() {
-        this(new Config());
+        this(new Config(), new MetricRegistry());
     }
 
-    public GrowFrontend(Config config) {
+    public GrowFrontend(Config config, MetricRegistry metricRegistry) {
         mConfig = config;
+        mMetricRegistry = metricRegistry;
     }
 
     public Config getConfig() {
         return mConfig;
+    }
+
+    public MetricRegistry getMetrics() {
+        return mMetricRegistry;
     }
 
     @Override
@@ -80,6 +90,7 @@ public class GrowFrontend extends FMFacade {
                     mConfig.getString("f1BaseUrl", "staging.fellowshiponeapi.com"),
                     mConfig.getString("f1ChurchCode", "pfseawa"),
                     F1Access.UserType.WEBLINK);
+            mHelper.setMetricRegistry(mMetricRegistry);
         }
 
         return mHelper;
@@ -87,7 +98,7 @@ public class GrowFrontend extends FMFacade {
 
     @Override
     protected Router createRouter() {
-        Router router = new Router(getContext());
+        Router router = new MetricRouter(getContext(), mMetricRegistry);
 
         final Authenticator defaultGuard = new SessionCheckingAuthenticator(getContext(), true);
         defaultGuard.setNext(FreeMarkerPageResource.class);
@@ -97,7 +108,7 @@ public class GrowFrontend extends FMFacade {
         router.attach("/newaccount.html", NewAccountResource.class);
         router.attach("/newbeliever", NewBelieverResource.class);
 
-        final Router accountRouter = new Router(getContext());
+        final Router accountRouter = new MetricRouter(getContext(), mMetricRegistry);
         accountRouter.attach("/authenticate", AuthenticatedResource.class);
         accountRouter.attach("/logout", LogoutResource.class);
 

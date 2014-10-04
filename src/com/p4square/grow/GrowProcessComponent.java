@@ -6,6 +6,10 @@ package com.p4square.grow;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.MetricRegistry;
 
 import org.apache.log4j.Logger;
 
@@ -21,6 +25,7 @@ import com.p4square.grow.backend.BackendVerifier;
 import com.p4square.grow.backend.GrowBackend;
 import com.p4square.grow.config.Config;
 import com.p4square.grow.frontend.GrowFrontend;
+import com.p4square.restlet.metrics.MetricsApplication;
 
 /**
  *
@@ -32,6 +37,7 @@ public class GrowProcessComponent extends Component {
     private static final String BACKEND_REALM = "Grow Backend";
 
     private final Config mConfig;
+    private final MetricRegistry mMetricRegistry;
 
     /**
      * Create a new Grow Process website component combining a frontend and backend.
@@ -50,12 +56,15 @@ public class GrowProcessComponent extends Component {
         mConfig = config;
         mConfig.updateConfig(this.getClass().getResourceAsStream("/grow.properties"));
 
+        // Prepare Metrics
+        mMetricRegistry = new MetricRegistry();
+
         // Frontend
-        GrowFrontend frontend = new GrowFrontend(mConfig);
+        GrowFrontend frontend = new GrowFrontend(mConfig, mMetricRegistry);
         getDefaultHost().attach(frontend);
 
         // Backend
-        GrowBackend backend = new GrowBackend(mConfig);
+        GrowBackend backend = new GrowBackend(mConfig, mMetricRegistry);
         getInternalRouter().attach("/backend", backend);
 
         // Authenticated access to the backend
@@ -64,6 +73,13 @@ public class GrowProcessComponent extends Component {
                 false, ChallengeScheme.HTTP_BASIC, BACKEND_REALM, verifier);
         auth.setNext(backend);
         getDefaultHost().attach("/backend", auth);
+
+        // Authenticated access to metrics
+        ChallengeAuthenticator metricAuth = new ChallengeAuthenticator(
+                getContext().createChildContext(), false,
+                ChallengeScheme.HTTP_BASIC, BACKEND_REALM, verifier);
+        metricAuth.setNext(new MetricsApplication(mMetricRegistry));
+        getDefaultHost().attach("/metrics", metricAuth);
     }
 
 

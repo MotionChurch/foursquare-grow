@@ -6,6 +6,8 @@ package com.p4square.grow.backend;
 
 import java.io.IOException;
 
+import com.codahale.metrics.MetricRegistry;
+
 import org.apache.log4j.Logger;
 
 import org.restlet.Application;
@@ -42,6 +44,8 @@ import com.p4square.grow.backend.feed.FeedDataProvider;
 import com.p4square.grow.backend.feed.ThreadResource;
 import com.p4square.grow.backend.feed.TopicResource;
 
+import com.p4square.restlet.metrics.MetricRouter;
+
 /**
  * Main class for the backend application.
  *
@@ -51,22 +55,30 @@ public class GrowBackend extends Application implements GrowData {
 
     private final static Logger LOG = Logger.getLogger(GrowBackend.class);
 
+    private final MetricRegistry mMetricRegistry;
+
     private final Config mConfig;
     private final GrowData mGrowData;
 
     public GrowBackend() {
-        this(new Config());
+        this(new Config(), new MetricRegistry());
     }
 
-    public GrowBackend(Config config) {
+    public GrowBackend(Config config, MetricRegistry metricRegistry) {
         mConfig = config;
+
+        mMetricRegistry = metricRegistry;
 
         mGrowData = new DynamoGrowData(config);
     }
 
+    public MetricRegistry getMetrics() {
+        return mMetricRegistry;
+    }
+
     @Override
     public Restlet createInboundRoot() {
-        Router router = new Router(getContext());
+        Router router = new MetricRouter(getContext(), mMetricRegistry);
 
         // Account API
         router.attach("/accounts/{userId}", AccountResource.class);

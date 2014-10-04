@@ -12,6 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
+
 import org.apache.log4j.Logger;
 
 import org.restlet.Context;
@@ -59,6 +63,8 @@ public class F1Access {
     private final OAuthHelper mOAuthHelper;
 
     private final Map<String, String> mAttributeIdByName;
+
+    private MetricRegistry mMetricRegistry;
 
     /**
      */
@@ -108,19 +114,46 @@ public class F1Access {
     }
 
     /**
+     * Set the MetricRegistry to get metrics recorded.
+     */
+    public void setMetricRegistry(MetricRegistry metrics) {
+        mMetricRegistry = metrics;
+    }
+
+    /**
      * Request an AccessToken for a particular username and password.
      *
      * This is an F1 extension to OAuth:
      * http://developer.fellowshipone.com/docs/v1/Util/AuthDocs.help#2creds
      */
     public OAuthUser getAccessToken(String username, String password) throws OAuthException {
-        Request request = new Request(Method.POST, mBaseUrl +  mMethod + TRUSTED_ACCESSTOKEN_URL);
-        request.setChallengeResponse(new ChallengeResponse(ChallengeScheme.HTTP_OAUTH));
+        Timer.Context timer = getTimer("F1Access.getAccessToken.time");
+        boolean success = true;
 
-        String base64String = Base64.encode((username + " " + password).getBytes(), false);
-        request.setEntity(new StringRepresentation(base64String));
+        try {
+            Request request = new Request(Method.POST,
+                                          mBaseUrl +  mMethod + TRUSTED_ACCESSTOKEN_URL);
+            request.setChallengeResponse(new ChallengeResponse(ChallengeScheme.HTTP_OAUTH));
 
-        return mOAuthHelper.processAccessTokenRequest(request);
+            String base64String = Base64.encode((username + " " + password).getBytes(), false);
+            request.setEntity(new StringRepresentation(base64String));
+
+            return mOAuthHelper.processAccessTokenRequest(request);
+
+        } catch (Exception e) {
+            success = false;
+            throw e;
+
+        } finally {
+            if (timer != null) {
+                timer.stop();
+            }
+            if (success) {
+                incrementCounter("F1Access.getAccessToken.success");
+            } else {
+                incrementCounter("F1Access.getAccessToken.failure");
+            }
+        }
     }
 
     /**
@@ -135,26 +168,45 @@ public class F1Access {
      */
     public boolean createAccount(String firstname, String lastname, String email, String redirect)
             throws OAuthException {
-        String req = String.format("{\n\"account\":{\n\"firstName\":\"%s\",\n"
-                                 + "\"lastName\":\"%s\",\n\"email\":\"%s\",\n"
-                                 + "\"urlRedirect\":\"%s\"\n}\n}",
-                                 firstname, lastname, email, redirect);
+        Timer.Context timer = getTimer("F1Access.createAccount.time");
+        boolean success = true;
 
-        Request request = new Request(Method.POST, mBaseUrl + "Accounts");
-        request.setChallengeResponse(new ChallengeResponse(ChallengeScheme.HTTP_OAUTH));
-        request.setEntity(new StringRepresentation(req, MediaType.APPLICATION_JSON));
+        try {
+            String req = String.format("{\n\"account\":{\n\"firstName\":\"%s\",\n"
+                                     + "\"lastName\":\"%s\",\n\"email\":\"%s\",\n"
+                                     + "\"urlRedirect\":\"%s\"\n}\n}",
+                                     firstname, lastname, email, redirect);
 
-        Response response = mOAuthHelper.getResponse(request);
+            Request request = new Request(Method.POST, mBaseUrl + "Accounts");
+            request.setChallengeResponse(new ChallengeResponse(ChallengeScheme.HTTP_OAUTH));
+            request.setEntity(new StringRepresentation(req, MediaType.APPLICATION_JSON));
 
-        Status status = response.getStatus();
-        if (Status.SUCCESS_NO_CONTENT.equals(status)) {
-            return true;
+            Response response = mOAuthHelper.getResponse(request);
 
-        } else if (Status.CLIENT_ERROR_CONFLICT.equals(status)) {
-            return false;
+            Status status = response.getStatus();
+            if (Status.SUCCESS_NO_CONTENT.equals(status)) {
+                return true;
 
-        } else {
-            throw new OAuthException(status);
+            } else if (Status.CLIENT_ERROR_CONFLICT.equals(status)) {
+                return false;
+
+            } else {
+                throw new OAuthException(status);
+            }
+
+        } catch (Exception e) {
+            success = false;
+            throw e;
+
+        } finally {
+            if (timer != null) {
+                timer.stop();
+            }
+            if (success) {
+                incrementCounter("F1Access.createAccount.success");
+            } else {
+                incrementCounter("F1Access.createAccount.failure");
+            }
         }
     }
 
@@ -180,24 +232,44 @@ public class F1Access {
          */
         @Override
         public F1User getF1User(OAuthUser user) throws OAuthException, IOException {
-            Request request = new Request(Method.GET, user.getLocation() + ".json");
-            request.setChallengeResponse(mUser.getChallengeResponse());
-            Response response = mOAuthHelper.getResponse(request);
+            Timer.Context timer = getTimer("F1Access.getF1User.time");
+            boolean success = true;
 
             try {
-                Status status = response.getStatus();
-                if (status.isSuccess()) {
-                    JacksonRepresentation<Map> entity =
-                        new JacksonRepresentation<Map>(response.getEntity(), Map.class);
-                    Map data = entity.getObject();
-                    return new F1User(user, data);
+                Request request = new Request(Method.GET, user.getLocation() + ".json");
+                request.setChallengeResponse(mUser.getChallengeResponse());
+                Response response = mOAuthHelper.getResponse(request);
 
-                } else {
-                    throw new OAuthException(status);
+                try {
+                    Status status = response.getStatus();
+                    if (status.isSuccess()) {
+                        JacksonRepresentation<Map> entity =
+                            new JacksonRepresentation<Map>(response.getEntity(), Map.class);
+                        Map data = entity.getObject();
+                        return new F1User(user, data);
+
+                    } else {
+                        throw new OAuthException(status);
+                    }
+
+                } finally {
+                    if (response.getEntity() != null) {
+                        response.release();
+                    }
                 }
+
+            } catch (Exception e) {
+                success = false;
+                throw e;
+
             } finally {
-                if (response.getEntity() != null) {
-                    response.release();
+                if (timer != null) {
+                    timer.stop();
+                }
+                if (success) {
+                    incrementCounter("F1Access.getF1User.success");
+                } else {
+                    incrementCounter("F1Access.getF1User.failure");
                 }
             }
         }
@@ -207,42 +279,61 @@ public class F1Access {
             // Note: this list is shared by all F1 users.
             synchronized (mAttributeIdByName) {
                 if (mAttributeIdByName.size() == 0) {
-                    // Reload attributes. Maybe it will be there now...
-                    Request request = new Request(Method.GET,
-                            mBaseUrl + "People/AttributeGroups.json");
-                    request.setChallengeResponse(mUser.getChallengeResponse());
-                    Response response = mOAuthHelper.getResponse(request);
+                    Timer.Context timer = getTimer("F1Access.getAttributeList.time");
+                    boolean success = true;
 
-                    Representation representation = response.getEntity();
                     try {
-                        Status status = response.getStatus();
-                        if (status.isSuccess()) {
-                            JacksonRepresentation<Map> entity =
-                                new JacksonRepresentation<Map>(response.getEntity(), Map.class);
+                        // Reload attributes. Maybe it will be there now...
+                        Request request = new Request(Method.GET,
+                                mBaseUrl + "People/AttributeGroups.json");
+                        request.setChallengeResponse(mUser.getChallengeResponse());
+                        Response response = mOAuthHelper.getResponse(request);
 
-                            Map attributeGroups = (Map) entity.getObject().get("attributeGroups");
-                            List<Map> groups = (List<Map>) attributeGroups.get("attributeGroup");
+                        Representation representation = response.getEntity();
+                        try {
+                            Status status = response.getStatus();
+                            if (status.isSuccess()) {
+                                JacksonRepresentation<Map> entity =
+                                    new JacksonRepresentation<Map>(response.getEntity(), Map.class);
 
-                            for (Map group : groups) {
-                                List<Map> attributes = (List<Map>) group.get("attribute");
-                                if (attributes != null) {
-                                    for (Map attribute : attributes) {
-                                        String id = (String) attribute.get("@id");
-                                        String name = ((String) attribute.get("name"));
-                                        mAttributeIdByName.put(name.toLowerCase(), id);
-                                        LOG.debug("Caching attribute '" + name
-                                                + "' with id '" + id + "'");
+                                Map attributeGroups = (Map) entity.getObject().get("attributeGroups");
+                                List<Map> groups = (List<Map>) attributeGroups.get("attributeGroup");
+
+                                for (Map group : groups) {
+                                    List<Map> attributes = (List<Map>) group.get("attribute");
+                                    if (attributes != null) {
+                                        for (Map attribute : attributes) {
+                                            String id = (String) attribute.get("@id");
+                                            String name = ((String) attribute.get("name"));
+                                            mAttributeIdByName.put(name.toLowerCase(), id);
+                                            LOG.debug("Caching attribute '" + name
+                                                    + "' with id '" + id + "'");
+                                        }
                                     }
                                 }
                             }
+
+                        } catch (IOException e) {
+                            throw new F1Exception("Could not parse AttributeGroups.", e);
+
+                        } finally {
+                            if (representation != null) {
+                                representation.release();
+                            }
                         }
 
-                    } catch (IOException e) {
-                        throw new F1Exception("Could not parse AttributeGroups.", e);
+                    } catch (Exception e) {
+                        success = false;
+                        throw e;
 
                     } finally {
-                        if (representation != null) {
-                            representation.release();
+                        if (timer != null) {
+                            timer.stop();
+                        }
+                        if (success) {
+                            incrementCounter("F1Access.getAttributeList.success");
+                        } else {
+                            incrementCounter("F1Access.getAttributeList.failure");
                         }
                     }
                 }
@@ -270,7 +361,10 @@ public class F1Access {
             // Get Attribute Template
             Map attributeTemplate = null;
 
-            {
+            Timer.Context timer = getTimer("F1Access.addAttribute.GET.time");
+            boolean success = true;
+
+            try {
                 Request request = new Request(Method.GET,
                         mBaseUrl + "People/" + userId + "/Attributes/new.json");
                 request.setChallengeResponse(mUser.getChallengeResponse());
@@ -296,6 +390,19 @@ public class F1Access {
                     if (representation != null) {
                         representation.release();
                     }
+                }
+            } catch (Exception e) {
+                success = false;
+                throw e;
+
+            } finally {
+                if (timer != null) {
+                    timer.stop();
+                }
+                if (success) {
+                    incrementCounter("F1Access.addAttribute.GET.success");
+                } else {
+                    incrementCounter("F1Access.addAttribute.GET.failure");
                 }
             }
 
@@ -323,7 +430,10 @@ public class F1Access {
 
             // POST new attribute
             Status status;
-            {
+            timer = getTimer("F1Access.addAttribute.POST.time");
+            success = true;
+
+            try {
                 Request request = new Request(Method.POST,
                         mBaseUrl + "People/" + userId + "/Attributes.json");
                 request.setChallengeResponse(mUser.getChallengeResponse());
@@ -343,6 +453,19 @@ public class F1Access {
                         representation.release();
                     }
                 }
+            } catch (Exception e) {
+                success = false;
+                throw e;
+
+            } finally {
+                if (timer != null) {
+                    timer.stop();
+                }
+                if (success) {
+                    incrementCounter("F1Access.addAttribute.POST.success");
+                } else {
+                    incrementCounter("F1Access.getAccessToken.POST.failure");
+                }
             }
 
             LOG.debug("addAttribute failed POST: " + status);
@@ -356,7 +479,10 @@ public class F1Access {
             Map attributesResponse;
 
             // Get Attributes
-            {
+            Timer.Context timer = getTimer("F1Access.getAttribute.time");
+            boolean success = true;
+
+            try {
                 Request request = new Request(Method.GET,
                         mBaseUrl + "People/" + userId + "/Attributes.json");
                 request.setChallengeResponse(mUser.getChallengeResponse());
@@ -382,6 +508,19 @@ public class F1Access {
                     if (representation != null) {
                         representation.release();
                     }
+                }
+            } catch (Exception e) {
+                success = false;
+                throw e;
+
+            } finally {
+                if (timer != null) {
+                    timer.stop();
+                }
+                if (success) {
+                    incrementCounter("F1Access.getAttribute.success");
+                } else {
+                    incrementCounter("F1Access.getAttribute.failure");
                 }
             }
 
@@ -437,5 +576,19 @@ public class F1Access {
             return attributeMap.get(attributeName.toLowerCase());
         }
 
+    }
+
+    private Timer.Context getTimer(String name) {
+        if (mMetricRegistry != null) {
+            return mMetricRegistry.timer(name).time();
+        } else {
+            return null;
+        }
+    }
+
+    private void incrementCounter(String name) {
+        if (mMetricRegistry != null) {
+            mMetricRegistry.counter(name).inc();
+        }
     }
 }
