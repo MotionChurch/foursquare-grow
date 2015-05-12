@@ -86,7 +86,7 @@ public class Playlist {
         Chapter chapter = mPlaylist.get(chapterId);
 
         if (chapter == null) {
-            chapter = new Chapter();
+            chapter = new Chapter(chapterId);
             mPlaylist.put(chapterId, chapter);
         }
 
@@ -102,6 +102,7 @@ public class Playlist {
      */
     @JsonAnySetter
     public void addChapter(String chapterId, Chapter chapter) {
+        chapter.setName(chapterId);
         mPlaylist.put(chapterId, chapter);
     }
 
@@ -158,7 +159,7 @@ public class Playlist {
 
             if (myChapter == null) {
                 // Add new chapter
-                myChapter = new Chapter();
+                myChapter = new Chapter(chapterName);
                 addChapter(chapterName, myChapter);
             }
 

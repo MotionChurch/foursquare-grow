@@ -69,7 +69,7 @@ public class TrainingRecordResource extends ServerResource {
         mVideoId = getAttribute("videoId");
 
         try {
-            Playlist defaultPlaylist = ((GrowBackend) getApplication()).getDefaultPlaylist();
+            Playlist defaultPlaylist = ((ProvidesTrainingRecords) getApplication()).getDefaultPlaylist();
 
             mRecord = mTrainingRecordProvider.get(mUserId);
             if (mRecord == null) {
