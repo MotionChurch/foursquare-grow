@@ -31,10 +31,11 @@ import com.p4square.session.Sessions;
 public class FreeMarkerPageResource extends ServerResource {
     private static Logger cLog = Logger.getLogger(FreeMarkerPageResource.class);
 
-    public static Map<String, Object> baseRootObject(Context context) {
+    public static Map<String, Object> baseRootObject(final Context context, final FMFacade fmf) {
         Map<String, Object> root = new HashMap<String, Object>();
 
         root.put("get", new GetMethod(context.getClientDispatcher()));
+        root.put("config", fmf.getConfig());
 
         return root;
     }
@@ -72,12 +73,11 @@ public class FreeMarkerPageResource extends ServerResource {
      * @return A map of objects and methods for the template to access.
      */
     protected Map<String, Object> getRootObject() {
-        Map<String, Object> root = baseRootObject(getContext());
+        Map<String, Object> root = baseRootObject(getContext(), mFMF);
 
         root.put("attributes", getRequestAttributes());
         root.put("query", getQuery().getValuesMap());
-        root.put("config", mFMF.getConfig());
-        
+
         if (getClientInfo().isAuthenticated()) {
             final User user = getClientInfo().getUser();
             final Map<String, String> userMap = new HashMap<String, String>();

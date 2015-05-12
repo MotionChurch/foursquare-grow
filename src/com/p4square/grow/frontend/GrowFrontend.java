@@ -77,7 +77,8 @@ public class GrowFrontend extends FMFacade {
     public synchronized void start() throws Exception {
         Template errorTemplate = getTemplate("templates/error.ftl");
         if (errorTemplate != null) {
-            ErrorPage.setTemplate(errorTemplate, FreeMarkerPageResource.baseRootObject(getContext()));
+            ErrorPage.setTemplate(errorTemplate,
+                    FreeMarkerPageResource.baseRootObject(getContext(), this));
         }
 
         super.start();
