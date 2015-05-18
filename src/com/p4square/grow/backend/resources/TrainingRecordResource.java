@@ -174,25 +174,35 @@ public class TrainingRecordResource extends ServerResource {
         return null;
     }
 
+    private Score getAssessedScore(String userId) throws IOException {
+        // Get the user's score.
+        Score assessedScore = new Score(0, 0);
+
+        String summaryString = mAnswerProvider.get(userId, "summary");
+        if (summaryString == null) {
+            throw new IOException("Asked to create training record for unassessed user " + userId);
+        }
+
+        Map<?,?> summary = MAPPER.readValue(summaryString, Map.class);
+
+        if (summary.containsKey("sum") && summary.containsKey("count")) {
+            double sum = (Double) summary.get("sum");
+            int count = (Integer) summary.get("count");
+            assessedScore = new Score(sum, count);
+        }
+
+        return assessedScore;
+    }
+
     /**
      * Mark the chapters which the user assessed through as not required.
      */
     private void skipAssessedChapters(String userId, TrainingRecord record) {
         // Get the user's score.
-        double assessedScore = 0;
+        Score assessedScore = new Score(0, 0);
 
         try {
-            String summaryString = mAnswerProvider.get(userId, "summary");
-            if (summaryString == null) {
-                LOG.warn("Asked to create training record for unassessed user " + userId);
-                return;
-            }
-            Map<?,?> summary = MAPPER.readValue(summaryString, Map.class);
-
-            if (summary.containsKey("score")) {
-                assessedScore = (Double) summary.get("score");
-            }
-
+            assessedScore = getAssessedScore(userId);
         } catch (IOException e) {
             LOG.error("IOException fetching assessment record for " + userId, e);
             return;
@@ -212,7 +222,7 @@ public class TrainingRecordResource extends ServerResource {
 
             } else {
                 // Chapter required if the floor of the score is <= the chapter's numeric value.
-                required = Math.floor(assessedScore) <= Score.numericScore(chapterId);
+                required = assessedScore.floor() <= Score.numericScore(chapterId);
             }
 
             if (!required) {

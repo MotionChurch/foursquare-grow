@@ -11,17 +11,20 @@ package com.p4square.grow.model;
  */
 public class Score {
     /**
-     * Return the integer value for the given Score String.
+     * Return the decimal value for the given Score String.
+     *
+     * This method satisfies the invariant for Score x:
+     *  numericScore(x.toString()) <= x.getScore()
      */
-    public static int numericScore(String score) {
+    public static double numericScore(String score) {
         if ("teacher".equals(score)) {
-            return 4;
+            return 3.5;
         } else if ("disciple".equals(score)) {
-            return 3;
+            return 2.5;
         } else if ("believer".equals(score)) {
-            return 2;
+            return 1.5;
         } else if ("seeker".equals(score)) {
-            return 1;
+            return 0;
         } else {
             return Integer.MAX_VALUE;
         }
@@ -33,6 +36,11 @@ public class Score {
     public Score() {
         sum = 0;
         count = 0;
+    }
+
+    public Score(double sum, int count) {
+        this.sum = sum;
+        this.count = count;
     }
 
     /**
@@ -68,17 +76,37 @@ public class Score {
         return sum / count;
     }
 
+    /**
+     * @return the lowest score in the same category as this score.
+     */
+    public double floor() {
+        final double score = getScore();
+
+        if (score >= 3.5) {
+            return 3.5; // teacher
+
+        } else if (score >= 2.5) {
+            return 2.5; // disciple
+
+        } else if (score >= 1.5) {
+            return 1.5; // believer
+
+        } else {
+            return 0; // seeker
+        }
+    }
+
     @Override
     public String toString() {
         final double score = getScore();
 
-        if (score >= 4) {
+        if (score >= 3.5) {
             return "teacher";
 
-        } else if (score >= 3) {
+        } else if (score >= 2.5) {
             return "disciple";
 
-        } else if (score >= 2) {
+        } else if (score >= 1.5) {
             return "believer";
 
         } else {

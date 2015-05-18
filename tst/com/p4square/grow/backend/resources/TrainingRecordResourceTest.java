@@ -67,7 +67,7 @@ public class TrainingRecordResourceTest extends ResourceTestBase {
     @Test
     public void testSkipAssessedChaptersLow() throws Exception {
         // Set the User's score.
-        mApplication.getAnswerProvider().put(USER_ID, "summary", "{\"score\": 0.0}");
+        mApplication.getAnswerProvider().put(USER_ID, "summary", "{\"sum\": 0.0, \"count\": 1}");
 
         // Run the test
         TrainingRecord record = run(TrainingRecord.class);
@@ -86,7 +86,7 @@ public class TrainingRecordResourceTest extends ResourceTestBase {
     @Test
     public void testSkipAssessedChaptersSeeker() throws Exception {
         // Set the User's score.
-        mApplication.getAnswerProvider().put(USER_ID, "summary", "{\"score\": 1.0}");
+        mApplication.getAnswerProvider().put(USER_ID, "summary", "{\"sum\": 1.0, \"count\": 1}");
 
         // Run the test
         TrainingRecord record = run(TrainingRecord.class);
@@ -105,7 +105,7 @@ public class TrainingRecordResourceTest extends ResourceTestBase {
     @Test
     public void testSkipAssessedChaptersBeliever() throws Exception {
         // Set the User's score.
-        mApplication.getAnswerProvider().put(USER_ID, "summary", "{\"score\": 2.0}");
+        mApplication.getAnswerProvider().put(USER_ID, "summary", "{\"sum\": 2.0, \"count\": 1}");
 
         // Run the test
         TrainingRecord record = run(TrainingRecord.class);
@@ -124,7 +124,7 @@ public class TrainingRecordResourceTest extends ResourceTestBase {
     @Test
     public void testSkipAssessedChaptersHigh() throws Exception {
         // Set the User's score.
-        mApplication.getAnswerProvider().put(USER_ID, "summary", "{\"score\": 4.0}");
+        mApplication.getAnswerProvider().put(USER_ID, "summary", "{\"sum\": 4.0, \"count\": 1}");
 
         // Run the test
         TrainingRecord record = run(TrainingRecord.class);

@@ -57,10 +57,10 @@ public class ScoreTest {
      */
     @Test
     public void testNumericScore() {
-        assertEquals(4, Score.numericScore("teacher"));
-        assertEquals(3, Score.numericScore("disciple"));
-        assertEquals(2, Score.numericScore("believer"));
-        assertEquals(1, Score.numericScore("seeker"));
+        assertEquals(3.5, Score.numericScore("teacher"), DELTA);
+        assertEquals(2.5, Score.numericScore("disciple"), DELTA);
+        assertEquals(1.5, Score.numericScore("believer"), DELTA);
+        assertEquals(0, Score.numericScore("seeker"), DELTA);
     }
 
     /**
@@ -70,35 +70,35 @@ public class ScoreTest {
     public void testToString() {
         mScore.count = 1;
 
-        // Seeker is defined as score < 2
+        // Seeker is defined as score < 1.5
         mScore.sum = 0;
         assertEquals("seeker", mScore.toString());
         mScore.sum = 0.5;
         assertEquals("seeker", mScore.toString());
         mScore.sum = 1;
         assertEquals("seeker", mScore.toString());
-        mScore.sum = 1.5;
-        assertEquals("seeker", mScore.toString());
-        mScore.sum = 1.99;
+        mScore.sum = 1.49;
         assertEquals("seeker", mScore.toString());
 
-        // Believer is defined as 2 <= score < 3
+        // Believer is defined as 1.5 <= score < 2.5
+        mScore.sum = 1.5;
+        assertEquals("believer", mScore.toString());
         mScore.sum = 2;
         assertEquals("believer", mScore.toString());
-        mScore.sum = 2.5;
-        assertEquals("believer", mScore.toString());
-        mScore.sum = 2.99;
+        mScore.sum = 2.49;
         assertEquals("believer", mScore.toString());
 
-        // Disciple is defined as 3 <= score < 4
+        // Disciple is defined as 2.5 <= score < 3.5
+        mScore.sum = 2.5;
+        assertEquals("disciple", mScore.toString());
         mScore.sum = 3;
         assertEquals("disciple", mScore.toString());
-        mScore.sum = 3.5;
-        assertEquals("disciple", mScore.toString());
-        mScore.sum = 3.99;
+        mScore.sum = 3.49;
         assertEquals("disciple", mScore.toString());
 
-        // Teacher is defined as 4 <= score
+        // Teacher is defined as 3.5 <= score
+        mScore.sum = 3.5;
+        assertEquals("teacher", mScore.toString());
         mScore.sum = 4;
         assertEquals("teacher", mScore.toString());
         mScore.sum = 4.5;
