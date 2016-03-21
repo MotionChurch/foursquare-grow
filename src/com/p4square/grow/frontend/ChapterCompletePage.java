@@ -7,6 +7,7 @@ package com.p4square.grow.frontend;
 import java.util.Date;
 import java.util.Map;
 
+import com.p4square.f1oauth.FellowshipOneIntegrationDriver;
 import freemarker.template.Template;
 
 import org.restlet.data.MediaType;
@@ -172,7 +173,8 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
             Attribute attribute = new Attribute(attributeName);
             attribute.setStartDate(new Date());
 
-            F1API f1 = mGrowFrontend.getF1Access().getAuthenticatedApi(user);
+            F1API f1 = ((FellowshipOneIntegrationDriver) mGrowFrontend.getThirdPartyIntegrationFactory())
+                            .getF1Access().getAuthenticatedApi(user);
             if (!f1.addAttribute(user.getIdentifier(), attribute)) {
                 LOG.error("addAttribute failed for " + user.getIdentifier() 
                         + " with attribute " + attributeName);
