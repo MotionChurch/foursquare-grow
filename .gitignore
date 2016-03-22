@@ -1,4 +1,7 @@
 build
+out/
 lib
 *.swp
 .idea
+*.iml
+devfiles/grow-server.properties
