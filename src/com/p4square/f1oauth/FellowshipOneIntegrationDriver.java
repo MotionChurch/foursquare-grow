@@ -3,6 +3,7 @@ package com.p4square.f1oauth;
 import com.codahale.metrics.MetricRegistry;
 import com.p4square.grow.config.Config;
 import com.p4square.grow.frontend.IntegrationDriver;
+import com.p4square.grow.frontend.ProgressReporter;
 import org.restlet.Context;
 import org.restlet.security.Verifier;
 
@@ -17,6 +18,8 @@ public class FellowshipOneIntegrationDriver implements IntegrationDriver {
     private final Config mConfig;
     private final F1Access mAPI;
 
+    private final ProgressReporter mProgressReporter;
+
     public FellowshipOneIntegrationDriver(final Context context) {
         mContext = context;
         mConfig = (Config) context.getAttributes().get("com.p4square.grow.config");
@@ -29,6 +32,8 @@ public class FellowshipOneIntegrationDriver implements IntegrationDriver {
                             mConfig.getString("f1ChurchCode", "pfseawa"),
                             F1Access.UserType.WEBLINK);
         mAPI.setMetricRegistry(mMetricRegistry);
+
+        mProgressReporter = new F1ProgressReporter(mAPI);
     }
 
     /**
@@ -41,5 +46,10 @@ public class FellowshipOneIntegrationDriver implements IntegrationDriver {
     @Override
     public Verifier newUserAuthenticationVerifier() {
         return new SecondPartyVerifier(mContext, mAPI);
+    }
+
+    @Override
+    public ProgressReporter getProgressReporter() {
+        return mProgressReporter;
     }
 }

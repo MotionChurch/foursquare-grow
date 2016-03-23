@@ -20,10 +20,11 @@ public interface ProgressReporter {
     void reportAssessmentComplete(User user, String level, Date date, String results);
 
     /**
+     * Report that the User completed the chapter.
      *
      * @param user The user who completed the chapter.
-     * @param chapter The chatper completed.
-     * @param date Teh completion date.
+     * @param chapter The chapter completed.
+     * @param date The completion date.
      */
     void reportChapterComplete(User user, String chapter, Date date);
 }

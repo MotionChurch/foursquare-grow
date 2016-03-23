@@ -14,4 +14,13 @@ public interface IntegrationDriver {
      * @return A Verifier.
      */
     Verifier newUserAuthenticationVerifier();
+
+    /**
+     * Return a ProgressReporter for this Church Management System.
+     *
+     * The ProgressReporter should be thread-safe.
+     *
+     * @return The ProgressReporter.
+     */
+    ProgressReporter getProgressReporter();
 }
