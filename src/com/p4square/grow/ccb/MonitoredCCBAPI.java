@@ -43,6 +43,21 @@ public class MonitoredCCBAPI implements CCBAPI {
     }
 
     @Override
+    public GetLookupTableResponse getLookupTable(final GetLookupTableRequest request) throws IOException {
+        final Timer.Context timer = mMetricRegistry.timer("CCBAPI.getLookupTable.time").time();
+        boolean success = false;
+        try {
+            final GetLookupTableResponse resp = mAPI.getLookupTable(request);
+            success = true;
+            return resp;
+        } finally {
+            timer.stop();
+            mMetricRegistry.counter("CCBAPI.getLookupTable.success").inc(success ? 1 : 0);
+            mMetricRegistry.counter("CCBAPI.getLookupTable.failure").inc(!success ? 1 : 0);
+        }
+    }
+
+    @Override
     public GetIndividualProfilesResponse getIndividualProfiles(GetIndividualProfilesRequest request)
             throws IOException {
         final Timer.Context timer = mMetricRegistry.timer("CCBAPI.getIndividualProfiles").time();
