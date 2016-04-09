@@ -72,7 +72,7 @@ public class CustomFieldCache {
             items = mItemByNameTable.get(type);
         }
 
-        return items.get(name);
+        return items.get(name.toLowerCase());
     }
 
     private synchronized void refresh() {
@@ -113,8 +113,8 @@ public class CustomFieldCache {
     private synchronized boolean cacheLookupTable(final LookupTableType type) {
         try {
             final GetLookupTableResponse resp = mAPI.getLookupTable(new GetLookupTableRequest().withType(type));
-            mItemByNameTable.put(type,
-                    resp.getItems().stream().collect(Collectors.toMap(LookupTableItem::getName, Function.identity())));
+            mItemByNameTable.put(type, resp.getItems().stream().collect(
+                    Collectors.toMap(item -> item.getName().toLowerCase(), Function.identity())));
             return true;
 
         } catch (IOException e) {

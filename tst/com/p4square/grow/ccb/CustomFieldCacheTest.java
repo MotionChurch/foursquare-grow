@@ -175,6 +175,26 @@ public class CustomFieldCacheTest {
     }
 
     @Test
+    public void testGetPullDownOptionsMixedCase() throws Exception {
+        // Setup mocks
+        Capture<GetLookupTableRequest> requestCapture = EasyMock.newCapture();
+        EasyMock.expect(api.getLookupTable(EasyMock.capture(requestCapture))).andReturn(lookupTableResponse);
+        EasyMock.replay(api);
+
+        // Test the cache
+        LookupTableItem item = cache.getPulldownItemByName(
+                LookupTableType.valueOf("udf_ind_pulldown_6".toUpperCase()),
+                "BeLiEvEr");
+
+        // Verify result.
+        EasyMock.verify(api);
+        assertEquals(LookupTableType.UDF_IND_PULLDOWN_6, requestCapture.getValue().getType());
+        assertEquals(2, item.getId());
+        assertEquals(2, item.getOrder());
+        assertEquals("Believer", item.getName());
+    }
+
+    @Test
     public void testGetPullDownOptionMissing() throws Exception {
         // Setup mocks
         EasyMock.expect(api.getLookupTable(EasyMock.anyObject())).andReturn(lookupTableResponse);
