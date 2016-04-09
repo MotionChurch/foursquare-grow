@@ -6,12 +6,12 @@ package com.p4square.grow.frontend;
 
 import java.util.Map;
 
+import com.p4square.f1oauth.FellowshipOneIntegrationDriver;
 import freemarker.template.Template;
 
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
-import org.restlet.resource.ServerResource;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.ext.freemarker.TemplateRepresentation;
@@ -44,7 +44,14 @@ public class NewAccountResource extends FreeMarkerPageResource {
         super.doInit();
 
         mGrowFrontend = (GrowFrontend) getApplication();
-        mHelper = mGrowFrontend.getF1Access();
+
+        final IntegrationDriver driver = mGrowFrontend.getThirdPartyIntegrationFactory();
+        if (driver instanceof FellowshipOneIntegrationDriver) {
+            mHelper = ((FellowshipOneIntegrationDriver) driver).getF1Access();
+        } else {
+            LOG.error("NewAccountResource only works with F1!");
+            mHelper = null;
+        }
 
         mErrorMessage = "";
 
@@ -83,6 +90,11 @@ public class NewAccountResource extends FreeMarkerPageResource {
 
     @Override
     protected Representation post(Representation rep) {
+        if (mHelper == null) {
+            mErrorMessage += "F1 support is not enabled! ";
+            return get();
+        }
+
         Form form = new Form(rep);
 
         String firstname = form.getFirstValue("firstname");

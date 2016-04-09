@@ -6,15 +6,12 @@ package com.p4square.grow.frontend;
 
 import java.io.File;
 import java.io.IOException;
-
-import java.util.Arrays;
-import java.util.UUID;
+import java.lang.reflect.Constructor;
 
 import freemarker.template.Template;
 
 import org.restlet.Application;
 import org.restlet.Component;
-import org.restlet.Client;
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.data.Protocol;
@@ -32,13 +29,11 @@ import com.p4square.fmfacade.FreeMarkerPageResource;
 
 import com.p4square.grow.config.Config;
 
-import com.p4square.f1oauth.F1Access;
-import com.p4square.f1oauth.SecondPartyVerifier;
-
 import com.p4square.restlet.metrics.MetricRouter;
 
 import com.p4square.session.SessionCheckingAuthenticator;
 import com.p4square.session.SessionCreatingAuthenticator;
+import org.restlet.security.Verifier;
 
 /**
  * This is the Restlet Application implementing the Grow project front-end.
@@ -54,7 +49,7 @@ public class GrowFrontend extends FMFacade {
     private final Config mConfig;
     private final MetricRegistry mMetricRegistry;
 
-    private F1Access mHelper;
+    private IntegrationDriver mIntegrationFactory;
 
     public GrowFrontend() {
         this(new Config(), new MetricRegistry());
@@ -81,20 +76,26 @@ public class GrowFrontend extends FMFacade {
                     FreeMarkerPageResource.baseRootObject(getContext(), this));
         }
 
+        getContext().getAttributes().put("com.p4square.grow.config", mConfig);
+        getContext().getAttributes().put("com.p4square.grow.metrics", mMetricRegistry);
+
         super.start();
     }
 
-    synchronized F1Access getF1Access() {
-        if (mHelper == null) {
-            mHelper = new F1Access(getContext(), mConfig.getString("f1ConsumerKey", ""),
-                    mConfig.getString("f1ConsumerSecret", ""),
-                    mConfig.getString("f1BaseUrl", "staging.fellowshiponeapi.com"),
-                    mConfig.getString("f1ChurchCode", "pfseawa"),
-                    F1Access.UserType.WEBLINK);
-            mHelper.setMetricRegistry(mMetricRegistry);
+    public synchronized IntegrationDriver getThirdPartyIntegrationFactory() {
+        if (mIntegrationFactory == null) {
+            final String driverClassName = getConfig().getString("integrationDriver",
+                                                                 "com.p4square.f1oauth.FellowshipOneIntegrationDriver");
+            try {
+                Class<?> clazz = Class.forName(driverClassName);
+                Constructor<?> constructor = clazz.getConstructor(Context.class);
+                mIntegrationFactory = (IntegrationDriver) constructor.newInstance(getContext());
+            } catch (Exception e) {
+                LOG.error("Failed to instantiate IntegrationDriver " + driverClassName);
+            }
         }
 
-        return mHelper;
+        return mIntegrationFactory;
     }
 
     @Override
@@ -141,8 +142,8 @@ public class GrowFrontend extends FMFacade {
         SessionCheckingAuthenticator sessionChk = new SessionCheckingAuthenticator(context, true);
 
         // This is used to authenticate the user
-        SecondPartyVerifier f1Verifier = new SecondPartyVerifier(context, getF1Access());
-        LoginFormAuthenticator loginAuth = new LoginFormAuthenticator(context, false, f1Verifier);
+        Verifier verifier = getThirdPartyIntegrationFactory().newUserAuthenticationVerifier();
+        LoginFormAuthenticator loginAuth = new LoginFormAuthenticator(context, false, verifier);
         loginAuth.setLoginFormUrl(loginPage);
         loginAuth.setLoginPostUrl(loginPost);
         loginAuth.setDefaultPage(defaultPage);

@@ -24,7 +24,10 @@
 
         <dependency org="log4j" name="log4j" rev="[1.2,)" conf="default" />
 
+        <dependency org="com.p4square" name="ccbapi" rev="1.0" conf="default" />
+
         <dependency org="junit" name="junit" rev="4.7" conf="test" />
+        <dependency org="org.easymock" name="easymock" rev="3.4" conf="test" />
         <dependency org="net.sourceforge.cobertura" name="cobertura" rev="2.1.1" conf="test" />
 
         <!-- Backend Dependencies -->

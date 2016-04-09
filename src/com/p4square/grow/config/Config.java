@@ -35,12 +35,27 @@ public class Config {
     private Properties mProperties;
 
     /**
-     * Construct a new Config object. Domain defaults to prod.
+     * Construct a new Config object.
+     *
+     * Sets the domain to the value of the system property CONFIG_DOMAIN, if present.
+     * If the system property is not set then the environment variable CONFIG_DOMAIN is checked.
+     * If neither are set the domain defaults to prod.
      */
     public Config() {
-        mDomain = "prod";
-        mProperties = new Properties();
+        // Check the command line for a domain property.
+        mDomain = System.getProperty("CONFIG_DOMAIN");
 
+        // If the domain was not set with a property, check for an environment variable.
+        if (mDomain == null) {
+            mDomain = System.getenv("CONFIG_DOMAIN");
+        }
+
+        // If neither were set, default to prod
+        if (mDomain == null) {
+            mDomain = "prod";
+        }
+
+        mProperties = new Properties();
     }
 
     /**
@@ -62,7 +77,7 @@ public class Config {
 
     /**
      * Load properties from a file.
-     * Any exceptions are logged and suppressed.
+     * Any exception are logged and suppressed.
      */
     public void updateConfig(String propertyFilename) {
         final File propFile = new File(propertyFilename);
@@ -111,6 +126,13 @@ public class Config {
         result = System.getProperty(key);
         if (result != null) {
             LOG.debug("Reading System.getProperty(" + key + "). Got result = { " + result + " }");
+            return result;
+        }
+
+        // Environment variables can also override configs
+        result = System.getenv(key);
+        if (result != null) {
+            LOG.debug("Reading System.getenv(" + key + "). Got result = { " + result + " }");
             return result;
         }
 

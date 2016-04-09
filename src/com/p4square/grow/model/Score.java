@@ -17,6 +17,8 @@ public class Score {
      *  numericScore(x.toString()) <= x.getScore()
      */
     public static double numericScore(String score) {
+        score = score.toLowerCase();
+
         if ("teacher".equals(score)) {
             return 3.5;
         } else if ("disciple".equals(score)) {

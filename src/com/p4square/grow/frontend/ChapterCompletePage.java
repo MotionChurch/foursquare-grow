@@ -7,6 +7,7 @@ package com.p4square.grow.frontend;
 import java.util.Date;
 import java.util.Map;
 
+import com.p4square.f1oauth.FellowshipOneIntegrationDriver;
 import freemarker.template.Template;
 
 import org.restlet.data.MediaType;
@@ -31,6 +32,7 @@ import com.p4square.grow.config.Config;
 import com.p4square.grow.model.TrainingRecord;
 import com.p4square.grow.provider.Provider;
 import com.p4square.grow.provider.TrainingRecordProvider;
+import org.restlet.security.User;
 
 /**
  * This resource displays the transitional page between chapters.
@@ -158,29 +160,12 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
     }
 
     private void assignAttribute() {
-        if (!(getRequest().getClientInfo().getUser() instanceof F1User)) {
-            // Only useful if the user is from F1.
-            return;
-        }
+        final ProgressReporter reporter = mGrowFrontend.getThirdPartyIntegrationFactory().getProgressReporter();
 
-        F1User user = (F1User) getRequest().getClientInfo().getUser();
+        final User user = getRequest().getClientInfo().getUser();
+        final Date completionDate = new Date();
 
-        // Update the attribute.
-        String attributeName = "Training Complete - " + mChapter;
-
-        try {
-            Attribute attribute = new Attribute(attributeName);
-            attribute.setStartDate(new Date());
-
-            F1API f1 = mGrowFrontend.getF1Access().getAuthenticatedApi(user);
-            if (!f1.addAttribute(user.getIdentifier(), attribute)) {
-                LOG.error("addAttribute failed for " + user.getIdentifier() 
-                        + " with attribute " + attributeName);
-            }
-        } catch (Exception e) {
-            LOG.error("addAttribute failed for " + user.getIdentifier() 
-                    + " with attribute " + attributeName, e);
-        }
+        reporter.reportChapterComplete(user, mChapter, completionDate);
     }
 
     /**

@@ -7,6 +7,8 @@ package com.p4square.grow.frontend;
 import java.util.Date;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.p4square.f1oauth.FellowshipOneIntegrationDriver;
 import freemarker.template.Template;
 
 import org.restlet.data.MediaType;
@@ -29,6 +31,7 @@ import com.p4square.f1oauth.F1User;
 
 import com.p4square.grow.config.Config;
 import com.p4square.grow.provider.JsonEncodedProvider;
+import org.restlet.security.User;
 
 /**
  * This page fetches the user's final score and displays the transitional page between
@@ -102,29 +105,18 @@ public class AssessmentResultsPage extends FreeMarkerPageResource {
     }
 
     private void publishScoreInF1(Map results) {
-        if (!(getRequest().getClientInfo().getUser() instanceof F1User)) {
-            // Only useful if the user is from F1.
-            return;
-        }
-
-        F1User user = (F1User) getRequest().getClientInfo().getUser();
-
-        // Update the attribute.
-        String attributeName = "Assessment Complete - " + results.get("result");
+        final ProgressReporter reporter = mGrowFrontend.getThirdPartyIntegrationFactory().getProgressReporter();
 
         try {
-            Attribute attribute = new Attribute(attributeName);
-            attribute.setStartDate(new Date());
-            attribute.setComment(JsonEncodedProvider.MAPPER.writeValueAsString(results));
+            final User user = getRequest().getClientInfo().getUser();
+            final String level = results.get("result").toString();
+            final Date completionDate = new Date();
+            final String data = JsonEncodedProvider.MAPPER.writeValueAsString(results);
 
-            F1API f1 = mGrowFrontend.getF1Access().getAuthenticatedApi(user);
-            if (!f1.addAttribute(user.getIdentifier(), attribute)) {
-                LOG.error("addAttribute failed for " + user.getIdentifier() 
-                        + " with attribute " + attributeName);
-            }
-        } catch (Exception e) {
-            LOG.error("addAttribute failed for " + user.getIdentifier() 
-                    + " with attribute " + attributeName, e);
+            reporter.reportAssessmentComplete(user, level, completionDate, data);
+
+        } catch (JsonProcessingException e) {
+            LOG.error("Failed to generate json " + e.getMessage(), e);
         }
     }
 
