@@ -41,7 +41,8 @@ public class ChurchCommunityBuilderIntegrationDriver implements IntegrationDrive
 
             mAPI = api;
 
-            mProgressReporter = new CCBProgressReporter(mAPI);
+            final CustomFieldCache cache = new CustomFieldCache(mAPI);
+            mProgressReporter = new CCBProgressReporter(mAPI, cache);
 
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
