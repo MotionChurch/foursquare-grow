@@ -1,7 +1,8 @@
-build
+target/
 out/
 lib
 *.swp
 .idea
 *.iml
+service.log
 devfiles/grow-server.properties

@@ -6,21 +6,16 @@ This is the source for the [Foursquare GROW](http://foursquaregrow.com) Website.
 Requirements
 --------------
 
-* JDK 1.7
-* Ant
-* Ivy
-* jesterpm-build-tools
-
+* JDK 1.8
+* Maven
 
 Usage
 -------
 
-1. Download and bootstrap jesterpm-build-tools from http://github.com/jesterpm/jesterpm-build-tools
-2. Copy devfiles/grow-server.properties.default to devfiles/grow-server.properties and insert your
-   AWS and F1 credentials.
-3. Run `ant resolve` to download the dependencies.
-4. Run `ant server` to start the website on http://localhost:8085
-
-The website defaults to running in dev mode which will only modify the dev Dynamo tables. You can
-also run `ant server-prod` to cause the local website to access the production site's Dyanmo
-tables.
+1. Copy devfiles/grow-server.properties.default to devfiles/grow-server.properties and insert your
+   AWS and F1 or CCB credentials.
+2. Run `maven compile` to compile.
+3. Run `maven exec:exec` to start the website on http://localhost:8085
+   The website defaults to running in dev mode which will only modify the dev Dynamo tables.
+   You *must recompile* for changes to take effect.
+4. Run `maven war:war` to produce a war file to deploy.
