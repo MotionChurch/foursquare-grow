@@ -101,10 +101,6 @@ public class CCBProgressReporterTest {
         verify();
         assertTrue(reqCapture.hasCaptured());
         UpdateIndividualProfileRequest req = reqCapture.getValue();
-
-        // Both the Grow Level and Grow Assessment fields should be updated.
-        assertEquals(1, req.getCustomPulldownFields().get("udf_pulldown_1").intValue());
-        assertEquals("2015-04-01", req.getCustomDateFields().get("udf_date_1").toString());
         assertEquals(1, req.getCustomPulldownFields().get("udf_pulldown_2").intValue());
         assertEquals("2015-04-01", req.getCustomDateFields().get("udf_date_2").toString());
     }
