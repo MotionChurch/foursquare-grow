@@ -120,12 +120,12 @@ public class GrowProcessComponent extends Component {
 
         // Static content
         try {
-            component.getDefaultHost().attach("/images/", new FileServingApp("./build/root/images/"));
-            component.getDefaultHost().attach("/scripts", new FileServingApp("./build/root/scripts"));
-            component.getDefaultHost().attach("/style.css", new FileServingApp("./build/root/style.css"));
-            component.getDefaultHost().attach("/favicon.ico", new FileServingApp("./build/root/favicon.ico"));
-            component.getDefaultHost().attach("/notfound.html", new FileServingApp("./build/root/notfound.html"));
-            component.getDefaultHost().attach("/error.html", new FileServingApp("./build/root/error.html"));
+            component.getDefaultHost().attach("/images/", new FileServingApp("./src/main/webapp/images/"));
+            component.getDefaultHost().attach("/scripts", new FileServingApp("./src/main/webapp/scripts"));
+            component.getDefaultHost().attach("/style.css", new FileServingApp("./src/main/webapp/style.css"));
+            component.getDefaultHost().attach("/favicon.ico", new FileServingApp("./src/main/webapp/favicon.ico"));
+            component.getDefaultHost().attach("/notfound.html", new FileServingApp("./src/main/webapp/notfound.html"));
+            component.getDefaultHost().attach("/error.html", new FileServingApp("./src/main/webapp/error.html"));
         } catch (IOException e) {
             LOG.error("Could not create directory for static resources: "
                     + e.getMessage(), e);
