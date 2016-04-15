@@ -22,7 +22,13 @@ public class CCBUser extends User {
     public CCBUser(final IndividualProfile profile) {
         mProfile = profile;
 
-        setIdentifier("CCB-" + mProfile.getId());
+        // The identifier is set to the syncId if present, otherwise the CCB Id is used with the prefix CCB-.
+        final int syncId = mProfile.getSyncId();
+        if (syncId > 0) {
+            setIdentifier(String.valueOf(syncId));
+        } else {
+            setIdentifier("CCB-" + mProfile.getId());
+        }
         setFirstName(mProfile.getFirstName());
         setLastName(mProfile.getLastName());
         setEmail(mProfile.getEmail());
