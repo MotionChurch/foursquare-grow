@@ -18,4 +18,4 @@ Usage
 3. Run `maven exec:exec` to start the website on http://localhost:8085
    The website defaults to running in dev mode which will only modify the dev Dynamo tables.
    You *must recompile* for changes to take effect.
-4. Run `maven war:war` to produce a war file to deploy.
+4. Run `maven package` to produce a war file to deploy.
