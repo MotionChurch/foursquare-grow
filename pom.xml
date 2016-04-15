@@ -11,6 +11,7 @@
     <name>foursquare-grow</name>
     <description>The Foursquare Grow Website</description>
     <url>https://github.com/PuyallupFoursquare/foursquare-grow</url>
+    <packaging>war</packaging>
 
     <developers>
         <developer>
