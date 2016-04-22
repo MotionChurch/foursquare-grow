@@ -596,6 +596,10 @@ footer a:hover {
     margin: 0 auto 0 auto;
 }
 
+#login-area {
+    margin-bottom: 20px;
+}
+
 #foursquarelogin label {
     display: block;
     padding-bottom: 3px;

@@ -23,8 +23,11 @@
                     <input id="passwordField" type="password" name="password" tabindex="2" />
                     <input type="submit" value="Login" class="login-button" />
                 </form>
+                <a href="https://myfoursquarechurch.ccbchurch.com/w_password.php">Forgot username or password?</a>
             </div>
-            <a href="https://myfoursquarechurch.ccbchurch.com/w_password.php">Forgot username or password?</a>
+            <div style="font-weight: bold;">
+                <a href="https://myfoursquarechurch.ccbchurch.com/w_sign_up.php">Sign Up</a>
+            </div>
         </div>
     </div>
 </@commonpage>
