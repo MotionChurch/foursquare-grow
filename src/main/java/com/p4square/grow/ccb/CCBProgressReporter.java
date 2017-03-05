@@ -34,7 +34,8 @@ public class CCBProgressReporter implements ProgressReporter {
     }
 
     @Override
-    public void reportAssessmentComplete(final User user, final String level, final Date date, final String results) {
+    public void reportAssessmentComplete(final User user, final String level, final Date date, final String results)
+            throws IOException {
         if (!(user instanceof CCBUser)) {
             throw new IllegalArgumentException("Expected CCBUser but got " + user.getClass().getCanonicalName());
         }
@@ -44,7 +45,7 @@ public class CCBProgressReporter implements ProgressReporter {
     }
 
     @Override
-    public void reportChapterComplete(final User user, final String chapter, final Date date) {
+    public void reportChapterComplete(final User user, final String chapter, final Date date) throws IOException {
         if (!(user instanceof CCBUser)) {
             throw new IllegalArgumentException("Expected CCBUser but got " + user.getClass().getCanonicalName());
         }
@@ -66,7 +67,8 @@ public class CCBProgressReporter implements ProgressReporter {
         updateLevelAndDate(ccbuser, GROW_LEVEL, chapter, date);
     }
 
-    private void updateLevelAndDate(final CCBUser user, final String field, final String level, final Date date) {
+    private void updateLevelAndDate(final CCBUser user, final String field, final String level, final Date date)
+            throws IOException {
         boolean modified = false;
 
         final UpdateIndividualProfileRequest req = new UpdateIndividualProfileRequest()
@@ -99,6 +101,7 @@ public class CCBProgressReporter implements ProgressReporter {
                     + ", field " + field
                     + ", level " + level
                     + ", date " + date.toString());
+            throw e;
         }
     }
 }

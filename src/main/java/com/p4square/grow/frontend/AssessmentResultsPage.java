@@ -4,6 +4,7 @@
 
 package com.p4square.grow.frontend;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -104,7 +105,7 @@ public class AssessmentResultsPage extends FreeMarkerPageResource {
         }
     }
 
-    private void publishScoreInF1(Map results) {
+    private void publishScoreInF1(Map results) throws IOException {
         final ProgressReporter reporter = mGrowFrontend.getThirdPartyIntegrationFactory().getProgressReporter();
 
         try {
@@ -117,6 +118,7 @@ public class AssessmentResultsPage extends FreeMarkerPageResource {
 
         } catch (JsonProcessingException e) {
             LOG.error("Failed to generate json " + e.getMessage(), e);
+            throw new IOException(e);
         }
     }
 

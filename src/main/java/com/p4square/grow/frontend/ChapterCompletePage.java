@@ -4,6 +4,7 @@
 
 package com.p4square.grow.frontend;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -159,7 +160,7 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
         }
     }
 
-    private void assignAttribute() {
+    private void assignAttribute() throws IOException {
         final ProgressReporter reporter = mGrowFrontend.getThirdPartyIntegrationFactory().getProgressReporter();
 
         final User user = getRequest().getClientInfo().getUser();
