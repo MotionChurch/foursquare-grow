@@ -1,13 +1,12 @@
 package com.p4square.grow.backend;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
 import com.amazonaws.services.simpleemail.model.*;
 import com.p4square.grow.config.Config;
+import com.p4square.grow.config.ConfigCredentialProvider;
 import org.apache.log4j.Logger;
 
 /**
@@ -22,40 +21,22 @@ public class SESNotificationService implements NotificationService {
     private final Destination mDestination;
 
     public SESNotificationService(final Config config) {
-        AWSCredentials creds;
+        this(config, new AmazonSimpleEmailServiceClient(new ConfigCredentialProvider(config)));
 
-        String awsAccessKey = config.getString("awsAccessKey");
-        if (awsAccessKey != null) {
-            creds = new AWSCredentials() {
-                @Override
-                public String getAWSAccessKeyId() {
-                    return config.getString("awsAccessKey");
-                }
-                @Override
-                public String getAWSSecretKey() {
-                    return config.getString("awsSecretKey");
-                }
-            };
-        } else {
-            creds = new DefaultAWSCredentialsProviderChain().getCredentials();
-        }
-
-        mClient = new AmazonSimpleEmailServiceClient(creds);
-
+        // Set the AWS region.
         String region = config.getString("awsRegion");
         if (region != null) {
             mClient.setRegion(Region.getRegion(Regions.fromName(region)));
         }
+    }
+
+    public SESNotificationService(Config config, AmazonSimpleEmailService client) {
+        mClient = client;
 
         mSourceAddress = config.getString("notificationSourceEmail");
 
-        final String dest = config.getString("notificationEmail");
-        if (dest != null) {
-            mDestination = new Destination().withToAddresses(dest);
-        } else {
-            // Notifications are not configured.
-            mDestination = null;
-        }
+        final String[] dests = config.getString("notificationEmail", "").split(",");
+        mDestination = new Destination().withToAddresses(dests);
     }
 
     @Override

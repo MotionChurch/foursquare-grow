@@ -200,4 +200,36 @@ public class Config {
 
         return defaultValue;
     }
+
+    /**
+     * Set a value in the config.
+     *
+     * @param key Config name
+     * @param value Config value
+     */
+    public void setString(String key, String value) {
+        mProperties.setProperty(mDomain + "." + key, value);
+    }
+
+    /**
+     * Set a value in the config.
+     *
+     * @param key Config name
+     * @param value Config value
+     */
+    public void setInt(String key, int value) {
+        setString(key, String.valueOf(value));
+    }
+
+    /**
+     * Set a value in the config.
+     *
+     * @param key Config name
+     * @param value Config value
+     */
+    public void setBoolean(String key, boolean value) {
+        setString(key, String.valueOf(value));
+    }
+
+
 }

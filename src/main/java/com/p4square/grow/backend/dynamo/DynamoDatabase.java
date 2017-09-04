@@ -4,14 +4,11 @@
 
 package com.p4square.grow.backend.dynamo;
 
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
@@ -40,6 +37,7 @@ import com.amazonaws.services.dynamodbv2.model.UpdateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.UpdateTableResult;
 
 import com.p4square.grow.config.Config;
+import com.p4square.grow.config.ConfigCredentialProvider;
 
 /**
  * A wrapper around the Dynamo API.
@@ -49,25 +47,7 @@ public class DynamoDatabase {
     private final String mTablePrefix;
 
     public DynamoDatabase(final Config config) {
-        AWSCredentials creds;
-
-        String awsAccessKey = config.getString("awsAccessKey");
-        if (awsAccessKey != null) {
-            creds = new AWSCredentials() {
-                @Override
-                public String getAWSAccessKeyId() {
-                    return config.getString("awsAccessKey");
-                }
-                @Override
-                public String getAWSSecretKey() {
-                    return config.getString("awsSecretKey");
-                }
-            };
-        } else {
-            creds = new DefaultAWSCredentialsProviderChain().getCredentials();
-        }
-
-        mClient = new AmazonDynamoDBClient(creds);
+        mClient = new AmazonDynamoDBClient(new ConfigCredentialProvider(config));
 
         String endpoint = config.getString("dynamoEndpoint");
         if (endpoint != null) {
