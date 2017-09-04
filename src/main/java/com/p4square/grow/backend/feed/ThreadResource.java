@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
+import com.p4square.grow.backend.NotificationService;
+import com.p4square.grow.provider.ProvidesNotificationService;
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
 import org.restlet.representation.Representation;
@@ -31,6 +33,8 @@ public class ThreadResource extends ServerResource {
     private String mTopic;
     private String mThreadId;
 
+    private NotificationService mNotifier;
+
     @Override
     public void doInit() {
         super.doInit();
@@ -38,6 +42,8 @@ public class ThreadResource extends ServerResource {
         mBackend = (FeedDataProvider) getApplication();
         mTopic = getAttribute("topic");
         mThreadId = getAttribute("thread");
+
+        mNotifier = ((ProvidesNotificationService) getApplication()).getNotificationService();
     }
 
     /**
@@ -93,6 +99,10 @@ public class ThreadResource extends ServerResource {
 
             String collectionKey = mTopic + "/" + mThreadId;
             mBackend.getMessageProvider().put(collectionKey, message.getId(), message);
+
+            // Send a notification email
+            mNotifier.sendNotification(
+                    String.format("A new response was posted on the %s topic:\n\n%s", mTopic, message.getMessage()));
 
             setLocationRef(mThreadId + "/" + message.getId());
             return new JacksonRepresentation(message);

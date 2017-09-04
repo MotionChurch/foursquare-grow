@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import com.codahale.metrics.MetricRegistry;
 
+import com.p4square.grow.provider.*;
 import org.apache.log4j.Logger;
 
 import org.restlet.Application;
@@ -27,12 +28,6 @@ import com.p4square.grow.model.Question;
 import com.p4square.grow.model.TrainingRecord;
 import com.p4square.grow.model.UserRecord;
 
-import com.p4square.grow.provider.CollectionProvider;
-import com.p4square.grow.provider.Provider;
-import com.p4square.grow.provider.ProvidesQuestions;
-import com.p4square.grow.provider.ProvidesTrainingRecords;
-import com.p4square.grow.provider.ProvidesUserRecords;
-
 import com.p4square.grow.backend.resources.AccountResource;
 import com.p4square.grow.backend.resources.BannerResource;
 import com.p4square.grow.backend.resources.SurveyResource;
@@ -51,7 +46,7 @@ import com.p4square.restlet.metrics.MetricRouter;
  *
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
-public class GrowBackend extends Application implements GrowData {
+public class GrowBackend extends Application implements GrowData, ProvidesNotificationService {
 
     private final static Logger LOG = Logger.getLogger(GrowBackend.class);
 
@@ -59,6 +54,7 @@ public class GrowBackend extends Application implements GrowData {
 
     private final Config mConfig;
     private final GrowData mGrowData;
+    private final NotificationService mNotificationService;
 
     public GrowBackend() {
         this(new Config(), new MetricRegistry());
@@ -70,6 +66,8 @@ public class GrowBackend extends Application implements GrowData {
         mMetricRegistry = metricRegistry;
 
         mGrowData = new DynamoGrowData(config);
+
+        mNotificationService = new SESNotificationService(config);
     }
 
     public MetricRegistry getMetrics() {
@@ -178,6 +176,9 @@ public class GrowBackend extends Application implements GrowData {
     public CollectionProvider<String, String, String> getAnswerProvider() {
         return mGrowData.getAnswerProvider();
     }
+
+    @Override
+    public NotificationService getNotificationService() { return mNotificationService; }
 
     /**
      * Stand-alone main for testing.
