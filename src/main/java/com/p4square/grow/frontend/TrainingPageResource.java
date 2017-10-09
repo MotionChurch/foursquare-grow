@@ -4,24 +4,22 @@
 
 package com.p4square.grow.frontend;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import freemarker.template.Template;
 
-import org.restlet.data.CookieSetting;
-import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
-import org.restlet.resource.ServerResource;
 
 import org.apache.log4j.Logger;
 
@@ -36,6 +34,7 @@ import com.p4square.grow.model.VideoRecord;
 import com.p4square.grow.model.Playlist;
 import com.p4square.grow.provider.TrainingRecordProvider;
 import com.p4square.grow.provider.Provider;
+import org.restlet.security.User;
 
 /**
  * TrainingPageResource handles rendering the training page.
@@ -49,26 +48,25 @@ public class TrainingPageResource extends FreeMarkerPageResource {
     private static final Logger LOG = Logger.getLogger(TrainingPageResource.class);
 
     private static final String[] CHAPTERS = { "introduction", "seeker", "believer", "disciple", "teacher", "leader" };
-    private static final Comparator<Map<String, Object>> VIDEO_COMPARATOR = new Comparator<Map<String, Object>>() {
-        @Override
-        public int compare(Map<String, Object> left, Map<String, Object> right) {
-            String leftNumberStr = (String) left.get("number");
-            String rightNumberStr = (String) right.get("number");
+    private static final Comparator<Map<String, Object>> VIDEO_COMPARATOR = (left, right) -> {
+        String leftNumberStr = (String) left.get("number");
+        String rightNumberStr = (String) right.get("number");
 
-            if (leftNumberStr == null || rightNumberStr == null) {
-                return -1;
-            }
-
-            double leftNumber = Double.valueOf(leftNumberStr);
-            double rightNumber = Double.valueOf(rightNumberStr);
-
-            return Double.compare(leftNumber, rightNumber);
+        if (leftNumberStr == null || rightNumberStr == null) {
+            return -1;
         }
+
+        double leftNumber = Double.valueOf(leftNumberStr);
+        double rightNumber = Double.valueOf(rightNumberStr);
+
+        return Double.compare(leftNumber, rightNumber);
     };
 
     private Config mConfig;
     private Template mTrainingTemplate;
     private JsonRequestClient mJsonClient;
+    private ExecutorService mThreadPool;
+    private ProgressReporter mProgressReporter;
 
     private Provider<String, TrainingRecord> mTrainingRecordProvider;
     private FeedData mFeedData;
@@ -90,12 +88,14 @@ public class TrainingPageResource extends FreeMarkerPageResource {
         }
 
         mJsonClient = new JsonRequestClient(getContext().getClientDispatcher());
-        mTrainingRecordProvider = new TrainingRecordProvider<String>(new JsonRequestProvider<TrainingRecord>(getContext().getClientDispatcher(), TrainingRecord.class)) {
+        mTrainingRecordProvider = new TrainingRecordProvider<String>(new JsonRequestProvider<>(getContext().getClientDispatcher(), TrainingRecord.class)) {
             @Override
             public String makeKey(String userid) {
                 return getBackendEndpoint() + "/accounts/" + userid + "/training";
             }
         };
+        mThreadPool = growFrontend.getThreadPool();
+        mProgressReporter = growFrontend.getThirdPartyIntegrationFactory().getProgressReporter();
 
         mFeedData = new FeedData(getContext(), mConfig);
 
@@ -125,6 +125,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             // to skip ahead.
             boolean allowUserToSkip = mConfig.getBoolean("allowUserToSkip", false) || getQueryValue("magicskip") != null;
             String defaultChapter = null;
+            String highestCompletedChapter = null;
             boolean userTriedToSkip = false;
             int overallProgress = 0;
 
@@ -152,6 +153,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
                     allowedChapters.put(chapterId, allowed);
 
                     if (completed) {
+                        highestCompletedChapter = chapterId;
                         overallProgress++;
                     }
                 }
@@ -225,6 +227,27 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             root.put("showfeed", showfeed);
             if (showfeed) {
                 root.put("feeddata", mFeedData);
+            }
+
+            // Updated the integration database with the last completed chapter,
+            // just in case this failed previously.
+            if (highestCompletedChapter != null) {
+                try {
+                    final User user = getRequest().getClientInfo().getUser();
+                    // Get the date of the highest completed chapter.
+                    final Date completionDate = playlist.getChaptersMap().get(highestCompletedChapter).getCompletionDate();
+                    final String completedChapter = highestCompletedChapter;
+                    mThreadPool.execute(() -> {
+                        try {
+                            mProgressReporter.reportChapterComplete(user, completedChapter, completionDate);
+                        } catch (IOException e) {
+                            LOG.error("Failed to sync progress", e);
+                        }
+                    });
+                } catch (Throwable e) {
+                    // Don't let any failures here fail the page load.
+                    LOG.error("Unexpected throwable", e);
+                }
             }
 
             return new TemplateRepresentation(mTrainingTemplate, root, MediaType.TEXT_HTML);

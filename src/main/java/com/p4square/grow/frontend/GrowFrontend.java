@@ -7,6 +7,8 @@ package com.p4square.grow.frontend;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import freemarker.template.Template;
 
@@ -51,6 +53,8 @@ public class GrowFrontend extends FMFacade {
 
     private IntegrationDriver mIntegrationFactory;
 
+    private final ExecutorService mThreadPool;
+
     public GrowFrontend() {
         this(new Config(), new MetricRegistry());
     }
@@ -58,6 +62,7 @@ public class GrowFrontend extends FMFacade {
     public GrowFrontend(Config config, MetricRegistry metricRegistry) {
         mConfig = config;
         mMetricRegistry = metricRegistry;
+        mThreadPool = Executors.newFixedThreadPool(mConfig.getInt("threadPoolSize", 10));
     }
 
     public Config getConfig() {
@@ -66,6 +71,10 @@ public class GrowFrontend extends FMFacade {
 
     public MetricRegistry getMetrics() {
         return mMetricRegistry;
+    }
+
+    public ExecutorService getThreadPool() {
+        return mThreadPool;
     }
 
     @Override

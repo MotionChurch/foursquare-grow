@@ -57,7 +57,7 @@ public class CCBProgressReporter implements ProgressReporter {
 
         if (currentLevel != null) {
             if (Score.numericScore(chapter) <= Score.numericScore(currentLevel.getSelection().getLabel())) {
-                LOG.info("Not updating level for " + user.getIdentifier()
+                LOG.debug("Not updating level for " + user.getIdentifier()
                         + " because current level (" + currentLevel.getSelection().getLabel()
                         + ") is greater than new level (" + chapter + ")");
                 return;

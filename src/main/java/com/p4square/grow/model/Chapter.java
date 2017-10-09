@@ -4,6 +4,7 @@
 
 package com.p4square.grow.model;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,6 +96,26 @@ public class Chapter implements Cloneable {
         }
 
         return complete;
+    }
+
+    /**
+     * @return the completion date for the chapter, or null if it has not been completed.
+     */
+    @JsonIgnore
+    public Date getCompletionDate() {
+        Date latest = new Date(0);
+        for (VideoRecord video : mVideos.values()) {
+            if (video.getRequired() && !video.getComplete()) {
+                // Hey, this chapter isn't complete!
+                return null;
+            }
+
+            Date completionDate = video.getCompletionDate();
+            if (completionDate.after(latest)) {
+                latest = completionDate;
+            }
+        }
+        return latest;
     }
 
     /**
