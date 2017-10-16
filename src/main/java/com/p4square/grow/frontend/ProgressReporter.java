@@ -1,5 +1,6 @@
 package com.p4square.grow.frontend;
 
+import com.p4square.grow.model.Chapters;
 import org.restlet.security.User;
 
 import java.io.IOException;
@@ -27,5 +28,5 @@ public interface ProgressReporter {
      * @param chapter The chapter completed.
      * @param date The completion date.
      */
-    void reportChapterComplete(User user, String chapter, Date date) throws IOException;
+    void reportChapterComplete(User user, Chapters chapter, Date date) throws IOException;
 }

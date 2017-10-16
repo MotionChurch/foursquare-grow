@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.p4square.grow.model.*;
 import org.restlet.Client;
 import org.restlet.Context;
 import org.restlet.data.Protocol;
@@ -24,10 +25,6 @@ import com.p4square.grow.backend.dynamo.DynamoKey;
 
 import com.p4square.grow.config.Config;
 
-import com.p4square.grow.model.Chapter;
-import com.p4square.grow.model.Playlist;
-import com.p4square.grow.model.TrainingRecord;
-import com.p4square.grow.model.VideoRecord;
 import com.p4square.grow.provider.JsonEncodedProvider;
 
 /**
@@ -221,7 +218,7 @@ public class AttributeBackfillTool {
                     Playlist playlist = record.getPlaylist();
 
 chapters:
-                    for (Map.Entry<String, Chapter> entry : playlist.getChaptersMap().entrySet()) {
+                    for (Map.Entry<Chapters, Chapter> entry : playlist.getChaptersMap().entrySet()) {
                         Chapter chapter = entry.getValue();
 
                         // Find completion date
@@ -237,7 +234,7 @@ chapters:
                             }
                         }
 
-                        String attributeName = "Training Complete - " + entry.getKey();
+                        String attributeName = "Training Complete - " + entry.getKey().toString().toLowerCase();
 
                         // Check if the user already has the attribute.
                         List<Attribute> attributes = f1.getAttribute(userId, attributeName);

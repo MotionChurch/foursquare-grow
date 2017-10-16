@@ -5,10 +5,13 @@
 package com.p4square.grow.frontend;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 import com.p4square.f1oauth.FellowshipOneIntegrationDriver;
+import com.p4square.grow.model.Chapters;
 import freemarker.template.Template;
 
 import org.restlet.data.MediaType;
@@ -49,7 +52,7 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
     private Provider<String, TrainingRecord> mTrainingRecordProvider;
 
     private String mUserId;
-    private String mChapter;
+    private Chapters mChapter;
 
     @Override
     public void doInit() {
@@ -60,7 +63,7 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
 
         mJsonClient = new JsonRequestClient(getContext().getClientDispatcher());
         mTrainingRecordProvider = new TrainingRecordProvider<String>(
-                new JsonRequestProvider<TrainingRecord>(
+                new JsonRequestProvider<>(
                     getContext().getClientDispatcher(),
                     TrainingRecord.class)) {
             @Override
@@ -71,7 +74,7 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
 
         mUserId = getRequest().getClientInfo().getUser().getIdentifier();
 
-        mChapter = getAttribute("chapter");
+        mChapter = Chapters.fromString(getAttribute("chapter"));
     }
 
     /**
@@ -91,12 +94,12 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
             }
 
             // Verify they completed the chapter.
-            Map<String, Boolean> chapters = trainingRecord.getPlaylist().getChapterStatuses();
+            Map<Chapters, Boolean> chapters = trainingRecord.getPlaylist().getChapterStatuses();
             Boolean completed = chapters.get(mChapter);
             if (completed == null || !completed) {
                 // Redirect back to training page...
                 String nextPage = mConfig.getString("dynamicRoot", "");
-                nextPage += "/account/training/" + mChapter;
+                nextPage += "/account/training/" + mChapter.toString().toLowerCase();
                 getResponse().redirectSeeOther(nextPage);
                 return new StringRepresentation("Redirecting to " + nextPage);
             }
@@ -105,25 +108,18 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
             assignAttribute();
 
             // Find the next chapter
-            String nextChapter = null;
-            {
-                int min = Integer.MAX_VALUE;
-                for (Map.Entry<String, Boolean> chapter : chapters.entrySet()) {
-                    int index = chapterIndex(chapter.getKey());
-                    if (!chapter.getValue() && index < min) {
-                        min = index;
-                        nextChapter = chapter.getKey();
-                    }
-                }
-            }
+            Optional<Chapters> nextChapter = Arrays.stream(Chapters.values()).filter(c -> !chapters.get(c)).findFirst();
 
             String nextOverride = getQueryValue("next");
             if (nextOverride != null) {
-                nextChapter = nextOverride;
+                nextChapter = Optional.of(Chapters.fromString(nextOverride));
             }
 
-            root.put("stage", mChapter);
-            root.put("nextstage", nextChapter);
+            String nextChapterString = nextChapter.map(c -> c.toString().toLowerCase()).orElse(null);
+
+
+            root.put("stage", mChapter.toString().toLowerCase());
+            root.put("nextstage", nextChapterString);
 
             /*
              * We will display one of two transitional pages:
@@ -133,13 +129,13 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
              * complete message.
              */
             Template t = mGrowFrontend.getTemplate("templates/stage-"
-                    + nextChapter + "-forward.ftl");
+                    + nextChapterString + "-forward.ftl");
 
             if (t == null) {
                 // Skip the chapter complete message for "Introduction"
-                if ("introduction".equals(mChapter)) {
+                if (mChapter == Chapters.INTRODUCTION) {
                     String nextPage = mConfig.getString("dynamicRoot", "");
-                    nextPage += "/account/training/" + nextChapter;
+                    nextPage += "/account/training/" + nextChapterString;
                     getResponse().redirectSeeOther(nextPage);
                     return new StringRepresentation("Redirecting to " + nextPage);
                 }
@@ -190,21 +186,5 @@ public class ChapterCompletePage extends FreeMarkerPageResource {
         }
 
         return response;
-    }
-
-    int chapterIndex(String chapter) {
-        if ("leader".equals(chapter)) {
-            return 5;
-        } else if ("teacher".equals(chapter)) {
-            return 4;
-        } else if ("disciple".equals(chapter)) {
-            return 3;
-        } else if ("believer".equals(chapter)) {
-            return 2;
-        } else if ("seeker".equals(chapter)) {
-            return 1;
-        } else {
-            return Integer.MAX_VALUE;
-        }
     }
 }

@@ -1,6 +1,7 @@
 package com.p4square.f1oauth;
 
 import com.p4square.grow.frontend.ProgressReporter;
+import com.p4square.grow.model.Chapters;
 import org.apache.log4j.Logger;
 import org.restlet.security.User;
 
@@ -29,8 +30,8 @@ public class F1ProgressReporter implements ProgressReporter {
     }
 
     @Override
-    public void reportChapterComplete(final User user, final String chapter, final Date date) {
-        final String attributeName = "Training Complete - " + chapter;
+    public void reportChapterComplete(final User user, final Chapters chapter, final Date date) {
+        final String attributeName = "Training Complete - " + chapter.toString().toLowerCase();
         final Attribute attribute = new Attribute(attributeName);
         attribute.setStartDate(date);
         addAttribute(user, attribute);

@@ -2,6 +2,7 @@ package com.p4square.grow.ccb;
 
 import com.p4square.ccbapi.CCBAPI;
 import com.p4square.ccbapi.model.*;
+import com.p4square.grow.model.Chapters;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.junit.Before;
@@ -65,7 +66,7 @@ public class CCBProgressReporterTest {
                 .andReturn(growLevelDate).anyTimes();
         EasyMock.expect(cache.getIndividualPulldownByLabel(GROW_LEVEL))
                 .andReturn(growLevelPulldown).anyTimes();
-        EasyMock.expect(cache.getPulldownItemByName(LookupTableType.UDF_IND_PULLDOWN_1, "Believer"))
+        EasyMock.expect(cache.getPulldownItemByName(LookupTableType.UDF_IND_PULLDOWN_1, "believer"))
                 .andReturn(believer).anyTimes();
 
         // Setup the Grow Assessment field.
@@ -81,7 +82,7 @@ public class CCBProgressReporterTest {
                 .andReturn(growAssessmentDate).anyTimes();
         EasyMock.expect(cache.getIndividualPulldownByLabel(ASSESSMENT_LEVEL))
                 .andReturn(growAssessmentPulldown).anyTimes();
-        EasyMock.expect(cache.getPulldownItemByName(LookupTableType.UDF_IND_PULLDOWN_2, "Believer"))
+        EasyMock.expect(cache.getPulldownItemByName(LookupTableType.UDF_IND_PULLDOWN_2, "believer"))
                 .andReturn(believer).anyTimes();
     }
 
@@ -115,7 +116,7 @@ public class CCBProgressReporterTest {
         replay();
 
         // Test reporter
-        reporter.reportChapterComplete(user, "Believer", date);
+        reporter.reportChapterComplete(user, Chapters.BELIEVER, date);
 
         // Assert that the profile was updated.
         verify();
@@ -138,7 +139,7 @@ public class CCBProgressReporterTest {
         replay();
 
         // Test reporter
-        reporter.reportChapterComplete(user, "Believer", date);
+        reporter.reportChapterComplete(user, Chapters.BELIEVER, date);
 
         // Assert that the profile was updated.
         verify();
@@ -157,7 +158,7 @@ public class CCBProgressReporterTest {
         replay();
 
         // Test reporter
-        reporter.reportChapterComplete(user, "Believer", date);
+        reporter.reportChapterComplete(user, Chapters.BELIEVER, date);
 
         // Assert that the profile was updated.
         verify();
@@ -173,17 +174,21 @@ public class CCBProgressReporterTest {
         replay();
 
         // Test reporter
-        reporter.reportChapterComplete(user, "Believer", date);
+        reporter.reportChapterComplete(user, Chapters.BELIEVER, date);
 
         // Assert that the profile was updated.
         verify();
     }
 
+    /**
+     * Verify that the date is updated even if the level can't be found in the pulldown menu.
+     * @throws Exception
+     */
     @Test
     public void testReportChapterCompleteNoSuchValue() throws Exception {
         // Setup mocks
         setupCacheMocks();
-        EasyMock.expect(cache.getPulldownItemByName(LookupTableType.UDF_IND_PULLDOWN_1, "Foo"))
+        EasyMock.expect(cache.getPulldownItemByName(LookupTableType.UDF_IND_PULLDOWN_1, "seeker"))
                 .andReturn(null).anyTimes();
         Capture<UpdateIndividualProfileRequest> reqCapture = EasyMock.newCapture();
         EasyMock.expect(api.updateIndividualProfile(EasyMock.capture(reqCapture)))
@@ -191,7 +196,7 @@ public class CCBProgressReporterTest {
         replay();
 
         // Test reporter
-        reporter.reportChapterComplete(user, "Foo", date);
+        reporter.reportChapterComplete(user, Chapters.SEEKER, date);
 
         // Assert that the profile was updated.
         verify();

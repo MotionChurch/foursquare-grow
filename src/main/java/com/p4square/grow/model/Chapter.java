@@ -18,12 +18,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Jesse Morgan <jesse@jesterpm.net>
  */
 public class Chapter implements Cloneable {
-    private String mName;
+    private Chapters mName;
     private Map<String, VideoRecord> mVideos;
 
-    public Chapter(String name) {
+    public Chapter(Chapters name) {
         mName = name;
-        mVideos = new HashMap<String, VideoRecord>();
+        mVideos = new HashMap<>();
     }
 
     /**
@@ -36,7 +36,7 @@ public class Chapter implements Cloneable {
     /**
      * @return The Chapter name.
      */
-    public String getName() {
+    public Chapters getName() {
         return mName;
     }
 
@@ -45,7 +45,7 @@ public class Chapter implements Cloneable {
      *
      * @param name The name of the chapter.
      */
-    public void setName(final String name) {
+    public void setName(final Chapters name) {
         mName = name;
     }
 

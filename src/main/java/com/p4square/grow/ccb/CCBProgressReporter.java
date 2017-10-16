@@ -3,12 +3,11 @@ package com.p4square.grow.ccb;
 import com.p4square.ccbapi.CCBAPI;
 import com.p4square.ccbapi.model.*;
 import com.p4square.grow.frontend.ProgressReporter;
-import com.p4square.grow.model.Score;
+import com.p4square.grow.model.Chapters;
 import org.apache.log4j.Logger;
 import org.restlet.security.User;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -41,11 +40,11 @@ public class CCBProgressReporter implements ProgressReporter {
         }
         final CCBUser ccbuser = (CCBUser) user;
 
-        updateLevelAndDate(ccbuser, GROW_ASSESSMENT, level, date);
+        updateLevelAndDate(ccbuser, GROW_ASSESSMENT, level.toLowerCase(), date);
     }
 
     @Override
-    public void reportChapterComplete(final User user, final String chapter, final Date date) throws IOException {
+    public void reportChapterComplete(final User user, final Chapters chapter, final Date date) throws IOException {
         if (!(user instanceof CCBUser)) {
             throw new IllegalArgumentException("Expected CCBUser but got " + user.getClass().getCanonicalName());
         }
@@ -56,7 +55,8 @@ public class CCBProgressReporter implements ProgressReporter {
                 .getCustomPulldownFields().getByLabel(GROW_LEVEL);
 
         if (currentLevel != null) {
-            if (Score.numericScore(chapter) <= Score.numericScore(currentLevel.getSelection().getLabel())) {
+            Chapters currentChapter = Chapters.fromString(currentLevel.getSelection().getLabel());
+            if (chapter.compareTo(currentChapter) <= 0) {
                 LOG.debug("Not updating level for " + user.getIdentifier()
                         + " because current level (" + currentLevel.getSelection().getLabel()
                         + ") is greater than new level (" + chapter + ")");
@@ -64,7 +64,7 @@ public class CCBProgressReporter implements ProgressReporter {
             }
         }
 
-        updateLevelAndDate(ccbuser, GROW_LEVEL, chapter, date);
+        updateLevelAndDate(ccbuser, GROW_LEVEL, chapter.identifier(), date);
     }
 
     private void updateLevelAndDate(final CCBUser user, final String field, final String level, final Date date)

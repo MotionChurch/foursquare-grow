@@ -15,6 +15,8 @@ public class Score {
      *
      * This method satisfies the invariant for Score x:
      *  numericScore(x.toString()) <= x.getScore()
+     *
+     *  @throws IllegalArgumentException if the string is not a score name.
      */
     public static double numericScore(String score) {
         score = score.toLowerCase();
@@ -28,7 +30,7 @@ public class Score {
         } else if ("seeker".equals(score)) {
             return 0;
         } else {
-            return Integer.MAX_VALUE;
+            throw new IllegalArgumentException("Invalid score " + score);
         }
     }
 

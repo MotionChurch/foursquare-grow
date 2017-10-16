@@ -5,14 +5,10 @@
 package com.p4square.grow.frontend;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 
+import com.p4square.grow.model.Chapters;
 import freemarker.template.Template;
 
 import org.restlet.data.MediaType;
@@ -46,8 +42,6 @@ import org.restlet.security.User;
  */
 public class TrainingPageResource extends FreeMarkerPageResource {
     private static final Logger LOG = Logger.getLogger(TrainingPageResource.class);
-
-    private static final String[] CHAPTERS = { "introduction", "seeker", "believer", "disciple", "teacher", "leader" };
     private static final Comparator<Map<String, Object>> VIDEO_COMPARATOR = (left, right) -> {
         String leftNumberStr = (String) left.get("number");
         String rightNumberStr = (String) right.get("number");
@@ -72,7 +66,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
     private FeedData mFeedData;
 
     // Fields pertaining to this request.
-    protected String mChapter;
+    protected Chapters mChapter;
     protected String mUserId;
 
     @Override
@@ -99,7 +93,12 @@ public class TrainingPageResource extends FreeMarkerPageResource {
 
         mFeedData = new FeedData(getContext(), mConfig);
 
-        mChapter = getAttribute("chapter");
+        String chapterName = getAttribute("chapter");
+        if (chapterName == null) {
+            mChapter = null;
+        } else {
+            mChapter = Chapters.fromString(chapterName);
+        }
         mUserId = getRequest().getClientInfo().getUser().getIdentifier();
     }
 
@@ -117,20 +116,21 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             }
 
             Playlist playlist = trainingRecord.getPlaylist();
-            Map<String, Boolean> chapters = playlist.getChapterStatuses();
-            Map<String, Boolean> allowedChapters = new LinkedHashMap<String, Boolean>();
+            Map<Chapters, Boolean> chapters = playlist.getChapterStatuses();
+            Map<String, Boolean> allowedChapters = new LinkedHashMap<>();
 
             // The user is not allowed to view chapters after his highest completed chapter.
             // In this loop we find which chapters are allowed and check if the user tried
             // to skip ahead.
             boolean allowUserToSkip = mConfig.getBoolean("allowUserToSkip", false) || getQueryValue("magicskip") != null;
-            String defaultChapter = null;
-            String highestCompletedChapter = null;
+            Chapters defaultChapter = null;
+            Chapters highestCompletedChapter = null;
             boolean userTriedToSkip = false;
             int overallProgress = 0;
 
             boolean foundRequired = false;
-            for (String chapterId : getChaptersInOrder()) {
+
+            for (Chapters chapterId : Chapters.values()) {
                 boolean allowed = true;
 
                 Boolean completed = chapters.get(chapterId);
@@ -145,12 +145,12 @@ public class TrainingPageResource extends FreeMarkerPageResource {
                     } else {
                         allowed = allowUserToSkip;
 
-                        if (!allowUserToSkip && chapterId.equals(mChapter)) {
+                        if (!allowUserToSkip && chapterId == mChapter) {
                             userTriedToSkip = true;
                         }
                     }
 
-                    allowedChapters.put(chapterId, allowed);
+                    allowedChapters.put(chapterId.identifier(), allowed);
 
                     if (completed) {
                         highestCompletedChapter = chapterId;
@@ -160,18 +160,18 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             }
 
             // Overall progress is the percentage of chapters complete
-            overallProgress = (int) ((double) overallProgress / getChaptersInOrder().length * 100);
+            overallProgress = (int) ((double) overallProgress / Chapters.values().length * 100);
 
             if (defaultChapter == null) {
                 // Everything is completed... send them back to introduction.
-                defaultChapter = "introduction";
+                defaultChapter = Chapters.INTRODUCTION;
             }
 
             if (mChapter == null || userTriedToSkip) {
                 // No chapter was specified or the user tried to skip ahead.
                 // Either case, redirect.
                 String nextPage = mConfig.getString("dynamicRoot", "");
-                nextPage += "/account/training/" + defaultChapter;
+                nextPage += "/account/training/" + defaultChapter.toString().toLowerCase();
                 getResponse().redirectSeeOther(nextPage);
                 return new StringRepresentation("Redirecting to " + nextPage);
             }
@@ -180,7 +180,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             // Get videos for the chapter.
             List<Map<String, Object>> videos = null;
             {
-                JsonResponse response = backendGet("/training/" + mChapter);
+                JsonResponse response = backendGet("/training/" + mChapter.toString().toLowerCase());
                 if (!response.getStatus().isSuccess()) {
                     setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                     return null;
@@ -208,7 +208,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             chapterProgress = chapterProgress * 100 / videos.size();
 
             Map root = getRootObject();
-            root.put("chapter", mChapter);
+            root.put("chapter", mChapter.identifier());
             root.put("chapters", allowedChapters.keySet());
             root.put("isChapterAllowed", allowedChapters);
             root.put("chapterProgress", chapterProgress);
@@ -220,7 +220,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             boolean showfeed = true;
 
             // Don't show the feed if the topic isn't allowed.
-            if (!FeedData.TOPICS.contains(mChapter)) {
+            if (!FeedData.TOPICS.contains(mChapter.identifier())) {
                 showfeed = false;
             }
 
@@ -236,7 +236,7 @@ public class TrainingPageResource extends FreeMarkerPageResource {
                     final User user = getRequest().getClientInfo().getUser();
                     // Get the date of the highest completed chapter.
                     final Date completionDate = playlist.getChaptersMap().get(highestCompletedChapter).getCompletionDate();
-                    final String completedChapter = highestCompletedChapter;
+                    final Chapters completedChapter = highestCompletedChapter;
                     mThreadPool.execute(() -> {
                         try {
                             mProgressReporter.reportChapterComplete(user, completedChapter, completionDate);
@@ -257,13 +257,6 @@ public class TrainingPageResource extends FreeMarkerPageResource {
             setStatus(Status.SERVER_ERROR_INTERNAL);
             return ErrorPage.RENDER_ERROR;
         }
-    }
-
-    /**
-     * This method returns a list of chapters in the correct order.
-     */
-    protected String[] getChaptersInOrder() {
-        return CHAPTERS;
     }
 
     /**

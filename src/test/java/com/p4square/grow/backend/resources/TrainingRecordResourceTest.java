@@ -7,6 +7,7 @@ package com.p4square.grow.backend.resources;
 import java.util.Map;
 import java.util.HashMap;
 
+import com.p4square.grow.model.Chapters;
 import org.restlet.data.Method;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -46,13 +47,13 @@ public class TrainingRecordResourceTest extends ResourceTestBase {
         mResponse = new Response(mRequest);
 
         Playlist playlist = new Playlist();
-        playlist.add("introduction", "intro-1");
-        playlist.add("seeker", "seeker-1");
-        playlist.add("believer", "believer-1");
-        playlist.add("believer", "believer-2");
-        playlist.add("disciple", "disciple-1");
-        playlist.add("teacher", "teacher-1");
-        playlist.add("leader", "leader-1");
+        playlist.add(Chapters.INTRODUCTION, "intro-1");
+        playlist.add(Chapters.SEEKER, "seeker-1");
+        playlist.add(Chapters.BELIEVER, "believer-1");
+        playlist.add(Chapters.BELIEVER, "believer-2");
+        playlist.add(Chapters.DISCIPLE, "disciple-1");
+        playlist.add(Chapters.TEACHER, "teacher-1");
+        playlist.add(Chapters.LEADER, "leader-1");
         mApplication.setDefaultPlaylist(playlist);
     }
 

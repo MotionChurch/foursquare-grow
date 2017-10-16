@@ -21,7 +21,7 @@ public class Playlist {
     /**
      * Map of Chapter ID to map of Video ID to VideoRecord.
      */
-    private Map<String, Chapter> mPlaylist;
+    private Map<Chapters, Chapter> mPlaylist;
 
     private Date mLastUpdated;
 
@@ -29,7 +29,7 @@ public class Playlist {
      * Construct an empty playlist.
      */
     public Playlist() {
-        mPlaylist = new HashMap<String, Chapter>();
+        mPlaylist = new HashMap<>();
         mLastUpdated = new Date(0); // Default to a prehistoric date if we don't have one.
     }
 
@@ -82,7 +82,7 @@ public class Playlist {
     /**
      * Add a video to the playlist.
      */
-    public VideoRecord add(String chapterId, String videoId) {
+    public VideoRecord add(Chapters chapterId, String videoId) {
         Chapter chapter = mPlaylist.get(chapterId);
 
         if (chapter == null) {
@@ -100,17 +100,24 @@ public class Playlist {
      * @param chapterId The name of the chapter.
      * @param chapter The Chapter object to add.
      */
-    @JsonAnySetter
-    public void addChapter(String chapterId, Chapter chapter) {
+    public void addChapter(Chapters chapterId, Chapter chapter) {
         chapter.setName(chapterId);
         mPlaylist.put(chapterId, chapter);
+    }
+
+    /**
+     * Variation of addChapter() with a String key for Jackson.
+     */
+    @JsonAnySetter
+    private void addChapter(String chapterName, Chapter chapter) {
+        addChapter(Chapters.fromString(chapterName), chapter);
     }
 
     /**
      * @return a map of chapter id to chapter.
      */
     @JsonAnyGetter
-    public Map<String, Chapter> getChaptersMap() {
+    public Map<Chapters, Chapter> getChaptersMap() {
         return mPlaylist;
     }
 
@@ -118,10 +125,10 @@ public class Playlist {
      * @return The last chapter to be completed.
      */
     @JsonIgnore
-    public Map<String, Boolean> getChapterStatuses() {
-        Map<String, Boolean> completed = new HashMap<String, Boolean>();
+    public Map<Chapters, Boolean> getChapterStatuses() {
+        Map<Chapters, Boolean> completed = new HashMap<>();
 
-        for (Map.Entry<String, Chapter> entry : mPlaylist.entrySet()) {
+        for (Map.Entry<Chapters, Chapter> entry : mPlaylist.entrySet()) {
             completed.put(entry.getKey(), entry.getValue().isComplete());
         }
 
@@ -131,7 +138,7 @@ public class Playlist {
     /**
      * @return true if all required videos in the chapter have been watched.
      */
-    public boolean isChapterComplete(String chapterId) {
+    public boolean isChapterComplete(Chapters chapterId) {
         Chapter chapter = mPlaylist.get(chapterId);
         if (chapter != null) {
             return chapter.isComplete();
@@ -152,8 +159,8 @@ public class Playlist {
             return;
         }
 
-        for (Map.Entry<String, Chapter> entry : source.getChaptersMap().entrySet()) {
-            String chapterName = entry.getKey();
+        for (Map.Entry<Chapters, Chapter> entry : source.getChaptersMap().entrySet()) {
+            Chapters chapterName = entry.getKey();
             Chapter theirChapter = entry.getValue();
             Chapter myChapter = mPlaylist.get(entry.getKey());
 

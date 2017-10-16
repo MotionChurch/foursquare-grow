@@ -64,6 +64,15 @@ public class ScoreTest {
     }
 
     /**
+     * Verify that numericScore() throws if a non-score is passed in.
+     */
+    @Test(expected =  IllegalArgumentException.class)
+    public void testInvalidScoreString() {
+        // Introduction is not a valid score.
+        Score.numericScore("introduction");
+    }
+
+    /**
      * Verify that toString() returns the correct mappings.
      */
     @Test

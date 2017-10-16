@@ -29,15 +29,15 @@ public class PlaylistTest {
     public void testPlaylistAndChapter() {
         // Create a playlist for the test
         Playlist playlist = new Playlist();
-        playlist.add("chapter1", "video1");
-        playlist.add("chapter1", "video2");
+        playlist.add(Chapters.SEEKER, "video1");
+        playlist.add(Chapters.SEEKER, "video2");
 
         // Chapter should not be complete
-        assertFalse(playlist.isChapterComplete("chapter1"));
+        assertFalse(playlist.isChapterComplete(Chapters.SEEKER));
 
         // We should find the chapter in the map
-        Map<String, Chapter> chapterMap = playlist.getChaptersMap();
-        Chapter chapter1 = chapterMap.get("chapter1");
+        Map<Chapters, Chapter> chapterMap = playlist.getChaptersMap();
+        Chapter chapter1 = chapterMap.get(Chapters.SEEKER);
         assertTrue(null != chapter1);
 
         // We should find the videos in the map.
@@ -53,8 +53,10 @@ public class PlaylistTest {
         video2.complete();
 
         // Chapter should be complete now.
-        assertTrue(playlist.isChapterComplete("chapter1"));
-        assertFalse(playlist.isChapterComplete("bogusChapter"));
+        assertTrue(playlist.isChapterComplete(Chapters.SEEKER));
+        
+        // But other chapters should not be complete.
+        assertFalse(playlist.isChapterComplete(Chapters.BELIEVER));
     }
 
     /**
@@ -75,15 +77,15 @@ public class PlaylistTest {
     @Test
     public void testMergePlaylist() {
         Playlist oldList = new Playlist();
-        oldList.add("chapter1", "video1").setRequired(true);
-        oldList.add("chapter2", "video2").setRequired(false);
-        oldList.add("chapter2", "video3").complete();
+        oldList.add(Chapters.SEEKER, "video1").setRequired(true);
+        oldList.add(Chapters.BELIEVER, "video2").setRequired(false);
+        oldList.add(Chapters.BELIEVER, "video3").complete();
         oldList.setLastUpdated(new Date(100));
 
         Playlist newList = new Playlist();
-        newList.add("chapter1", "video4").setRequired(true);
-        newList.add("chapter2", "video5").setRequired(false);
-        newList.add("chapter3", "video6").setRequired(false);
+        newList.add(Chapters.SEEKER, "video4").setRequired(true);
+        newList.add(Chapters.BELIEVER, "video5").setRequired(false);
+        newList.add(Chapters.DISCIPLE, "video6").setRequired(false);
         newList.setLastUpdated(new Date(500));
 
         // Verify that you can't merge the old into the new
@@ -102,9 +104,9 @@ public class PlaylistTest {
         assertFalse(oldList.find("video6").getRequired());
 
         // New Chapter added
-        Map<String, Chapter> chapters = oldList.getChaptersMap();
+        Map<Chapters, Chapter> chapters = oldList.getChaptersMap();
         assertEquals(3, chapters.size());
-        assertTrue(null != chapters.get("chapter3"));
+        assertTrue(null != chapters.get(Chapters.DISCIPLE));
 
         // Date updated
         assertEquals(newList.getLastUpdated(), oldList.getLastUpdated());
@@ -121,17 +123,17 @@ public class PlaylistTest {
     @Test
     public void testMergeMoveVideoRecord() {
         Playlist oldList = new Playlist();
-        oldList.add("chapter1", "video1").setRequired(true);
-        VideoRecord toMove = oldList.add("chapter1", "video2");
+        oldList.add(Chapters.SEEKER, "video1").setRequired(true);
+        VideoRecord toMove = oldList.add(Chapters.SEEKER, "video2");
         toMove.setRequired(true);
         toMove.complete();
-        oldList.add("chapter2", "video3").complete();
+        oldList.add(Chapters.BELIEVER, "video3").complete();
         oldList.setLastUpdated(new Date(100));
 
         Playlist newList = new Playlist();
-        newList.add("chapter1", "video1").setRequired(true);
-        newList.add("chapter2", "video2").setRequired(true);
-        newList.add("chapter3", "video3").complete();
+        newList.add(Chapters.SEEKER, "video1").setRequired(true);
+        newList.add(Chapters.BELIEVER, "video2").setRequired(true);
+        newList.add(Chapters.DISCIPLE, "video3").complete();
         newList.setLastUpdated(new Date(500));
 
         // Merge the new list into the old and verify results
@@ -143,12 +145,12 @@ public class PlaylistTest {
         assertTrue(oldList.find("video3").getComplete());
 
         // toMove is in the correct chapter.
-        assertNull(oldList.getChaptersMap().get("chapter1").getVideoRecord("video2"));
-        VideoRecord afterMove = oldList.getChaptersMap().get("chapter2").getVideoRecord("video2");
+        assertNull(oldList.getChaptersMap().get(Chapters.SEEKER).getVideoRecord("video2"));
+        VideoRecord afterMove = oldList.getChaptersMap().get(Chapters.BELIEVER).getVideoRecord("video2");
         assertSame(toMove, afterMove);
 
         // video3 got moved to the new chapter3
-        assertNull(oldList.getChaptersMap().get("chapter2").getVideoRecord("video3"));
-        assertTrue(oldList.getChaptersMap().get("chapter3").getVideoRecord("video3").getComplete());
+        assertNull(oldList.getChaptersMap().get(Chapters.BELIEVER).getVideoRecord("video3"));
+        assertTrue(oldList.getChaptersMap().get(Chapters.DISCIPLE).getVideoRecord("video3").getComplete());
     }
 }

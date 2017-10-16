@@ -52,15 +52,15 @@ public class TrainingRecordTest {
         assertEquals(null, r);
 
         // isChapterComplete
-        assertTrue(playlist.isChapterComplete("seeker")); // Complete because not required.
-        assertTrue(playlist.isChapterComplete("disciple")); // Required and completed.
-        assertFalse(playlist.isChapterComplete("teacher")); // Not complete.
+        assertTrue(playlist.isChapterComplete(Chapters.SEEKER)); // Complete because not required.
+        assertTrue(playlist.isChapterComplete(Chapters.DISCIPLE)); // Required and completed.
+        assertFalse(playlist.isChapterComplete(Chapters.TEACHER)); // Not complete.
 
         // getChapterStatuses
-        Map<String, Boolean> statuses = playlist.getChapterStatuses();
-        assertTrue(statuses.get("seeker")); // Complete because not required.
-        assertTrue(statuses.get("disciple")); // Required and completed.
-        assertFalse(statuses.get("teacher")); // Not complete.
+        Map<Chapters, Boolean> statuses = playlist.getChapterStatuses();
+        assertTrue(statuses.get(Chapters.SEEKER)); // Complete because not required.
+        assertTrue(statuses.get(Chapters.DISCIPLE)); // Required and completed.
+        assertFalse(statuses.get(Chapters.TEACHER)); // Not complete.
     }
 
     /**

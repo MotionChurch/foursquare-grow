@@ -6,13 +6,11 @@ package com.p4square.grow.backend.resources;
 
 import java.io.IOException;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.p4square.grow.model.*;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.resource.ServerResource;
@@ -25,18 +23,11 @@ import org.apache.log4j.Logger;
 
 import com.p4square.grow.backend.GrowBackend;
 
-import com.p4square.grow.model.Chapter;
-import com.p4square.grow.model.Playlist;
-import com.p4square.grow.model.VideoRecord;
-import com.p4square.grow.model.TrainingRecord;
-
 import com.p4square.grow.provider.CollectionProvider;
 import com.p4square.grow.provider.JsonEncodedProvider;
 import com.p4square.grow.provider.Provider;
 import com.p4square.grow.provider.ProvidesAssessments;
 import com.p4square.grow.provider.ProvidesTrainingRecords;
-
-import com.p4square.grow.model.Score;
 
 /**
  *
@@ -199,7 +190,7 @@ public class TrainingRecordResource extends ServerResource {
      */
     private void skipAssessedChapters(String userId, TrainingRecord record) {
         // Get the user's score.
-        Score assessedScore = new Score(0, 0);
+        final Score assessedScore;
 
         try {
             assessedScore = getAssessedScore(userId);
@@ -211,19 +202,12 @@ public class TrainingRecordResource extends ServerResource {
         // Mark the correct videos as not required.
         Playlist playlist = record.getPlaylist();
 
-        for (Map.Entry<String, Chapter> entry : playlist.getChaptersMap().entrySet()) {
-            String chapterId = entry.getKey();
+        for (Map.Entry<Chapters, Chapter> entry : playlist.getChaptersMap().entrySet()) {
+            Chapters chapterId = entry.getKey();
             Chapter chapter = entry.getValue();
-            boolean required;
-
-            if ("introduction".equals(chapter)) {
-                // Introduction chapter is always required
-                required = true;
-
-            } else {
-                // Chapter required if the floor of the score is <= the chapter's numeric value.
-                required = assessedScore.floor() <= Score.numericScore(chapterId);
-            }
+            boolean required = chapterId.toScore()
+                    .map(s -> assessedScore.floor() <= s)
+                    .orElse(true);
 
             if (!required) {
                 for (VideoRecord video : chapter.getVideos().values()) {
