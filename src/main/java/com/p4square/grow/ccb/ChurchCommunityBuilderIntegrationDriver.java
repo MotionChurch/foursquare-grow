@@ -49,6 +49,13 @@ public class ChurchCommunityBuilderIntegrationDriver implements IntegrationDrive
         }
     }
 
+    /**
+     * @return A CCB API client.
+     */
+    public CCBAPI getAPI() {
+        return mAPI;
+    }
+
     @Override
     public Verifier newUserAuthenticationVerifier() {
         return new CCBUserVerifier(mAPI);

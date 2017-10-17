@@ -87,15 +87,27 @@ public class Chapter implements Cloneable {
      */
     @JsonIgnore
     public boolean isComplete() {
-        boolean complete = true;
-
         for (VideoRecord r : mVideos.values()) {
             if (r.getRequired() && !r.getComplete()) {
                 return false;
             }
         }
 
-        return complete;
+        return true;
+    }
+
+    /**
+     * @return true if the chapter is required.
+     */
+    @JsonIgnore
+    public boolean isRequired() {
+        for (VideoRecord r : mVideos.values()) {
+            if (r.getRequired()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -111,8 +123,10 @@ public class Chapter implements Cloneable {
             }
 
             Date completionDate = video.getCompletionDate();
-            if (completionDate.after(latest)) {
-                latest = completionDate;
+            if (completionDate != null) {
+                if (completionDate.after(latest)) {
+                    latest = completionDate;
+                }
             }
         }
         return latest;
