@@ -112,7 +112,7 @@
         <dependency>
             <groupId>com.p4square</groupId>
             <artifactId>ccbapi</artifactId>
-            <version>[1.0,)</version>
+            <version>[1.2,)</version>
         </dependency>
 
         <!-- These are here to fix conflicts between different packages. -->
