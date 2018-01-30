@@ -30,12 +30,12 @@ import com.p4square.grow.model.UserRecord;
 
 import com.p4square.grow.backend.resources.AccountResource;
 import com.p4square.grow.backend.resources.BannerResource;
+import com.p4square.grow.backend.resources.HealthCheckResource;
 import com.p4square.grow.backend.resources.SurveyResource;
 import com.p4square.grow.backend.resources.SurveyResultsResource;
 import com.p4square.grow.backend.resources.TrainingRecordResource;
 import com.p4square.grow.backend.resources.TrainingResource;
 
-import com.p4square.grow.backend.feed.FeedDataProvider;
 import com.p4square.grow.backend.feed.ThreadResource;
 import com.p4square.grow.backend.feed.TopicResource;
 
@@ -98,6 +98,7 @@ public class GrowBackend extends Application implements GrowData, ProvidesNotifi
 
         // Misc.
         router.attach("/banner", BannerResource.class);
+        router.attach("/ping", HealthCheckResource.class);
 
         // Feed
         router.attach("/feed/{topic}", TopicResource.class);

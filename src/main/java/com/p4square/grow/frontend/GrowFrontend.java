@@ -118,6 +118,7 @@ public class GrowFrontend extends FMFacade {
         router.attach("/login.html", LoginPageResource.class);
         router.attach("/newaccount.html", NewAccountResource.class);
         router.attach("/newbeliever", NewBelieverResource.class);
+        router.attach("/ping", HealthCheckPage.class);
 
         final Router accountRouter = new MetricRouter(getContext(), mMetricRegistry);
         accountRouter.attach("/authenticate", AuthenticatedResource.class);

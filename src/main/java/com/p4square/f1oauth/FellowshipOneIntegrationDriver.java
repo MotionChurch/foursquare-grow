@@ -52,4 +52,11 @@ public class FellowshipOneIntegrationDriver implements IntegrationDriver {
     public ProgressReporter getProgressReporter() {
         return mProgressReporter;
     }
+
+    @Override
+    public boolean doHealthCheck() {
+        // Since I no longer have access to an F1 account,
+        // this will remain unimplemented until it's needed.
+        throw new UnsupportedOperationException("Health check is not yet implemented for the F1 driver.");
+    }
 }

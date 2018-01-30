@@ -23,4 +23,14 @@ public interface IntegrationDriver {
      * @return The ProgressReporter.
      */
     ProgressReporter getProgressReporter();
+
+    /**
+     * Check if the IntegrationDriver is configured correctly and working.
+     *
+     * This method should try to contact the CMS to ensure endpoints,
+     * credentials, etc. are working correctly.
+     *
+     * @return true for success.
+     */
+    boolean doHealthCheck();
 }
