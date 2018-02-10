@@ -152,6 +152,12 @@ public class Playlist {
      *
      * Merge is accomplished by adding all missing Chapters and VideoRecords to
      * this playlist.
+     *
+     * Additionally,
+     *   * any "required" videos that are only present in this playlist are
+     *     marked as "not required".
+     *   * any new "required" videos in a completed chapter are marked as
+     *     "not required".
      */
     public void merge(Playlist source) {
         if (source.getLastUpdated().before(mLastUpdated)) {
@@ -170,6 +176,18 @@ public class Playlist {
                 addChapter(chapterName, myChapter);
             }
 
+            // If my chapter is already complete, no new videos will be required.
+            boolean myChapterComplete = true;
+
+            for (Map.Entry<String, VideoRecord> videoEntry : myChapter.getVideos().entrySet()) {
+                VideoRecord myVideo = videoEntry.getValue();
+                myChapterComplete &= (myVideo.getComplete() || !myVideo.getRequired());
+
+                // Mark all existing, uncompleted videos as not required.
+                // We'll mark them as required again if they are required in the new playlist.
+                myVideo.setRequired(myVideo.getRequired() && myVideo.getComplete());
+            }
+
             // Check chapter for missing videos
             for (Map.Entry<String, VideoRecord> videoEntry : theirChapter.getVideos().entrySet()) {
                 String videoId = videoEntry.getKey();
@@ -182,6 +200,9 @@ public class Playlist {
                         try {
                             myVideo = videoEntry.getValue().clone();
                             myChapter.setVideoRecord(videoId, myVideo);
+                            if (myChapterComplete) {
+                                myVideo.setRequired(false);
+                            }
                         } catch (CloneNotSupportedException e) {
                             throw new RuntimeException(e); // Unexpected...
                         }
@@ -189,6 +210,13 @@ public class Playlist {
                         // Video moved
                         findChapter(videoId).removeVideoRecord(videoId);
                         myChapter.setVideoRecord(videoId, myVideo);
+                    }
+                } else {
+                    // Copy the required property from the newer video.
+                    // However, like new videos, newly required videos aren't applied to completed
+                    // chapters.
+                    if (!myChapterComplete) {
+                        myVideo.setRequired(videoEntry.getValue().getRequired());
                     }
                 }
             }

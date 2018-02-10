@@ -96,7 +96,8 @@ public class PlaylistTest {
         oldList.merge(newList);
 
         // All Videos Present
-        assertTrue(oldList.find("video1").getRequired());
+        assertFalse(oldList.find("video1").getRequired());  // N.B. not required because video
+                                                            // was removed from newer playlist.
         assertFalse(oldList.find("video2").getRequired());
         assertTrue(oldList.find("video3").getComplete());
         assertTrue(oldList.find("video4").getRequired());
@@ -152,5 +153,122 @@ public class PlaylistTest {
         // video3 got moved to the new chapter3
         assertNull(oldList.getChaptersMap().get(Chapters.BELIEVER).getVideoRecord("video3"));
         assertTrue(oldList.getChaptersMap().get(Chapters.DISCIPLE).getVideoRecord("video3").getComplete());
+    }
+
+    /**
+     * If a required video has been removed in the newer playlist, we don't
+     * consider it to be required anymore since the user will not be able to
+     * view the removed video.
+     */
+    @Test
+    public void testMergeRemovedVideosAreNotRequired() {
+        Playlist oldList = new Playlist();
+        oldList.add(Chapters.SEEKER, "video1").setRequired(true);
+        oldList.add(Chapters.SEEKER, "video2").setRequired(true);
+        oldList.setLastUpdated(new Date(100));
+
+        Playlist newList = new Playlist();
+        newList.add(Chapters.SEEKER, "video1").setRequired(true);
+        newList.add(Chapters.SEEKER, "video3").setRequired(true);
+        newList.setLastUpdated(new Date(500));
+
+        // Merge the new list into the old and verify results
+        oldList.merge(newList);
+
+        // video2 should exist, but no longer be required.
+        assertTrue(oldList.find("video1").getRequired());
+        assertFalse(oldList.find("video2").getRequired());
+        assertTrue(oldList.find("video3").getRequired());
+    }
+
+    /**
+     * (1) If a new required video is added to a chapter that the user has
+     * already completed, we don't want to force the user to go back to the
+     * previous chapter, so the video should be marked as not required.
+     *
+     * (2) Likewise, if a previously optional video is marked as required in a
+     * chapter that the user has already completed, we don't want to force the
+     * user to go back to the previous chapter, so the video should be marked
+     * as not required.
+     */
+    @Test
+    public void testMergeVideosAreNotRequiredInCompletedChapters() {
+        Playlist oldList = new Playlist();
+        // video1 is complete and required.
+        VideoRecord video1 = oldList.add(Chapters.SEEKER, "video1");
+        video1.setRequired(true);
+        video1.setComplete(true);
+        // video2 is not complete, but qualifies as complete because it's not required.
+        VideoRecord video2 = oldList.add(Chapters.SEEKER, "video2");
+        video2.setRequired(false);
+        video2.setComplete(false);
+        oldList.setLastUpdated(new Date(100));
+
+        Playlist newList = new Playlist();
+        newList.add(Chapters.SEEKER, "video1").setRequired(true);
+        newList.add(Chapters.SEEKER, "video2").setRequired(true);
+        newList.add(Chapters.SEEKER, "video3").setRequired(true);
+        newList.setLastUpdated(new Date(500));
+
+        // Merge the new list into the old and verify results
+        oldList.merge(newList);
+
+        // video1 is unchanged.
+        assertTrue(oldList.find("video1").getComplete());
+        assertTrue(oldList.find("video1").getRequired());
+
+        // Case 2: video2 is not required because the chapter was completed.
+        assertFalse(oldList.find("video2").getComplete());
+        assertFalse(oldList.find("video2").getRequired());
+
+        // Case 1: new video3 is not required because the chapter was completed.
+        assertFalse(oldList.find("video3").getComplete());
+        assertFalse(oldList.find("video3").getRequired());
+    }
+
+    /**
+     * This is the opposite of the previous test case:
+     * new required videos are required if the chapter is not complete.
+     */
+    @Test
+    public void testMergeVideosAreRequiredInIncompletedChapters() {
+        Playlist oldList = new Playlist();
+        // video1 is complete and required.
+        VideoRecord video1 = oldList.add(Chapters.SEEKER, "video1");
+        video1.setRequired(true);
+        video1.setComplete(true);
+        // video2 is not complete, but qualifies as complete because it's not required.
+        VideoRecord video2 = oldList.add(Chapters.SEEKER, "video2");
+        video2.setRequired(false);
+        video2.setComplete(false);
+        // video3 is not complete and required, therefore the chapter is not complete.
+        VideoRecord video3 = oldList.add(Chapters.SEEKER, "video3");
+        video3.setRequired(true);
+        video3.setComplete(false);
+        oldList.setLastUpdated(new Date(100));
+
+        Playlist newList = new Playlist();
+        newList.add(Chapters.SEEKER, "video1").setRequired(true);
+        newList.add(Chapters.SEEKER, "video2").setRequired(true);
+        newList.add(Chapters.SEEKER, "video3").setRequired(true);
+        newList.add(Chapters.SEEKER, "video4").setRequired(true);
+        newList.setLastUpdated(new Date(500));
+
+        // Merge the new list into the old and verify results
+        oldList.merge(newList);
+
+        // videos 1 and 3 are unchanged.
+        assertTrue(oldList.find("video1").getComplete());
+        assertTrue(oldList.find("video1").getRequired());
+        assertFalse(oldList.find("video3").getComplete());
+        assertTrue(oldList.find("video3").getRequired());
+
+        // Case 2: video2 is now required
+        assertFalse(oldList.find("video2").getComplete());
+        assertTrue(oldList.find("video2").getRequired());
+
+        // Case 1: new video4 is required because the chapter was not completed.
+        assertFalse(oldList.find("video4").getComplete());
+        assertTrue(oldList.find("video4").getRequired());
     }
 }
