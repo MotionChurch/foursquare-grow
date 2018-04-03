@@ -1,10 +1,18 @@
 {
-    "id": "introduction-1",
-    "number": "0",
     "title": "Introduction",
-    "length": 140,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Grow%20-%20Introduction.png",
+    "number": "0",
+    "length": 64,
+    "urls": [
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/intro-1.mp4",
+            "type": "video/mp4"
+        },
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/intro-1.webm",
+            "type": "video/webm"
+        }
+    ],
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/grow-intro.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/Grow%20-%20Introduction-low.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/Grow%20-%20Introduction.webmhd.webm", "type":"video/webm"}]
+    "id": "introduction-1"
 }

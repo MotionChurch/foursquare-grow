@@ -1,10 +1,18 @@
 {
-    "id": "seeker-5",
-    "number": "4",
     "title": "Our Response",
-    "length": 469,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Video%205%20-%20Our%20Response.png",
+    "number": "4",
+    "length": 319,
+    "urls": [
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/seeker-5.mp4",
+            "type": "video/mp4"
+        },
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/seeker-5.webm",
+            "type": "video/webm"
+        }
+    ],
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/seeker-4.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/video-5-our-response.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/video-5-our-response.webmhd.webm", "type":"video/webm"}]
+    "id": "seeker-5"
 }

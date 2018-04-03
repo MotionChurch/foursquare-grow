@@ -1,10 +1,18 @@
 {
-    "id": "believer-10",
-    "number": "12",
     "title": "Resurrection",
-    "length": 529,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%2010%20-%20Resurrection.png",
+    "number": "12",
+    "length": 323,
+    "urls": [
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-8.mp4",
+            "type": "video/mp4"
+        },
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-8.webm",
+            "type": "video/webm"
+        }
+    ],
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/believer-8.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/believer-video-10-resurrection.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/believer-video-10-resurrection.webmhd.webm", "type":"video/webm"}]
+    "id": "believer-10"
 }

@@ -1,0 +1,17 @@
+{
+    "title": "Lordship",
+    "image": "http://d12xq7pqelpwt.cloudfront.net/Disciple%20Video%2010%20-%20Conclusion.png",
+    "number": "9",
+    "length": 314,
+    "urls": [
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/disciple-9.mp4",
+            "type": "video/mp4"
+        },
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/disciple-9.webm",
+            "type": "video/webm"
+        }
+    ],
+    "id": "disciple-11"
+}

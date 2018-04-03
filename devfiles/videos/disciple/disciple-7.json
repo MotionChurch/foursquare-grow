@@ -1,10 +1,18 @@
 {
-    "id": "disciple-7",
-    "number": "6",
     "title": "Solitude",
-    "length": 470,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Disciple%20Video%207%20-%20Solitude.png",
+    "number": "6",
+    "length": 133,
+    "urls": [
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/disciple-6.mp4",
+            "type": "video/mp4"
+        },
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/disciple-6.webm",
+            "type": "video/webm"
+        }
+    ],
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/disciple-6.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/disciple-video-7-solitude.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/disciple-video-7-solitude.webmhd.webm", "type":"video/webm"}]
+    "id": "disciple-7"
 }

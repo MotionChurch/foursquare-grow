@@ -1,10 +1,18 @@
 {
-    "id": "seeker-4",
-    "number": "3",
     "title": "The Cross",
-    "length": 289,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Video%204%20-%20The%20Cross.png",
+    "number": "3",
+    "length": 148,
+    "urls": [
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/seeker-4.mp4",
+            "type": "video/mp4"
+        },
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/seeker-4.webm",
+            "type": "video/webm"
+        }
+    ],
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/seeker-3.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/video-4-the-cross.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/video-4-the-cross.webmhd.webm", "type":"video/webm"}]
+    "id": "seeker-4"
 }
