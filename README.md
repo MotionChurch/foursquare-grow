@@ -19,3 +19,19 @@ Usage
    The website defaults to running in dev mode which will only modify the dev Dynamo tables.
    You *must recompile* for changes to take effect.
 4. Run `maven package` to produce a war file to deploy.
+
+DbTool Usage
+----------------
+
+DbTool is a utility to manage the DynamoDB tables used by GROW. You can run it from your IDE or from
+the command line using Maven.
+
+Run DbTool without arguments to see all options:
+
+    mvn exec:java -Dexec.mainClass="com.p4square.grow.backend.dynamo.DbTool" \
+        -Dexec.arguments=""
+
+To create and populate the DynamoDB tables, run
+
+    mvn exec:java -Dexec.mainClass="com.p4square.grow.backend.dynamo.DbTool" \
+        -Dexec.arguments="--config,devfiles/gw-server.properties,--dev,--bootstrap,devfiles"
