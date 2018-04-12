@@ -1,10 +1,18 @@
 {
-    "id": "disciple-6",
-    "number": "5",
     "title": "Worship",
-    "length": 701,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Disciple%20Video%206%20-%20Worship.png",
+    "number": "5",
+    "length": 105,
+    "urls": [
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/disciple-5.mp4",
+            "type": "video/mp4"
+        },
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/disciple-5.webm",
+            "type": "video/webm"
+        }
+    ],
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/disciple-5.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/disciple-video-6-worship.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/disciple-video-6-worship.webmhd.webm", "type":"video/webm"}]
+    "id": "disciple-6"
 }

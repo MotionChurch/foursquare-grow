@@ -1,10 +1,18 @@
 {
-    "id": "believer-5",
-    "number": "8",
-    "title": "God Becomes Man",
-    "length": 797,
+    "title": "Incarnation",
     "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%205%20-%20God%20Becomes%20Man.png",
+    "number": "4",
+    "length": 409,
+    "urls": [
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-4.mp4",
+            "type": "video/mp4"
+        },
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-4.webm",
+            "type": "video/webm"
+        }
+    ],
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/believer-4.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/believer-video-5-god-becomes-man.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/believer-video-5-god-becomes-man.webmhd.webm", "type":"video/webm"}]
+    "id": "believer-5"
 }

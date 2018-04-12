@@ -1,10 +1,18 @@
 {
-    "id": "teacher-3",
-    "number": "2",
     "title": "Foursquare Expectations",
-    "length": 342,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Teacher%20Video%203%20-%20Foursquare%20Expectations.png",
+    "number": "2",
+    "length": 297,
+    "urls": [
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/teacher-2.mp4",
+            "type": "video/mp4"
+        },
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/teacher-2.webm",
+            "type": "video/webm"
+        }
+    ],
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/teacher-2.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/teacher-video-3-foursquare-expectations.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/teacher-video-3-foursquare-expectations.webmhd.webm", "type":"video/webm"}]
+    "id": "teacher-3"
 }

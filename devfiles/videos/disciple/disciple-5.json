@@ -1,10 +1,18 @@
 {
-    "id": "disciple-5",
-    "number": "4",
     "title": "Fasting",
-    "length": 511,
     "image": "http://d12xq7pqelpwt.cloudfront.net/Disciple%20Video%205%20-%20Fasting.png",
+    "number": "4",
+    "length": 191,
+    "urls": [
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/disciple-4.mp4",
+            "type": "video/mp4"
+        },
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/disciple-4.webm",
+            "type": "video/webm"
+        }
+    ],
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/disciple-4.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/disciple-video-5-fasting.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/disciple-video-5-fasting.webmhd.webm", "type":"video/webm"}]
+    "id": "disciple-5"
 }

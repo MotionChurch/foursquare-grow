@@ -1,10 +1,18 @@
 {
-    "id": "believer-8",
-    "number": "10",
-    "title": "The Spirit",
-    "length": 513,
+    "title": "Holy Spirit",
     "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%208%20The%20Spirit.png",
+    "number": "6",
+    "length": 111,
+    "urls": [
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-6.mp4",
+            "type": "video/mp4"
+        },
+        {
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-6.webm",
+            "type": "video/webm"
+        }
+    ],
     "pdf": "http://d12xq7pqelpwt.cloudfront.net/believer-6.pdf",
-    "urls": [{"src":"http://d12xq7pqelpwt.cloudfront.net/believer-video-8-the-spirit.mp4", "type":"video/mp4"},
-{"src":"http://d12xq7pqelpwt.cloudfront.net/believer-video-8-the-spirit.webmhd.webm", "type":"video/webm"}]
+    "id": "believer-8"
 }
