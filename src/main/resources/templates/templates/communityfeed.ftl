@@ -21,7 +21,7 @@
             <#list messages as msg>
                 <div class="answer slider" id="${msg.id}">
                     <p>A: ${msg.message!""}</p>
-                    <div class="author">By ${thread.message.author.firstName}</div>
+                    <div class="author">By ${msg.author.firstName}</div>
                     <#if msg_has_next && msg_index == 0>
                         <div><a class="readmore" href="#" onclick="showAnswers(this); return false;">(show more answers)</a></div>
                     </#if>
