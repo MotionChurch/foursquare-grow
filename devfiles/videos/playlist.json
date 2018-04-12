@@ -3,12 +3,12 @@
         "introduction-1":{ "required": true }
     },
     "seeker":{
-    },
-    "believer":{
         "seeker-2":{ "required": true },
         "seeker-3":{ "required": true },
         "seeker-4":{ "required": true },
-        "seeker-5":{ "required": true },
+        "seeker-5":{ "required": true }
+    },
+    "believer":{
         "believer-2":{ "required": true },
         "believer-3":{ "required": true },
         "believer-4":{ "required": true },
@@ -44,5 +44,5 @@
         "leader-5":{ "required": true },
         "leader-6":{ "required": true }
     },
-    "lastUpdated": 1522812751000
+    "lastUpdated": 1523494650000
 }
