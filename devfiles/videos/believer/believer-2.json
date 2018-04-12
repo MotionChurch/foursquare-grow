@@ -1,15 +1,15 @@
 {
-    "title": "The Bible",
+    "title": "Scripture",
     "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%202%20-%20The%20Bible.png",
-    "number": "1",
-    "length": 210,
+    "number": "3",
+    "length": 198,
     "urls": [
         {
-            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-1.mp4",
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-3.mp4",
             "type": "video/mp4"
         },
         {
-            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-1.webm",
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-3.webm",
             "type": "video/webm"
         }
     ],

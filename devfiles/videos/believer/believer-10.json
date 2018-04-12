@@ -1,15 +1,15 @@
 {
     "title": "Resurrection",
     "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%2010%20-%20Resurrection.png",
-    "number": "8",
-    "length": 323,
+    "number": "7",
+    "length": 172,
     "urls": [
         {
-            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-8.mp4",
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-7.mp4",
             "type": "video/mp4"
         },
         {
-            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-8.webm",
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-7.webm",
             "type": "video/webm"
         }
     ],

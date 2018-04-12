@@ -1,15 +1,15 @@
 {
     "title": "Holy Spirit",
     "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%208%20The%20Spirit.png",
-    "number": "6",
-    "length": 111,
+    "number": "5",
+    "length": 313,
     "urls": [
         {
-            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-6.mp4",
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-5.mp4",
             "type": "video/mp4"
         },
         {
-            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-6.webm",
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-5.webm",
             "type": "video/webm"
         }
     ],

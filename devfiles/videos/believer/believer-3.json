@@ -1,15 +1,15 @@
 {
     "title": "The Trinity",
     "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%203%20-%20The%20Trinity.png",
-    "number": "2",
-    "length": 247,
+    "number": "1",
+    "length": 210,
     "urls": [
         {
-            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-2.mp4",
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-1.mp4",
             "type": "video/mp4"
         },
         {
-            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-2.webm",
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-1.webm",
             "type": "video/webm"
         }
     ],

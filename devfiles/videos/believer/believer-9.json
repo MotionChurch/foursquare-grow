@@ -1,15 +1,15 @@
 {
     "title": "Second Coming",
     "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%209%20-%20Second%20Coming.png",
-    "number": "7",
-    "length": 172,
+    "number": "8",
+    "length": 323,
     "urls": [
         {
-            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-7.mp4",
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-8.mp4",
             "type": "video/mp4"
         },
         {
-            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-7.webm",
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-8.webm",
             "type": "video/webm"
         }
     ],

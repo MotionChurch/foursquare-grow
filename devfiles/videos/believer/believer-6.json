@@ -1,15 +1,15 @@
 {
     "title": "The Church",
     "image": "http://d12xq7pqelpwt.cloudfront.net/Believer%20Video%206%20-%20The%20Church%20Part%201.png",
-    "number": "5",
-    "length": 313,
+    "number": "4",
+    "length": 409,
     "urls": [
         {
-            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-5.mp4",
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-4.mp4",
             "type": "video/mp4"
         },
         {
-            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-5.webm",
+            "src": "https://d12xq7pqelpwt.cloudfront.net/videos-2018/believer-4.webm",
             "type": "video/webm"
         }
     ],
