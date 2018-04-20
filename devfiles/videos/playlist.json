@@ -36,6 +36,7 @@
         "teacher-8":{ "required": true }
     },
     "leader":{
+        "teacher-7":{ "required": true },
         "leader-1":{ "required": true },
         "leader-2":{ "required": true },
         "leader-3":{ "required": true },
@@ -43,5 +44,5 @@
         "leader-5":{ "required": true },
         "leader-6":{ "required": true }
     },
-    "lastUpdated": 1523562698000
+    "lastUpdated": 1524183713000
 }
