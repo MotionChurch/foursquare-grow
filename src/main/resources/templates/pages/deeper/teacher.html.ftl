@@ -35,7 +35,7 @@
             </ul>
             <h3>Other</h3>
             <ul>
-                <li><a href="http://www.myfoursquarechurch.com/connect/community-groups/">Join a Community Group</a></li>
+                <li><a href="https://motionchrch.com/groups">Join a Community Group</a></li>
             </ul>
         </article>
     </div>

@@ -293,7 +293,7 @@ function submitClassForm()
 
     $.ajax({
         type: "POST",
-        url: "http://www.myfoursquarechurch.com/grow-classes/#response",
+        url: "http://www.motionchrch.com/grow-classes/#response",
         data: $("#classform").serialize(),
     }).always(function() {
         location.href="/account/training/introduction";

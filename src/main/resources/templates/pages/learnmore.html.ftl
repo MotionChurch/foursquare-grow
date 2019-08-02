@@ -59,7 +59,7 @@
             the name of the Father and of the Son and of the Holy Spirit..."
         </blockquote>
         <p>
-            At <a href="http://myfoursquarechurch.com">Foursquare Puyallup</a>, we
+            At <a href="http://motionchrch.com">Foursquare Puyallup</a>, we
             are passionate about people discovering God,
             entering into a personal relationship with Jesus Christ, and then
             realizing their full potential in Christ as a follower of His.

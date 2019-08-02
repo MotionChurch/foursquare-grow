@@ -6,7 +6,7 @@
     </div>
 
     <div class="right">
-        &copy;2013 <a href="http://myfoursquarechurch.com">Foursquare Church</a>
+        &copy;2013 <a href="http://motionchrch.com">Foursquare Church</a>
         <#if config.getDomain() != "prod">
         - <#include "/templates/gitversion.ftl" parse=false>
         </#if>
